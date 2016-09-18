@@ -8,3 +8,6 @@ PATH=$PATH:~/.local/bin
 BASE16_SHELL="$HOME/.config/base16-shell/base16-pop.dark.sh"
 [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
 
+
+export NVM_DIR="/home/smooth/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
