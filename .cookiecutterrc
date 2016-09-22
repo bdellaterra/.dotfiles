@@ -2,3 +2,9 @@ default_context:
     full_name: "Brian Dellaterra"
     email: "bdellaterra@voodooglobe.com"
     github_username: "bdellaterra"
+
+# Aliases
+# TODO: Find out how to reference original values here
+    author: "Brian Dellaterra"
+    github_user: "bdellaterra"
+
