@@ -1,0 +1,13 @@
+// From: https://gist.github.com/jhartikainen/7dd4124631fcff66b43f
+{
+  "rules": {
+    "quotes": [2, "single", "avoid-escape"],
+    "eqeqeq": 0,
+    "brace-style": [2, "stroustrup"],
+    "eol-last": 0,
+    "no-nested-ternary": 1,
+    "padded-blocks": [1, "never"],
+    "space-after-function-name": [1, "never"],
+    "space-before-blocks": [1, "always"],
+  }
+}
