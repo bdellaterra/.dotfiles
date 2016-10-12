@@ -1,4 +1,8 @@
 
+" TODO: Documentation on how to make a custom .vimrc like this when using
+" Vimbad. Also adding your own custom submodules. (like YouCompleteMe)
+
+
 " Initialize local dictionary if it doesn't exist
 if !exists('g:local')
     let g:local = {}
@@ -16,6 +20,9 @@ let g:local.version        = "0.1.0"
 let g:local.year           = "2016"
 let g:local.license_name   = "Copyright Act of 1976, Pub.L. 94-553, 90 Stat. 2541, Section 401(a) (October 19, 1976)"
 let g:local.license_brief  = "All rights reserved. This body of work or any portion thereof may not be reproduced or used in any manner whatsoever without the express written permission of the author."
+
+" Add personal customizations to the runtimepath
+set runtimepath+=~/.dotfiles/vim/after
 
 " Source vimrc from distribution
 source ~/.vim/vimrc

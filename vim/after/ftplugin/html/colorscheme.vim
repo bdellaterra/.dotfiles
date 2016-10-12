@@ -1,25 +1,42 @@
-" colorscheme argonaut
-" colorscheme CandyPaper
-" colorscheme hilal
-" colorscheme iceberg
-" colorscheme ir_black
-" colorscheme kiss
-" colorscheme kruby
-" colorscheme less
-" colorscheme lightcolors
-" colorscheme lightning
-" colorscheme lilypink
-" colorscheme lizard
-" colorscheme lxvc
-" colorscheme lodestone
-" colorscheme mod8
-" colorscheme mojave
-" colorscheme molokai
-" colorscheme mustang
-colorscheme nazca
-" colorscheme neverness
-" colorscheme oxeded
-" colorscheme underwater-mod
-" colorscheme taqua
-" colorscheme thornbird
+
+call DynamicColorScheme({
+            \ 'gui_dark':   'neverness',
+            \ 'gui_light':  'DevC++',
+            \ 'term_dark':  'nazca',
+            \ 'term_light': 'lightning',
+            \ })
+
+" Darks:
+" argonaut
+" CandyPaper
+" hilal
+" gardener (term)
+" hybrid_material (term)
+" iceberg (term)
+" impact (term)
+" ir_black
+" kiss
+" kruby
+" lapis256 (term)
+" less
+" lightcolors
+" lilypink
+" lizard
+" lxvc
+" lodestone
+" mod8
+" mojave
+" molokai
+" mustang
+" nazca
+" neverness (term)
+" oxeded
+" underwater-mod
+" taqua
+" thornbird
+" wolfpack (term)
+
+" Lights:
+" flatlandia (term)
+" lightning (term)
 

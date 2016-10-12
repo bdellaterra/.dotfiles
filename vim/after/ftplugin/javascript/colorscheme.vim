@@ -1,24 +1,39 @@
-" colorscheme argonaut
-" colorscheme CandyPaper
-colorscheme hilal
-" colorscheme iceberg
-" colorscheme ir_black
-" colorscheme kiss
-" colorscheme kruby
-" colorscheme less
-" colorscheme lightcolors
-" colorscheme lightning
-" colorscheme lilypink
-" colorscheme lizard
-" colorscheme lxvc
-" colorscheme lodestone
-" colorscheme mod8
-" colorscheme mojave
-" colorscheme molokai
-" colorscheme mustang
-" colorscheme nazca
-" colorscheme neverness
-" colorscheme oxeded
-" colorscheme underwater-mod
-" colorscheme taqua
-" colorscheme thornbird
+
+call DynamicColorScheme({
+            \ 'gui_dark':   'hilal',
+            \ 'gui_light':  'earendel',
+            \ 'term_dark':  'lodestone',
+            \ 'term_light': 'earendel',
+            \ })
+
+" Darks:
+" alduin (term)
+" anderson (term)
+" apprentice (term)
+" argonaut
+" CandyPaper
+" desertink
+" devbox-dark-256 (term)
+" hilal
+" iceberg
+" ir_black
+" kiss
+" kruby
+" less
+" lightcolors
+" lightning
+" lilypink
+" lizard
+" lxvc
+" lodestone (term)
+" mod8
+" mojave
+" molokai
+" mustang
+" nazca
+" neverness
+" oxeded
+" underwater-mod
+" taqua
+" thornbird
+

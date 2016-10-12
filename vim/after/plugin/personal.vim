@@ -1,7 +1,12 @@
 
 let g:did_load_personal_config = 1
 
-" Set colorscheme
+" Set preference for light vs. dark colorschemes
+" (Used when choosing filetype-specific colorschemes)
+let g:local.filetype_colors = 1
+let g:local.background_pref = 'dark'
+
+" Set default colorscheme
 colorscheme greyman 
 
 " Set the font
@@ -12,4 +17,7 @@ set guifont=InconsolataForPowerline\ Nerd\ Font\ 16
 map <leader>p "+gP'[V']="
 imap <leader>p <C-o>"+gP<C-o>'[<C-o>V']=
 vmap <leader>p x"+gP'[V']=
+
+" Have vim switch to the directory of file currently being edited
+set autochdir
 

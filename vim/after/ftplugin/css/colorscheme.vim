@@ -1,24 +1,47 @@
-" colorscheme argonaut
-" colorscheme CandyPaper
-" colorscheme hilal
-" colorscheme iceberg
-" colorscheme ir_black
-" colorscheme kiss
-" colorscheme kruby
-" colorscheme less
-" colorscheme lightcolors
-" colorscheme lightning
-" colorscheme lilypink
-" colorscheme lizard
-" colorscheme lxvc
-colorscheme lodestone
-" colorscheme mod8
-" colorscheme mojave
-" colorscheme molokai
-" colorscheme mustang
-" colorscheme nazca
-" colorscheme neverness
-" colorscheme oxeded
-" colorscheme underwater-mod
-" colorscheme taqua
-" colorscheme thornbird
+
+call DynamicColorScheme({
+            \ 'gui_dark':   'gotham',
+            \ 'gui_light':  'DevC++',
+            \ 'term_dark':  'antares',
+            \ 'term_light': 'disciple',
+            \ })
+
+" Darks:
+" 0x7A69_dark
+" abra
+" antares
+" apprentice (term)
+" argonaut
+" CandyPaper
+" gotham
+" hilal
+" iceberg
+" ir_black
+" kiss
+" kruby
+" less
+" lightcolors
+" lightning
+" lilypink
+" lizard
+" lxvc
+" lodestone
+" mod8
+" mojave
+" molokai
+" mustang (term)
+" nazca
+" neverness
+" oxeded
+" underwater-mod
+" taqua
+" thornbird
+
+" Mediums:
+" Doorhinge
+
+" Lights:
+" DevC++
+" Disciple
+" donbass (term)
+
