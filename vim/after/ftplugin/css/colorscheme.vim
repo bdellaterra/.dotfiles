@@ -20,8 +20,6 @@ call DynamicColorScheme({
 " kiss
 " kruby
 " less
-" lightcolors
-" lightning
 " lilypink
 " lizard
 " lxvc
@@ -38,10 +36,12 @@ call DynamicColorScheme({
 " thornbird
 
 " Mediums:
-" Doorhinge
+" doorhinge
 
 " Lights:
 " DevC++
 " Disciple
 " donbass (term)
+" lightcolors
+" lightning
 
