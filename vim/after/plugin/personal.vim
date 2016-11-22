@@ -18,6 +18,3 @@ map <leader>p "+gP'[V']="
 imap <leader>p <C-o>"+gP<C-o>'[<C-o>V']=
 vmap <leader>p x"+gP'[V']=
 
-" Have vim switch to the directory of file currently being edited
-set autochdir
-
