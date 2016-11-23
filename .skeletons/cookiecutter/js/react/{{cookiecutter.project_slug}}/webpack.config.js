@@ -28,6 +28,12 @@ module.exports = {
         loader: "file"
       }
     ]
+  },
+  devServer: {
+    contentBase: path.resolve(__dirname, 'dist'),
+    inline: true,
+    port: '8080',
+    stats: 'errors-only'
   }
 }
 
