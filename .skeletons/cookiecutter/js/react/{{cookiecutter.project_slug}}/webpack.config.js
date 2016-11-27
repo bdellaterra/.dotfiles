@@ -1,9 +1,10 @@
 var debug = process.env.NODE_ENV !== "production"
 var webpack = require('webpack')
 var path = require('path')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-  devtool: debug ? "inline-sourcemap" : null,
+  devtool: debug ? "source-map" : null,
   context: path.resolve(__dirname, 'src'),
   entry: {
     bundle: './js/main.js',
@@ -29,6 +30,12 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'src', 'index.html'),
+      filename: 'index.html'
+    })
+  ],
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
     inline: true,
