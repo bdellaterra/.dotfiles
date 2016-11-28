@@ -1,6 +1,6 @@
 
 call DynamicColorScheme({
-            \ 'gui_dark':   'apprentice',
+            \ 'gui_dark':   'iceberg',
             \ 'gui_light':  'DevC++',
             \ 'term_dark':  'nazca',
             \ 'term_light': 'lightning',

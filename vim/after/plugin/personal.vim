@@ -7,6 +7,7 @@ let g:local.filetype_colors = 1
 let g:local.background_pref = 'dark'
 
 " Set default colorscheme
+let g:local.default_colorscheme = 'greyman'
 colorscheme greyman 
 
 " Set the font
