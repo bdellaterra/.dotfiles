@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import styles from '../css/{{ cookiecutter.project_slug }}.css'
 
 class {{ cookiecutter.package_slug }} extends Component {
   render() {
