@@ -1,8 +1,8 @@
-var debug = process.env.NODE_ENV !== "production"
-var webpack = require('webpack')
-var path = require('path')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
+const debug = process.env.NODE_ENV !== "production"
+const webpack = require('webpack')
+const path = require('path')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   devtool: debug ? "source-map" : null,
