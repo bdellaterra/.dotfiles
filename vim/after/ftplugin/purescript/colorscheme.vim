@@ -1,9 +1,9 @@
 
 call DynamicColorScheme({
-            \ 'gui_dark':   'manuscript',
-            \ 'gui_light':  'earendel',
-            \ 'term_dark':  'iceberg',
-            \ 'term_light': 'PaperColor',
+            \ 'gui_dark':   'frozen',
+            \ 'gui_light':  'lightcolors',
+            \ 'term_dark':  'apprentice',
+            \ 'term_light': 'disciple',
             \ })
 
 " Others
