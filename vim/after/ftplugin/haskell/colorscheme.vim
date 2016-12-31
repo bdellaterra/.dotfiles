@@ -6,3 +6,6 @@ call DynamicColorScheme({
             \ 'term_light': 'earendel',
             \ })
 
+" Others
+" jellyx
+
