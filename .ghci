@@ -1,2 +1,7 @@
-:def search return . ( ":!hoogle " ++ )
-:def doc return . ( ":!hoogle --info " ++ )
+
+" Courtesy of Jekor
+let ghciEscapeShellArg arg = "'" ++ concatMap (\x -> if x == '\'' then "'\"'\"'" else [x]) arg ++ "'"
+:def! search return . (":! hoogle --color --count=20 " ++) . ghciEscapeShellArg
+:def! doc return . (":! hoogle --info " ++) . ghciEscapeShellArg
+
+
