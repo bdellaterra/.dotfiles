@@ -3,12 +3,15 @@ let g:did_load_personal_config = 1
 
 " Set preference for light vs. dark colorschemes
 " (Used when choosing filetype-specific colorschemes)
-let g:local.filetype_colors = 1
-let g:local.background_pref = 'dark'
+if !exists('g:local.filetype_colors')
+    let g:local.filetype_colors = 1
+endif
+if !exists('g:local.background_pref')
+    let g:local.background_pref = 'dark'
+endif
 
 " Set default colorscheme
-let g:local.default_colorscheme = 'greyman'
-colorscheme greyman 
+"
 " (Dark Colorschemes)
 " 0x7A69_dark
 " abra
@@ -60,6 +63,11 @@ colorscheme greyman
 " github
 " lightning (term)
 " PaperColor (term)
+"
+if !exists('g:local.default_colorscheme')
+    let g:local.default_colorscheme = 'greyman'
+    exe 'colorscheme ' . g:local.default_colorscheme
+endif
 
 " Set the font
 " set guifont=Liberation\ Mono\ 14
