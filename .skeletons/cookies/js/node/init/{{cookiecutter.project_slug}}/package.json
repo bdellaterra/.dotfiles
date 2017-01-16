@@ -1,0 +1,13 @@
+{
+  "name": "{{ cookiecutter.project_slug }}",
+  "version": "{{ cookiecutter.version }}",
+  "description": "{{ cookiecutter.project_brief }}",
+  "main": "main.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "{{ cookiecutter.author }}",
+  "license": "{{ cookiecutter.license_id }}"{% if cookiecutter.license_id == 'UNLICENSED' %},
+  "private": true{% endif %}
+}
