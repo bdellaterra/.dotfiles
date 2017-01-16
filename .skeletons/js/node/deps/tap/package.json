@@ -1,5 +1,9 @@
 {
   "devDependencies": {
     "tap": "^9.0.3"
+  },
+  "scripts": {
+    "coverage": "tap test/*.test.js --cov --coverage-report=lcov",
+    "test": "tap test/*.test.js"
   }
 }
