@@ -1,0 +1,18 @@
+{
+  "project_name":     "App",
+  "project_brief":    "{{ cookiecutter.project_name }} app",
+  "dependencies":     "",
+  "license_id":       [ "UNLICENSED", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "GPL-3.0", "LGPL-3.0", "MIT" ],
+  "author":           "Brian Dellaterra",
+  "email":            "bdellaterra@voodooglobe.com",
+  "github_user":      "bdellaterra",
+  "project_slug":     "{{ cookiecutter.project_name.replace(' ', '').replace('(', '').replace(')', '').replace('\"', '').replace(\"'\", '') }}",
+  "package_slug":     "{{ cookiecutter.project_slug.replace('-', '') }}",
+  "version":          "0.1.0",
+  "year":             "{% now 'local', '%Y' %}",
+  "dependency_dir":   "$HOME/.skeletons/js/node/deps/",
+  "_licenses":   { "UNLICENSED": "Copyright held by {{ cookiecutter.author }}", "Apache-2.0": "Apache License 2.0", "BSD-2-Clause": "BSD 2-Clause \"Simplified\" License", "BSD-3-Clause": "BSD 3-Clause \"New\" or \"Revised\" License", "ISC": "ISC License", "GPL-3.0": "GNU General Public License v3.0", "LGPL-3.0": "GNU Lesser General Public License v3.0", "MIT": "MIT License" },
+  "license_name":     "{{ cookiecutter._licenses[cookiecutter.license_id].replace('{{ cookiecutter.author }}', cookiecutter.author) }}",
+  "license_brief":    "Distributed under the terms of the {{ cookiecutter.license_name }}. See the file LICENSE.",
+  "_extensions":      ["jinja2_time.TimeExtension"]
+}
