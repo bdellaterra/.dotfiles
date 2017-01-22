@@ -1,0 +1,28 @@
+{
+  "devDependencies": {
+    "ava": "^0.17.0",
+    "nyc": "^10.1.2"
+  },
+    "ava": {
+    "files": ["test/*test.js"],
+    "source": [
+      "**/*.{js,jsx}",
+      "!dist/**/*"
+    ]
+  },
+  "babel": {
+    "presets": ["es2015"],
+    "plugins": ["transform-runtime"],
+    "ignore": "*test.js",
+    "env": {
+      "development": {
+        "sourceMaps": "inline"
+      }
+    }
+  },
+  "scripts": {
+    "coverage": "nyc ava test/*test.js",
+    "test": "ava --tap",
+    "watch": "ava --watch"
+  }
+}
