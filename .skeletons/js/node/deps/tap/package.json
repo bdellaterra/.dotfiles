@@ -3,7 +3,7 @@
     "tap": "^9.0.3"
   },
   "scripts": {
-    "coverage": "JS_TEST_LIB=tap tap test/*test.js --cov --coverage-report=lcov",
-    "test": "JS_TEST_LIB=tap tap test/*test.js"
+    "coverage": "cross-env JS_TEST_LIB=tap avatap test/*test.js --cov --coverage-report=lcov",
+    "test": "cross-env JS_TEST_LIB=tap tap test/*test.js"
   }
 }

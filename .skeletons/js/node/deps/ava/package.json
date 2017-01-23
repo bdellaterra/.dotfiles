@@ -21,8 +21,8 @@
     }
   },
   "scripts": {
-    "coverage": "JS_TEST_LIB=ava nyc ava",
-    "test": "JS_TEST_LIB=ava ava --tap",
-    "watch": "JS_TEST_LIB=ava ava --watch"
+    "coverage": "cross-env JS_TEST_LIB=ava nyc ava",
+    "test": "cross-env JS_TEST_LIB=ava ava --tap",
+    "watch": "cross-env JS_TEST_LIB=ava ava --watch"
   }
 }
