@@ -21,8 +21,8 @@
     }
   },
   "scripts": {
-    "coverage": "nyc ava test/*test.js",
-    "test": "ava --tap",
-    "watch": "ava --watch"
+    "coverage": "JS_TEST_LIB=ava nyc ava",
+    "test": "JS_TEST_LIB=ava ava --tap",
+    "watch": "JS_TEST_LIB=ava ava --watch"
   }
 }
