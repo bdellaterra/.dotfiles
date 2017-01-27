@@ -22,7 +22,7 @@ let g:local.license_name   = "Copyright Act of 1976, Pub.L. 94-553, 90 Stat. 254
 let g:local.license_brief  = "All rights reserved. This body of work or any portion thereof may not be reproduced or used in any manner whatsoever without the express written permission of the author."
 
 " Add personal customizations to the runtimepath
-set runtimepath+=~/.dotfiles/vim/after
+set runtimepath+=~/.vim-personal/after
 
 " Source vimrc from distribution
 source ~/.vim/vimrc
