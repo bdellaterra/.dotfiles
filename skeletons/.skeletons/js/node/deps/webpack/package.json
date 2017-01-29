@@ -2,5 +2,11 @@
   "devDependencies": {
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
+  },
+  "scripts": {
+    "start": "npm run dev",
+    "build": "webpack",
+    "dev": "webpack -d && webpack-dev-server --watch-poll",
+    "stats": "webpack --env production --profile --json > stats.json"
   }
 }
