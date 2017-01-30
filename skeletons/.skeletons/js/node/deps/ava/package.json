@@ -20,6 +20,13 @@
       }
     }
   },
+  "nyc": {
+    "reporter": [
+      "lcov",
+      "text",
+      "html"
+    ]
+  },
   "scripts": {
     "coverage": "cross-env JS_TEST_LIB=ava nyc ava",
     "test": "cross-env JS_TEST_LIB=ava ava --tap",
