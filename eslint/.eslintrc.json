@@ -13,9 +13,9 @@
         "ecmascript": 6,
         "jsx": true,
         "react": {
-            "createClass": "createClass", // Regex for Component Factory to use, default to "createClass"
-            "pragma": "React",  // Pragma to use, default to "React"
-            "version": "15.0" // React version, default to the latest React stable release
+            "createClass": "createClass",
+            "pragma": "React",
+            "version": "15.0"
         }
     },
     "plugins": [
@@ -31,15 +31,12 @@
         "no-unused-vars": 0,
         "camelcase": 0,
         "no-underscore-dangle": 0,
-
-        // From: https://gist.github.com/jhartikainen/7dd4124631fcff66b43f
-        /* "quotes": [2, "single", "avoid-escape"], */
         "eqeqeq": 0,
         "brace-style": [2, "stroustrup"],
         "eol-last": 0,
         "no-nested-ternary": 1,
         "padded-blocks": [1, "never"],
         "space-after-function-name": [1, "never"],
-        "space-before-blocks": [1, "always"],
+        "space-before-blocks": [1, "always"]
     }
 }
