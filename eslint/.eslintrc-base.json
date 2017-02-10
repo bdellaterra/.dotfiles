@@ -29,7 +29,7 @@
     "no-func-assign": "error",
     "no-inner-declarations": [ "error", "both" ],
     "no-irregular-whitespace": "error",
-    "eslint no-obj-calls": "error",
+    "no-obj-calls": "error",
     "use-isnan": "error",
     "no-global-assign": "error",
 
@@ -55,7 +55,7 @@
 
     // Warn about unnecessary or inefficient code
     "no-extra-boolean-cast": "warn",
-    "no-extra-parens": [ "warn", {
+    "no-extra-parens": [ "warn", "all", {
       "conditionalAssign": false,
       "returnAssign": false,
       "nestedBinaryExpressions": false,

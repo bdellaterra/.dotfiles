@@ -56,7 +56,8 @@
     }],
     "lines-around-directive": [ "warn", "always" ],
     "max-depth": [ "warn", 7 ],
-    "max-lines": [ "warn", 2000,
+    "max-lines": [ "warn", {
+      "max": 2000,
       "skipBlankLines": true,
       "skipComments": true
     }],

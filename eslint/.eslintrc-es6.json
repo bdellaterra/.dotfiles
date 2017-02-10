@@ -31,7 +31,7 @@
     "no-useless-computed-key": "warn",
     "no-useless-rename": [ "warn", {
       "ignoreDestructuring": true
-    }],
+    }]
 
   }
 

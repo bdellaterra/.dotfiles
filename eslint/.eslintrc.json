@@ -1,42 +1,12 @@
 {
-    "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        }
-    },
-    "env": {
-        "browser": true,
-        "node": true
-    },
-    "settings": {
-        "ecmascript": 6,
-        "jsx": true,
-        "react": {
-            "createClass": "createClass",
-            "pragma": "React",
-            "version": "15.0"
-        }
-    },
-    "plugins": [
-        "react"
-        ],
+
+    // Don't parse eslint configuration in higher-level directories
+    "root": true,
+
+    // Build from a list of modular sub-configurations
     "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
-        ],
-    "rules": {
-        "strict": 0,
-        "quotes": 0,
-        "no-unused-vars": 0,
-        "camelcase": 0,
-        "no-underscore-dangle": 0,
-        "eqeqeq": 0,
-        "brace-style": [2, "stroustrup"],
-        "eol-last": 0,
-        "no-nested-ternary": 1,
-        "padded-blocks": [1, "never"],
-        "space-after-function-name": [1, "never"],
-        "space-before-blocks": [1, "always"]
-    }
+        ".eslintrc-base.json",
+        ".eslintrc-es6.json"
+    ]
+
 }
