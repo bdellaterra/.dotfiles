@@ -27,6 +27,5 @@ export default merge(
   baseConfig,
   htmlConfig,
   imgConfig,
-  devServerConfig,
 )
 
