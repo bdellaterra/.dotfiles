@@ -5,8 +5,9 @@
 
     // Build from a list of modular sub-configurations
     "extends": [
-        "./config/eslint/.eslintrc-base.json",
-        "./config/eslint/.eslintrc-es6.json"
+        "./conf/eslint/base.json",
+        "./conf/eslint/es6.json",
+        "./conf/eslint/style.json"
     ]
 
 }

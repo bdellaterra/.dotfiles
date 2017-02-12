@@ -1,6 +1,7 @@
 {
   "devDependencies": {
-    "eslint": "^3.14.1"
+    "eslint": "^3.15.0",
+    "eslint_d": "^4.2.1"
   },
   "scripts": {
     "lint": "eslint . --cache --ignore-path .gitignore"
