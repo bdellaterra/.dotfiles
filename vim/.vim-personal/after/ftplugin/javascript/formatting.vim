@@ -1,15 +1,17 @@
 
-function! FormatJS() range
+function! FormatJS()
     let save_pos = getpos(".")
-    exe 'silent ' . a:firstline . ',' . a:lastline
-        \ . '!prettier --stdin 2>/dev/null | eslint_d --stdin --fix-to-stdout 2>/dev/null'
+    silent !eslint_d --fix %
     call setpos('.', save_pos)
     return 0
 endfunction
 
-let &formatprg='eslint_d --stdin --fix-to-stdout'
+autocmd BufWritePost *.js call FormatJS()
+autocmd BufReadPost *.js SyntasticCheck
+set autoread
+
+" let &formatprg='eslint_d --stdin --fix-to-stdout'
 
 " Auto-format code on save, attempting to preserver cursor position
-autocmd BufWritePre *.js exe "normal! gggqG\<C-o>\<C-o>"
-set autoread
+" autocmd BufWritePre *.js exe "normal! gggqG\<C-o>\<C-o>"
 
