@@ -1,8 +1,9 @@
 import webpack from 'webpack'
-import {resolve} from 'path'
+import { resolve } from 'path'
 import merge from 'webpack-merge'
 
 import htmlConfig from './conf/webpack/htmlConfig'
+import cssConfig from './conf/webpack/cssConfig'
 import imgConfig from './conf/webpack/imgConfig'
 import devServerConfig from './conf/webpack/devServerConfig'
 
@@ -26,6 +27,8 @@ const baseConfig = {
 export default merge(
   baseConfig,
   htmlConfig,
+  cssConfig,
   imgConfig,
+  devServerConfig
 )
 
