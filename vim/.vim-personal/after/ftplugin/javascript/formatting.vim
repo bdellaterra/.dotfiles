@@ -1,12 +1,5 @@
 
-function! FormatJS()
-    let save_pos = getpos(".")
-    silent !eslint_d --fix %
-    call setpos('.', save_pos)
-    return 0
-endfunction
-
-autocmd BufWritePost *.js call FormatJS()
+autocmd BufWritePost *.js silent !eslint_d --fix %
 autocmd BufReadPost *.js SyntasticCheck
 set autoread
 
