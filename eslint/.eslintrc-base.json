@@ -48,19 +48,19 @@
     "no-loop-func": "warn",
     "no-new": "warn",
     "no-redeclare": "warn",
-    "no-return-assign": [ "warn", "except-parens" ],
+    //"no-return-assign": [ "warn", "except-parens" ],
     "no-unmodified-loop-condition": "warn",
     "no-delete-var": "warn",
     "no-shadow-restricted-names": "warn",
 
     // Warn about unnecessary or inefficient code
     "no-extra-boolean-cast": "warn",
-    "no-extra-parens": [ "warn", "all", {
-      "conditionalAssign": false,
-      "returnAssign": false,
-      "nestedBinaryExpressions": false,
-      "ignoreJSX": "all"
-    }],
+    //"no-extra-parens": [ "warn", "all", {
+    //  "conditionalAssign": false,
+    //  "returnAssign": false,
+    //  "nestedBinaryExpressions": false,
+    //  "ignoreJSX": "all"
+    //}],
     "no-extra-semi": "warn",
     "no-unreachable": "warn",
     "no-extra-bind": "warn",
@@ -107,10 +107,10 @@
     "no-floating-decimal": "warn",
     "no-implicit-coercion": "warn",
     "no-labels": "warn",
-    "no-magic-numbers": [ "warn", {
-      "ignore": [ -2, -1, 0, 1, 2 ],
-      "ignoreArrayIndexes": true
-    }],
+    //"no-magic-numbers": [ "warn", {
+    //  "ignore": [ -2, -1, 0, 1, 2 ],
+    //  "ignoreArrayIndexes": true
+    //}],
     "no-new-func": "warn",
     "no-new-require": "warn",
     "no-new-wrappers": "warn",
@@ -125,7 +125,7 @@
       "allow": [ "resolve", "reject", "done", "cb" ]
     }],
     "no-undef": "warn",
-    "no-use-before-define": [ "error", "nofunc" ],
+    //"no-use-before-define": [ "error", "nofunc" ],
 
     // Security concerns
     "no-eval": "warn",

@@ -4,7 +4,14 @@
 
     // Style Rules
     "indent": [ "error", 2, {
-      "SwitchCase": 1
+      "SwitchCase": 1,
+      "VariableDeclarator": { "var": 2, "let": 2, "const": 3 },
+      "outerIIFEBody": 1,
+      "MemberExpression": 1,
+      "FunctionExpression": { "body": 1, "parameters": "first" },
+      "CallExpression": { "arguments": "first" },
+      "ArrayExpression": "first",
+      "ObjectExpression": "first"
     }],
     "linebreak-style": [ "error", "unix" ],
     "max-len": [ "error", 80 ],
@@ -15,9 +22,7 @@
       "objectsInArrays": true,
       "arraysInArrays": true
     }],
-    "arrow-parens": [ "warn", "as-needed", {
-      "requireForBlockBody": true
-    }],
+    "arrow-parens": [ "warn", "always" ],
     "arrow-spacing": [ "warn", {
       "before": true,
       "after": true
@@ -100,10 +105,11 @@
     "object-property-newline": [ "warn", {
       "allowMultiplePropertiesPerLine": true
     }],
-    "object-shorthand": [ "warn", "always", {
-      "avoidQuotes": true,
-      "ignoreConstructors": true
-    }],
+    // ESLint produces error with this...
+    //"object-shorthand": [ "warn", "always", {
+    //  "avoidQuotes": true,
+    //  "ignoreConstructors": true
+    //}],
     "one-var-declaration-per-line": [ "warn", "initializations" ],
     "operator-linebreak": [ "warn", "before" ],
     "prefer-arrow-callback": [ "warn", {
@@ -112,9 +118,10 @@
     }],
     "prefer-spread": "warn",
     "prefer-template": "warn",
-    "quote-props": [ "warn", "always", {
-      "unnecessary": false,
-      "numbers": false
+    "quote-props": [ "warn", "as-needed", {
+      "keywords": false,
+      "unnecessary": true,
+      "numbers": true
     }],
     "quotes": [ "warn", "single", {
       "avoidEscape": true,
@@ -127,7 +134,7 @@
       "before": false,
       "after": true
     }],
-    "sort-imports": "warn",
+    //"sort-imports": "warn",
     "space-before-blocks": [ "warn", "always" ],
     "space-before-function-paren": [ "warn", "never" ],
     //"space-in-parens": [ "warn", "never", {
