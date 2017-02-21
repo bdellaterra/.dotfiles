@@ -1,12 +1,12 @@
 import { resolve } from 'path'
 
 export default {
-  'module': {
-    'loaders': [
+  module: {
+    loaders: [
       {
-        'test':    /\.css$/,
-        'include': resolve('src', 'css'),
-        'use':     ['style-loader', 'css-loader']
+        test:    /\.css$/,
+        include: resolve('src', 'css'),
+        use:     ['style-loader', 'css-loader']
       }
     ]
   }
