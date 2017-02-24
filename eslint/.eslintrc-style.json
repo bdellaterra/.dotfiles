@@ -44,7 +44,7 @@
     "dot-location": [ "warn", "property" ],
     "eol-last": [ "warn", "always" ],
     "func-call-spacing": [ "warn", "never" ],
-    "generator-star-spacing": [ "error", {"before": true, "after": false} ],
+    "generator-star-spacing": [ "error", {"before": false, "after": true} ],
     "jsx-quotes": [ "warn", "prefer-double" ],
     "key-spacing": [ "warn", {
       "beforeColon": false,
@@ -155,7 +155,7 @@
     "template-curly-spacing": [ "warn", "never" ],
     "template-tag-spacing": [ "warn", "never" ],
     "vars-on-top": "warn",
-    "wrap-iife": [ "warn", "inside" ],
+    "wrap-iife": [ "warn", "outside" ],
     "yield-star-spacing": [ "warn", {
       "before": false,
       "after": true
