@@ -14,7 +14,7 @@
       "ObjectExpression": "first"
     }],
     "linebreak-style": [ "error", "unix" ],
-    "max-len": [ "error", 80 ],
+    "max-len": [ "error", 80, { "ignoreComments": true } ],
     "no-trailing-spaces": "error",
 
     // Style Preferences
