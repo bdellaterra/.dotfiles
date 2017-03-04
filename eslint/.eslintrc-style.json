@@ -134,7 +134,11 @@
       "before": false,
       "after": true
     }],
-    //"sort-imports": "warn",
+    "sort-imports": ["warn", {
+      "ignoreCase": true,
+      "ignoreMemberSort": false,
+      "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+    }],
     "space-before-blocks": [ "warn", "always" ],
     "space-before-function-paren": [ "warn", "never" ],
     //"space-in-parens": [ "warn", "never", {
