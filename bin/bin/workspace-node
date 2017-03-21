@@ -1,0 +1,10 @@
+#!/bin/bash
+
+name=`basename "$PWD"`
+# tmux new-session -s "$name" -n dev
+tmux rename-window dev
+tmux new-window -d -n dev-server
+tmux new-window -d -n test
+tmux new-window -d -n vim
+tmux new-window -d -n dots
+
