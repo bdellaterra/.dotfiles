@@ -1,0 +1,6 @@
+Stow has a set of default ignore patterns. This includes .gitignore so a
+global .gitignore file should be linked manually.
+
+Alternatively a custom ignore list can be created for Stow. See link below.
+https://codeyarns.com/2016/02/01/stow-not-installing-file/
+
