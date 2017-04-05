@@ -2,7 +2,7 @@
 set autoread
 
 " Runs eslint_d --fix asynchronously for better responsiveness.
-" (But quick enough that conflicting changes are unlikely to be insterted
+" (But quick enough that conflicting changes are unlikely to be inserted
 " before the job is done. Vim prompts with warning if necessary.)
 function! AutoLint()
     silent! call job_start(['eslint_d', '--fix', expand('%')])
