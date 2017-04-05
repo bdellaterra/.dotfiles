@@ -5,6 +5,6 @@ name=`basename "$PWD"`
 tmux rename-window dev
 tmux new-window -d -n dev-server
 tmux new-window -d -n test
-tmux new-window -d -n vim
-tmux new-window -d -n dots
+tmux new-window -d -n vim -c ~/.vim
+tmux new-window -d -n dots -c ~/.dotfiles
 
