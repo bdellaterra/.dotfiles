@@ -2,7 +2,7 @@
 call DynamicColorScheme({
             \ 'gui_dark':   'hilal',
             \ 'gui_light':  'earendel',
-            \ 'term_dark':  'lodestone',
+            \ 'term_dark':  'apprentice',
             \ 'term_light': 'earendel',
             \ })
 

@@ -2,7 +2,7 @@
 call DynamicColorScheme({
             \ 'gui_dark':   'distinguished',
             \ 'gui_light':  'earendel',
-            \ 'term_dark':  'lodestone',
+            \ 'term_dark':  'neverness',
             \ 'term_light': 'PaperColor',
             \ })
 
