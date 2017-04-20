@@ -17,6 +17,10 @@ export NVM_DIR="/home/smooth/.nvm"
 # Haskell
 PATH=$PATH:~/.cabal/bin
 
+# To find locally installed packages...
+PATH=$PATH:~/local
+export PKG_CONFIG_PATH="$HOME/local/lib64/pkgconfig/"
+
 
 # LASTLY... -------------------------------------------------------------------
 
