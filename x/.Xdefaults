@@ -1,34 +1,41 @@
-! From https://github.com/Manchotix/urxvt_papercolor_theme 
 
-! PaperColor Theme dark
-URxvt*cursorColor: #25c3dc
-URxvt*pointerColor: #25c3dc
-URxvt.foreground: #f2f2f2
-URxvt.background: #1C1C1C
+! special
+URxvt.foreground:   #94a7ab
+URxvt.background:   #171f1f
+URxvt.cursorColor:  #94a7ab
+
 ! black
-URxvt.color0: #2c2c2c
-URxvt.color8: #969694
+URxvt.color0:       #022f38
+URxvt.color8:       #01837c
+
 ! red
-URxvt.color1: #c62828
-URxvt.color9: #f15250
+URxvt.color1:       #f61c25
+URxvt.color9:       #f81c25
+
 ! green
-URxvt.color2: #558b2e
-URxvt.color10: #86bd47
-! yellow / orange
-URxvt.color3: #f9a825
-URxvt.color11: #f8e63a
+URxvt.color2:       #f15f35
+URxvt.color10:      #f15f35
+
+! yellow
+URxvt.color3:       #fec415
+URxvt.color11:      #fec415
+
 ! blue
-URxvt.color4: #1565c1
-URxvt.color12: #77b2f6
+URxvt.color4:       #3b9fe1
+URxvt.color12:      #3b9fe1
+
 ! magenta
-URxvt.color5: #6a1e9a
-URxvt.color13: #b963c8
+URxvt.color5:       #58538b
+URxvt.color13:      #58538b
+
 ! cyan
-URxvt.color6: #00838f
-URxvt.color14: #25c3dc
+URxvt.color6:       #2aa198
+URxvt.color14:      #2aa198
+
 ! white
-URxvt.color7: #ffffff
-URxvt.color15: #ffffff
+URxvt.color7:       #94a7ab
+URxvt.color15:      #f7f6e2
+
 
 ! From https://wiki.gentoo.org/wiki/Rxvt-unicode 
 
