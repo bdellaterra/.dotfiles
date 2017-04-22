@@ -3,12 +3,12 @@ let g:did_load_personal_config = 1
 
 " Set preference for light vs. dark colorschemes
 " (Used when choosing filetype-specific colorschemes)
-if !exists('g:local.filetype_colors')
-    let g:local.filetype_colors = 1
-endif
-if !exists('g:local.background_pref')
-    let g:local.background_pref = 'dark'
-endif
+" if !exists('g:local.filetype_colors')
+"     let g:local.filetype_colors = 1
+" endif
+" if !exists('g:local.background_pref')
+"     let g:local.background_pref = 'dark'
+" endif
 
 " Set default colorscheme
 "
@@ -64,14 +64,24 @@ endif
 " lightning (term)
 " PaperColor (term)
 "
-if !exists('g:local.default_colorscheme')
-    let g:local.default_colorscheme = 'greyman'
-    exe 'colorscheme ' . g:local.default_colorscheme
+" if !exists('g:local.default_colorscheme')
+"     let g:local.default_colorscheme = 'greyman'
+"     exe 'colorscheme ' . g:local.default_colorscheme
+" endif
+
+set background=dark
+if has('gui')
+    colorscheme denizen
+else
+    colorscheme apprentice
 endif
 
 " Set the font
 " set guifont=Liberation\ Mono\ 14
 set guifont=InconsolataForPowerline\ Nerd\ Font\ 16
+
+" Fix some paste problems by allowing cursor over EOL
+set ve=onemore
 
 " Special paste w/ re-indent
 map <leader>p "+gP'[V']="
