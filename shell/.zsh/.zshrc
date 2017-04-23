@@ -13,3 +13,15 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+
+# PLUGINS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# *** Zsh-AutoEnv ***
+# https://github.com/Tarrasch/zsh-autoenv
+
+AUTOENV_FILE_ENTER=.entry.sh
+AUTOENV_FILE_LEAVE=.exit.sh
+
+source ~/.zsh/plugins/zsh-autoenv/autoenv.zsh
+
+
