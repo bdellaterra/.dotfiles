@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint_d": "^4.2.5"
+  }
+}

@@ -1,0 +1,13 @@
+{
+
+    // Don't parse eslint configuration in higher-level directories
+    "root": true,
+
+    // Build from a list of modular sub-configurations
+    "extends": [
+        "./conf/eslint/base.json",
+        "./conf/eslint/es6.json",
+        "./conf/eslint/style.json"
+    ]
+
+}

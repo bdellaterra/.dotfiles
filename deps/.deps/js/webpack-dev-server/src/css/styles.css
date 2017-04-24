@@ -1,0 +1,27 @@
+
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body,
+#app {
+  background: rgb(255, 255, 255);
+  border-radius: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#app * {
+  box-sizing: inherit;
+}
+
+#app {
+  text-align: center;
+  font: 16px sans-serif; 
+  color: rgb(34, 34, 34);
+  visibility: visible;
+}
+

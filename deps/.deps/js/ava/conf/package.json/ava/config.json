@@ -1,0 +1,34 @@
+{
+  "ava": {
+    "files": [
+      "test/*test.js"
+    ],
+    "source": [
+      "**/*.{js,jsx}",
+      "!dist/**/*"
+    ],
+    "require": "babel-register",
+    "babel": {
+      "presets": [
+        "es2015",
+        "stage-0"
+      ],
+      "plugins": [
+        "transform-runtime"
+      ]
+    }
+  },
+  "nyc": {
+    "reporter": [
+      "lcov",
+      "text",
+      "html"
+    ]
+  },
+  "scripts": {
+    "cover": "cross-env NODE_PATH=src/js JS_TEST_LIB=ava nyc ava",
+    "tap": "cross-env NODE_PATH=src/js JS_TEST_LIB=ava ava --tap",
+    "test": "cross-env NODE_PATH=src/js JS_TEST_LIB=ava ava",
+    "watch": "cross-env NODE_PATH=src/js JS_TEST_LIB=ava ava --watch"
+  }
+}
