@@ -27,11 +27,11 @@ export NVM_DIR=~/.nvm
 # Create intermediate directories automatically w/ verbose output.
 alias mkdir="mkdir -pv"
 
+# Automatically cd to directory after it is created.
+alias mkcd='_(){ mkdir $1; cd $1; }; _'
+
 
 # FUNCTIONS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-# Automatically cd to directory after it is created.
-mkcd() { mkdir -p "$@" && cd "$@"; }
 
 # Convert to all lowercase characters.
 lowercase() {
