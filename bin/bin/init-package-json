@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# REQUIREMENTS:
+
+# json - a command-line utility for merging json files
+# https://github.com/trentm/json
+
+# Fail if base.package.json does not exist
+if [[ ! -e base.package.json ]]; then
+    echo "ERROR: file 'base.package.json' not found." 1>&2
+    exit 1
+fi
+
+# Fail if package.json already exists
+if [[ -e package.json ]]; then
+    echo "ERROR: file 'package.json' already exists!" 1>&2
+    exit 1
+fi
+
+# Create new package.json by merging base with packages from dependencies
+cat "base.package.json" `find -L "conf/package.json" -not -path '*node_modules*' -type f -iname "*.json"` | json --deep-merge > "package.json"
+
