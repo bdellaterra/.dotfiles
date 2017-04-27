@@ -22,44 +22,63 @@ export NVM_DIR=~/.nvm
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 
+# ALIASES :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# Create intermediate directories automatically w/ verbose output.
+alias mkdir="mkdir -pv"
+
+
 # FUNCTIONS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+# Automatically cd to directory after it is created.
+mkcd() { mkdir -p "$@" && cd "$@"; }
+
+# Convert to all lowercase characters.
 lowercase() {
     echo "$1" | tr 'A-Z' 'a-z'
 }  
 
+# Convert to all uppercase characters.
 uppercase() {
     echo "$1" | tr 'a-z' 'A-Z'
 }  
 
+# Remove spaces.
 nospaces() {
     echo "${1// /}"
 }  
 
+# Convert spaces to dashes.
 dashws() {
     echo ""${1// /-}""
 }  
 
+# Convert spaces to underscores.
 underscorews() {
     "echo ${1// /_}"
 }  
 
+# Remove dashes.
 nodashes() {
     echo "${1//-/}"
 }  
 
+# Remove parens.
 noparens() {
     echo "${1//[\(\)]/}"
 }  
 
+# Remove non-alphanumeric characters.
 alphanum() {
     echo "${1//[^ _a-zA-Z0-9]/}"
 }  
 
+# Remove non-alphanumeric characters. (Keeping dashes)
 alphanumdash() {
     echo "${1//[^ -_a-zA-Z0-9]/}"
 }  
 
+# Convert to safe user ID string.
 userID() {
     : `nospaces "$1"`
     : `noparens "$_"`
@@ -68,6 +87,7 @@ userID() {
     echo "$_"
 }
 
+# Convert to safe project ID string.
 projID() {
     : `nospaces "$1"`
     : `noparens "$_"`
@@ -76,6 +96,7 @@ projID() {
     echo "$_"
 }
 
+# Convert to safe package ID string.
 pkgID() {
     : `nospaces "$1"`
     : `noparens "$_"`
