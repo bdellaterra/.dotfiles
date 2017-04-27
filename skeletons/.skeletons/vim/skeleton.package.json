@@ -1,6 +1,6 @@
 {
   "name": "`!v len($PROJECT_PACKAGE) ? $PROJECT_PACKAGE : 'app'`",
-  "version": "`!v len($PROJECT_VERSION) ? $PROJECT_VERSION : '1.0.0'`",
+  "version": "`!v len($PROJECT_INIT_VERSION) ? $PROJECT_INIT_VERSION : '1.0.0'`",
   "description": "`!v len($PROJECT_BRIEF) ? $PROJECT_BRIEF : ''`",
   "main": "`!v len($PROJECT_MAIN) ? $PROJECT_MAIN : 'index.js'`",
   "author": "`!v len($PROJECT_AUTHOR) ? $PROJECT_AUTHOR : ''`",
