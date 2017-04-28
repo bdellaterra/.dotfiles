@@ -14,10 +14,10 @@
       "ObjectExpression": "first"
     }],
     "linebreak-style": [ "error", "unix" ],
-    "max-len": [ "error", 80, { "ignoreComments": true } ],
     "no-trailing-spaces": "error",
 
     // Style Preferences
+    "max-len": [ "warn", 80, { "ignoreComments": true } ],
     "array-bracket-spacing": [ "warn", "never", {
       "objectsInArrays": true,
       "arraysInArrays": true
@@ -77,6 +77,7 @@
     "no-duplicate-imports": [ "warn", {
       "includeExports": true
     }],
+    //"no-param-reassign": "warn",
     "no-lonely-if": "warn",
     "no-lone-blocks": "warn",
     "no-mixed-spaces-and-tabs": "warn",
@@ -104,6 +105,11 @@
     "object-property-newline": [ "warn", {
       "allowMultiplePropertiesPerLine": true
     }],
+    // ESLint produces error with this...
+    //"object-shorthand": [ "warn", "always", {
+    //  "avoidQuotes": true,
+    //  "ignoreConstructors": true
+    //}],
     "one-var-declaration-per-line": [ "warn", "initializations" ],
     "operator-linebreak": [ "warn", "before" ],
     "prefer-arrow-callback": [ "warn", {
@@ -112,7 +118,7 @@
     }],
     "prefer-spread": "warn",
     "prefer-template": "warn",
-    "quote-props": [ "warn", "as-needed", {
+    "quote-props": [ "warn", "consistent-as-needed", {
       "keywords": false,
       "unnecessary": true,
       "numbers": true
