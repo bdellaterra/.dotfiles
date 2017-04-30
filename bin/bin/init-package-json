@@ -18,5 +18,5 @@ if [[ -e package.json ]]; then
 fi
 
 # Create new package.json by merging base with packages from dependencies
-cat "base.package.json" `find -L "conf/package.json" -not -path '*node_modules*' -type f -iname "*.json"` | json --deep-merge > "package.json"
+cat "base.package.json" `find -L "conf/packages" -not -path '*node_modules*' -type f -iname "*.json"` | json --deep-merge > "package.json"
 
