@@ -10,7 +10,7 @@ end
 
 " Set local data
 let g:local.author         = "Brian Dellaterra"
-let g:local.email          = "bdellaterra@voodooglobe.com"
+let g:local.email          = "bdellaterra@users.noreply.github.com"
 let g:local.github_user    = "bdellaterra"
 let g:local.project_name   = "Manhattan"
 let g:local.project_slug   = "manhattan"
