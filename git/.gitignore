@@ -1,32 +1,204 @@
+# Compiled source
+*.class
+*.com
+*.dll
+*.ear
+*.exe
+*.o
+*.pyc
+*.pyo
+*.so
+*.war
+
+# Compressed Archives 
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Temporary files.
+*.tmp
+*~
+tmp*
+
 # Patch/diff artifacts.
-*.patch
 *.diff
 *.orig
+*.patch
 *.rej
 interdiff*.txt
 
-# emacs artifacts.
-*~
-\#*\#
+# Tags
+TAGS
+.TAGS
+!TAGS/
+tags
+.tags
+!tags/
+gtags.files
+GTAGS
+GRTAGS
+GPATH
+GSYMS
+cscope.files
+cscope.out
+cscope.in.out
+cscope.po.out
 
-# VI swap file
-*.swp
 
-# Hidden files.
-.DS*
-.project
+# Shell #######################################################################
 
-# Windows links.
+# Zsh
+.zcompdump
+
+
+# OS generated files ##########################################################
+
+# Unix/Linux
+.Trash-*
+.nfs*
+
+# Windows
+*.cab
 *.lnk
+*.msi
+*.msm
+*.msp
+$RECYCLE.BIN/
+Desktop.ini
+ehthumbs.db
+ehthumbs_vista.db
+Thumbs.db
 
-# Temporary files.
-tmp*
+# Mac
+._*
+.apdisk
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.com.apple.timemachine.donotpresent
+.DocumentRevisions-V100
+.fseventsd
+.LSOverride
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+Network Trash Folder
+Temporary Items
 
-# Exclude IDE's project directory
-nbproject
+
+# Editor generated files ######################################################
+
+# Emacs
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+.\#*
+.dir-locals.el
+auto-save-list
+tramp
+
+# Vim
+*.bak
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+.netrwhist
+Session.vim
+
+# Sublime
+*.stTheme.cache
+*.sublime-project
+*.sublime-workspace
+*.tmlanguage.cache
+*.tmPreferences.cache
+sftp-config.json
+
+
+# Version Control #############################################################
+
+# CVS
+/CVS/*
+**/CVS/*
+.cvsignore
+*/.cvsignore
+
+# Mercurial
+.hg/
+.hgignore
+.hgsigs
+.hgsub
+.hgsubstate
+.hgtags
+
+# SVN
+.svn/
+
+# TortoiseGit
+/.tgitconfig
+
+
+# IDE Project Directories #####################################################
+
+.classpath
 .idea
+.metadata
+.project
+.settings
+*.iml
+*.ipr
+nbproject
+
+# Visual Studio
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+
+# Remote Storage ##############################################################
+
+# Dropbox
+.dropbox
+.dropbox.attr
+.dropbox.cache
+
+
+# Web Frameworks ##############################################################
 
 # Drupal
 vendor
 core/node_modules
+
+# Productivity Software #######################################################
+
+# LibreOffice
+.~lock.*#
+
+# Word
+~$*.doc*
+
+# Excel
+~$*.xls*
+*.xlk
+
+# PowerPoint
+~$*.ppt*
+
+# Visio
+*.~vsd*
+
 
