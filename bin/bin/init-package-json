@@ -18,5 +18,6 @@ if [[ -e package.json ]]; then
 fi
 
 # Create new package.json by merging base with packages from dependencies
+# Attribution: Array-merge jq-script courtesy of William Langford
 cat "base.package.json" `find -L "conf/packages" -not -path '*node_modules*' -type f -iname "*.json"` | jq -s '[.[] | to_entries] | flatten | reduce .[] as $dot ({}; .[$dot.key] += $dot.value)' > "package.json"
 
