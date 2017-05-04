@@ -2,8 +2,8 @@
 
 # REQUIREMENTS:
 
-# json - a command-line utility for merging json files
-# https://github.com/trentm/json
+# jq - a lightweight and flexible command-line JSON processor.
+# https://stedolan.github.io/jq/download/
 
 # Fail if base.package.json does not exist
 if [[ ! -e base.package.json ]]; then
@@ -18,5 +18,5 @@ if [[ -e package.json ]]; then
 fi
 
 # Create new package.json by merging base with packages from dependencies
-cat "base.package.json" `find -L "conf/packages" -not -path '*node_modules*' -type f -iname "*.json"` | json --deep-merge > "package.json"
+cat "base.package.json" `find -L "conf/packages" -not -path '*node_modules*' -type f -iname "*.json"` | jq -s '[.[] | to_entries] | flatten | reduce .[] as $dot ({}; .[$dot.key] += $dot.value)' > "package.json"
 
