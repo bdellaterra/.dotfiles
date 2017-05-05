@@ -5,14 +5,14 @@
 # jq - a lightweight and flexible command-line JSON processor.
 # https://stedolan.github.io/jq/download/
 
-# Fail if .babelrc already exists
+# Fail if '.babelrc' already exists
 if [[ -e .babelrc ]]; then
     echo "ERROR: file '.babelrc' already exists!" 1>&2
     exit 1
 fi
 
-# Create new .babelrc by merging rcs from dependencies
-# Attribution: Array-merge jq-script courtesy of William Langford
+# Create new '.babelrc' by merging modules from 'conf/babel'
+# Attribution: Array-merge jq-script courtesy of William Langford, https://github.com/stedolan/jq/issues/502
 cat `find -L "conf/babel" -not -path '*node_modules*' -type f -iname ".babelrc"` | jq -s '[.[] | to_entries] | flatten | reduce .[] as $dot ({}; .[$dot.key] += $dot.value)' > ".babelrc"
 
 

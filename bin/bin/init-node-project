@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Setup 'package.json', initializing 'base.package.json' if necessary.
+init-package-json
+
+# Setup '.babelrc' if babel configuration is present
+if [[ -d 'conf/babel' ]]; then
+    init-babelrc
+fi
+
