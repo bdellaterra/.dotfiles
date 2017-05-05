@@ -2,6 +2,10 @@
 dist
 public
 
+# Guarded Files
+private
+secret
+
 # Logs
 logs
 *.log
