@@ -13,6 +13,9 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+# Tab-complete hidden dotfiles without specifying the '.'.
+_comp_options+=(globdots)
+
 
 # PLUGINS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
