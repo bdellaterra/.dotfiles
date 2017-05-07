@@ -3,8 +3,21 @@
 # Setup 'package.json', initializing 'base.package.json' if necessary.
 init-package-json
 
-# Setup '.babelrc' if babel configuration is present
+# Setup '.babelrc' if babel configuration is present.
 if [[ -d 'conf/babel' ]]; then
     init-babelrc
+fi
+
+# Install packages, using 'yarn' if it exists in user's path.
+npm=$(which npm)
+if [[ ! -x "$npm" ]]; then
+    echo "ERROR: Could not find 'npm' executable in path." 1>&2
+    exit 1
+fi
+yarn=$(which yarn)
+if [[ -x "$yarn" ]] ; then
+    yarn
+else
+    npm install
 fi
 
