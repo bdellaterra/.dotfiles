@@ -3,13 +3,13 @@
 
 
 "@cycle/dom@^17.1.0":
-  version "17.1.0"
-  resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-17.1.0.tgz#8d0076b5478511c38f3f46bb36dc8c280869b0e0"
+  version "17.4.0"
+  resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-17.4.0.tgz#232e9f21323b34b244000e0fa0a067642ae905d2"
   dependencies:
     "@cycle/run" "*"
     es6-map "^0.1.4"
-    snabbdom "0.6.5"
-    snabbdom-selector "1.1.1"
+    snabbdom "0.6.9"
+    snabbdom-selector "1.2.0"
 
 "@cycle/run@*", "@cycle/run@^3.1.0":
   version "3.1.0"
@@ -30,8 +30,8 @@ d@1:
     es5-ext "^0.10.9"
 
 es5-ext@^0.10.14, es5-ext@^0.10.9, es5-ext@~0.10.14:
-  version "0.10.15"
-  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.15.tgz#c330a5934c1ee21284a7c081a86e5fd937c91ea6"
+  version "0.10.23"
+  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.23.tgz#7578b51be974207a5487821b56538c224e4e7b38"
   dependencies:
     es6-iterator "2"
     es6-symbol "~3.1"
@@ -79,15 +79,15 @@ event-emitter@~0.3.5:
     d "1"
     es5-ext "~0.10.14"
 
-snabbdom-selector@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/snabbdom-selector/-/snabbdom-selector-1.1.1.tgz#bde66fc54b34effc2f6a13d4a74de0d3cc771bfd"
+snabbdom-selector@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/snabbdom-selector/-/snabbdom-selector-1.2.0.tgz#4260a269d9d46f50b9c1f39da628c2af6828dd53"
   dependencies:
     cssauron "^1.4.0"
 
-snabbdom@0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/snabbdom/-/snabbdom-0.6.5.tgz#01b0cba8d623eca19e570876630c12c057830066"
+snabbdom@0.6.9:
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/snabbdom/-/snabbdom-0.6.9.tgz#65a392f4c82ca7e8ec72aa0d2fa797cf5c73b8d7"
 
 symbol-observable@^1.0.2:
   version "1.0.4"
@@ -98,7 +98,7 @@ through@X.X.X:
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
 xstream@10.x, xstream@^10.6.0:
-  version "10.6.0"
-  resolved "https://registry.yarnpkg.com/xstream/-/xstream-10.6.0.tgz#d402a4d3049b4b2bf6ea03fad4c69ecc21615468"
+  version "10.8.0"
+  resolved "https://registry.yarnpkg.com/xstream/-/xstream-10.8.0.tgz#f3c70b12a71ef34dcc6af44ea7e1b0c40d320f4f"
   dependencies:
     symbol-observable "^1.0.2"

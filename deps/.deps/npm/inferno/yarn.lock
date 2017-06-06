@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-inferno-shared@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/inferno-shared/-/inferno-shared-3.0.0.tgz#daaeaf1b52803ab0572c7765ccfcfb925cfe8272"
+inferno-shared@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/inferno-shared/-/inferno-shared-3.1.1.tgz#70376e29a56c53f6ba1e942191fe5cb710654f73"
 
 inferno-vnode-flags@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/inferno-vnode-flags/-/inferno-vnode-flags-3.0.0.tgz#f396390f3dafae3b76eea04d04eed6cf2004473b"
 
 inferno@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/inferno/-/inferno-3.1.0.tgz#4a7f5a9ba756e8b9374b8a47961ca487a4411b71"
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/inferno/-/inferno-3.4.0.tgz#7298151fb33ddd21c9e6867956405b124ef6b682"
   dependencies:
-    inferno-shared "^3.0.0"
+    inferno-shared "3.1.1"
     inferno-vnode-flags "^3.0.0"
