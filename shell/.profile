@@ -30,6 +30,9 @@ alias mkdir="mkdir -pv"
 # Automatically cd to directory after it is created.
 alias mkcd='_(){ mkdir $1; cd $1; }; _'
 
+# List all files with long, human-readable info.
+alial la='ls -lAh $1'
+
 
 # FUNCTIONS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
