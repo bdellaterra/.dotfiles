@@ -6,3 +6,6 @@
 	path = shell/.zsh/plugins/zsh-autoenv
 	url = https://github.com/Tarrasch/zsh-autoenv.git
     ignore = dirty
+[submodule "liquidprompt/liquidprompt"]
+	path = liquidprompt/liquidprompt
+	url = https://github.com/nojhan/liquidprompt
