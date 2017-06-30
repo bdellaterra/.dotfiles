@@ -5,6 +5,9 @@ test -z "$PROFILEREAD" && . /etc/profile || true
 # Source Nix profile, if present.
 [[ -r ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
 
+# Use alternate shell, if present.
+[[ -x ~/bin/sh ]] && exec $HOME/bin/sh -l
+
 # Set where command history is saved and max number of lines. 
 HISTFILE=~/.history
 HISTSIZE=2500
