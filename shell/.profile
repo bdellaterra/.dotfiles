@@ -1,6 +1,9 @@
 
-# Make sure the global user profile has been sourced.
+# If there's a global user profile make sure it has been sourced.
 test -z "$PROFILEREAD" && . /etc/profile || true
+
+# Source Nix profile, if present.
+[[ -r ~/.nix-profile/etc/profile.d/nix.sh ]] && . ~/.nix-profile/etc/profile.d/nix.sh
 
 # Set where command history is saved and max number of lines. 
 HISTFILE=~/.history
@@ -31,7 +34,7 @@ alias mkdir="mkdir -pv"
 alias mkcd='_(){ mkdir $1; cd $1; }; _'
 
 # List all files with long, human-readable info.
-alial la='ls -lAh $1'
+alias la='ls -lAh $1'
 
 
 # FUNCTIONS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -111,64 +114,14 @@ pkgID() {
 
 # ENVIRONMENT VARS ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-# *** Personal Info ***
 
-export SELF_FIRST_NAME="Brian"
-export SELF_LAST_NAME="Dellaterra"
-export SELF_NICK_NAME="Smooth"
-export SELF_FULL_NAME="$SELF_FIRST_NAME $SELF_LAST_NAME"
-export SELF_DEFAULT_USERNAME="$(userID ${SELF_FIRST_NAME:0:1}$SELF_LAST_NAME)"
-export SELF_NICK_USERNAME="$(userID $SELF_NICK_NAME)"
-export SELF_GITHUB_USERNAME="$SELF_DEFAULT_USERNAME"
-SELF_PUBLIC_EMAIL="${SELF_DEFAULT_USERNAME}@gmail.com"
-export SELF_NOREPLY_EMAIL="${SELF_GITHUB_USERNAME}@users.noreply.github.com"
 
-# *** Version Control Info ***
+# EXTENDED PROFILE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-GIT_VC="Git"
-GIT_VC_DIR=".git"
+# Source personal profile, if present.
+[[ -r ~/.personal.sh ]] && . ~/.personal.sh
 
-HG_VC="Mercurial"
-HG_VC_DIR=".hg"
-
-SVN_VC="Subversion"
-SVN_VC_DIR=".svn"
-
-CVS_VC="CVS"
-CVS_VC_DIR=".cvs"
-
-export DEFAULT_VC="$GIT_VC"
-export DEFAULT_VC_DIR="$GIT_VC_DIR"
-export DEFAULT_VERSION="0.1.0"
-
-# *** License Info ***
-
-NO_LICENSE_NAME="Copyright held by $SELF_FULL_NAME"
-NO_LICENSE_SLUG="UNLICENSED"
-
-APACHE2_LICENSE_NAME="Apache License 2.0"
-APACHE2_LICENSE_SLUG="Apache-2.0"
-
-BSD2_LICENSE_NAME="BSD 2-Clause \"Simplified\" License"
-BSD2_LICENSE_SLUG="BSD-2-Clause"
-
-BSD4_LICENSE_NAME="BSD 3-Clause \"New\" or \"Revised\" License"
-BSD3_LICENSE_SLUG="BSD-3-Clause"
-
-ISC_LICENSE_NAME="ISC License"
-ISC_LICENSE_SLUG="ISC"
-
-GPL_LICENSE_NAME="GNU General Public License v3.0"
-GPL_LICENSE_SLUG="GPL-3.0"
-
-LGPL_LICENSE_NAME="GNU Lesser General Public License v3.0"
-LGPL_LICENSE_SLUG="LGPL-3.0"
-
-MIT_LICENSE_NAME="MIT License"
-MIT_LICENSE_SLUG="MIT"
-
-export DEFAULT_LICENSE_NAME="$NO_LICENSE_NAME"
-export DEFAULT_LICENSE_SLUG="$NO_LICENSE_SLUG"
-export DEFAULT_LICENSE_BRIEF="Distributed under the terms of the $DEFAULT_LICENSE_NAME. See the file LICENSE."
+# Source work profile, if present.
+[[ -r ~/.work.sh ]] && . ~/.work.sh
 
 
