@@ -34,7 +34,7 @@ alias mkdir="mkdir -pv"
 alias mkcd='_(){ mkdir $1; cd $1; }; _'
 
 # List all files with long, human-readable info.
-alias la='ls -lAh $1'
+alias l='ls -lAhF $1'
 
 
 # FUNCTIONS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
