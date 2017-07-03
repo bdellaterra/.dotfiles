@@ -14,10 +14,12 @@ export MOZ_USE_XINPUT2=1
 # Increase terminal colors.
 [[ -n "$DISPLAY" && "$TERM" = "xterm" ]] && export TERM=xterm-256color
 
+
 # *** Liquid Prompt ***
 # https://github.com/nojhan/liquidprompt
 
 source ~/liquidprompt/liquidprompt
+
 
 # *** Tmux ***
 # https://wiki.archlinux.org/index.php/Tmux
@@ -32,8 +34,14 @@ if [[ -z "$TMUX" ]] ;then
     fi
 fi
 
+
 # *** Pager ***
 
 # Use Vim as default pager
 export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
+
+
+# *** Git ***
+
+alias g=git
 
