@@ -37,3 +37,8 @@ if [[ -z "$TMUX" ]] ;then
     fi
 fi
 
+# *** Pager ***
+
+# Use Vim as default pager
+export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
+
