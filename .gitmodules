@@ -1,11 +1,12 @@
 [submodule ".skeletons/cookiecutter/vim-plugin"]
-	path = cookiecutter/.cookiecutters/vim-plugin
-	url = git@bitbucket.org:bdellaterra/cookiecutter-vim-plugin.git
+    path = cookiecutter/.cookiecutters/vim-plugin
+    url = git@bitbucket.org:bdellaterra/cookiecutter-vim-plugin.git
     ignore = dirty
 [submodule "shell/.zsh/plugins/zsh-autoenv"]
-	path = shell/.zsh/plugins/zsh-autoenv
-	url = https://github.com/Tarrasch/zsh-autoenv.git
+    path = shell/.zsh/plugins/zsh-autoenv
+    url = https://github.com/Tarrasch/zsh-autoenv.git
     ignore = dirty
 [submodule "liquidprompt/liquidprompt"]
-	path = liquidprompt/liquidprompt
-	url = https://github.com/nojhan/liquidprompt
+    path = liquidprompt/liquidprompt
+    url = https://github.com/nojhan/liquidprompt
+    ignore = dirty
