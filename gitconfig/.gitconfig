@@ -18,7 +18,7 @@
 	b = branch 
 	bd = branch -d
 	bm = branch -m
-	ca = commit --amend -m
+	ca = commit --amend
 	ci = commit
 	cl = clone
 	cm = commit -m
