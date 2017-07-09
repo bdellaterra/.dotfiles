@@ -16,29 +16,32 @@
 	a = add
 	aa = !git add . && git commit -am
 	b = branch 
+	bd = branch -d
+	bm = branch -m
 	ca = commit --amend -m
 	ci = commit
 	cl = clone
 	cm = commit -m
 	cob = checkout -b
 	co = checkout
-	cp = cherry-pick
 	d = diff --word-diff
 	dc = diff --cached
 	ds = diff --stat
+	ec = config --global -e
 	rao = remote add origin
 	m = submodule
 	ma = submodule add
 	mi = !git submodule init && git submodule update
 	mu = submodule foreach git pull origin master
-	p = push origin master
+	pl = pull
+	pu = push origin master
 	pb = push -u origin --all
+	pk = cherry-pick
 	s = status -s
 	st = status
 	sl = stash list
 	sa = stash apply
 	ss = stash save
-	u = pull
 
 	# Condensed log
 	l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --decorate --date=short
