@@ -45,8 +45,8 @@
 	sl = stash list
 	sa = stash apply
 	ss = stash save
-	t = tag -a
-	tl = tag -l
+	t = tag
+	ta = tag -a
 
 	# Condensed log
 	l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --decorate --date=short
