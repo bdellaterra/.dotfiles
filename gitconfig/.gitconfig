@@ -23,11 +23,14 @@
 	cl = clone
 	cm = commit -m
 	cob = checkout -b
+	cot = "!f() { git checkout tags/$1; }; f"
 	co = checkout
 	d = diff --word-diff
 	dc = diff --cached
 	ds = diff --stat
 	ec = config --global -e
+	f = fetch
+	ft = fetch --tags
 	rao = remote add origin
 	m = submodule
 	ma = submodule add
@@ -42,12 +45,20 @@
 	sl = stash list
 	sa = stash apply
 	ss = stash save
+	t = tag -a
+	tl = tag -l
 
 	# Condensed log
 	l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --decorate --date=short
 
 	# Log showing changed files
 	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+
+	# remove local branches that have already been merged to master (Credit to haacked)
+	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+
+	# see what new commits have been created by the last command
+	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
 
 	# list aliases
 	aliases = "!git config -l | grep alias | cut -c 7-"
