@@ -17,6 +17,12 @@ compinit
 _comp_options+=(globdots)
 
 
+# MAC :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# Enable iTerm2 Shell Integration
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+
 # PLUGINS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 # *** Zsh-AutoEnv ***
