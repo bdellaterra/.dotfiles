@@ -1,6 +1,8 @@
 
 # Source common rc
-[[ -r ~/.shrc ]] && emulate sh -c 'source ~/.shrc'
+[[ -r ~/.shrc ]] && source ~/.shrc
+# (In sh compatibility-mode)
+# [[ -r ~/.shrc ]] && emulate sh -c 'source ~/.shrc'
 
 # Lines configured by zsh-newuser-install
 bindkey -e
