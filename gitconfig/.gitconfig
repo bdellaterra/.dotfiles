@@ -13,46 +13,197 @@
 [color]
 	ui = true
 [alias]
-	a = add
-	aa = !git add . && git commit -am
-	b = branch 
-	bd = branch -d
-	bm = branch -m
-	ca = commit --amend
-	ci = commit
-	cl = clone
-	cm = commit -m
-	cob = checkout -b
-	cot = "!f() { git checkout tags/$1; }; f"
-	co = checkout
-	d = diff --word-diff
-	dc = diff --cached
-	ds = diff --stat
-	ec = config --global -e
-	f = fetch
-	ft = fetch --tags
-	rao = remote add origin
-	m = submodule
-	ma = submodule add
-	mi = !git submodule init && git submodule update
-	mu = submodule foreach git pull origin master
-	pl = pull
-	pu = push origin master
-	pb = push -u origin --all
-	pk = cherry-pick
-	s = status -s
-	st = status
-	s = stash
-	sl = stash list
-	sa = stash apply
-	t = tag
-	ta = tag -a
 
-	# Condensed log
+	# Refs:
+	# https://www.atlassian.com/blog/git/advanced-git-aliases
+	# https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html
+
+	# list aliases
+	aliases = "!git config -l | grep alias | cut -c 7-"
+
+    # add
+	a = add
+
+	# add including deletions
+	ad = add -u
+
+	# add all
+	aa = !git add . && git commit -am
+
+	# branch
+	b = branch 
+
+	# branch delete
+	bd = branch -d
+
+	# branch move
+	bm = branch -m
+
+	# commit (check in)
+	c = commit
+	ci = commit
+
+    # commit amend
+	ca = commit --amend
+
+	# commit amend all
+	caa = commit -a --amend -C HEAD
+
+	# config
+	cf = config
+
+	# config global
+	cfg = config --global
+
+	# config values
+	cfv = config --list
+
+	# clone
+	cl = clone
+
+	# commit w/ message
+	cm = commit -m
+
+	# checkout
+	co = checkout
+
+	# checkout branch
+	cob = checkout -b
+
+	# checkout tag
+	cot = "!f() { git checkout tags/$1; }; f"
+
+	# checkout files
+	cof = "!f() { git checkout -- $@; }; f"
+
+	# diff
+	d = diff --word-diff
+
+	# diff cached
+	dc = diff --cached
+
+	# diff double-check (before push)
+	dd = diff --cached origin/master
+
+	# diff names-only
+	dn = diff --name-only
+
+	# diff stat
+	ds = diff --stat
+
+	# edit config
+	ec = config --global -e
+
+	# fetch
+	f = fetch
+
+	# fetch tags
+	ft = fetch --tags
+
+	# merge
+	g = merge
+
+	# help
+	h = help
+
+	# init
+	i = init
+
+	# log (short)
 	l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --decorate --date=short
 
-	# Log showing changed files
+	# log (long)
 	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+
+	# submodule
+	m = submodule
+
+	# submodule add
+	ma = submodule add
+
+	# submodule init
+	mi = !git submodule init && git submodule update
+
+	# submodule update
+	mu = submodule foreach git pull origin master
+
+	# pull
+	pl = pull
+
+	# push
+	pu = push origin master
+
+	# push all branches
+	pa = push -u origin --all
+
+	# push branch
+	pb = push -u origin
+
+	# cherry pick
+	pk = cherry-pick
+
+	# push tags
+	pt = git push --tags origin
+
+	# reset (soft)
+	rs = reset --soft HEAD~
+
+	# reset (mixed)
+	r = reset --mixed HEAD~
+
+	# reset (hard)
+	rh = !git fetch origin && git reset --hard origin/master
+	
+	# remote add
+	ra = remote add
+
+	# remote add origin
+	rao = remote add origin
+
+	# remote reset url
+	rr = remote set-url
+
+	# remote verbose
+	rv = remote -v
+
+	# short status
+	s = status -s
+
+	# show
+	sh = show
+
+	# status
+	st = status
+
+	# stash save
+	ss = stash save
+
+	# stash show
+	ssh = stash show
+
+	# stash list
+	sl = stash list
+
+	# stash apply
+	sa = stash apply
+
+	# stash pop
+	sp = stash pop
+
+	# stash keeping indexed (staged) files
+	ski = stash save --keep-index
+
+	# tag
+	t = tag
+
+    # unstage
+    u = reset HEAD
+
+    # undo last commit
+	un = reset HEAD^
+
+	# tag add (annotate)
+	ta = tag -a
 
 	# remove local branches that have already been merged to master (Credit to haacked)
 	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
@@ -60,6 +211,6 @@
 	# see what new commits have been created by the last command
 	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
 
-	# list aliases
-	aliases = "!git config -l | grep alias | cut -c 7-"
+    # Show all refs in local repo
+	refs = show-ref --head --dereference
 
