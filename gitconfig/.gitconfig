@@ -42,9 +42,9 @@
 	pk = cherry-pick
 	s = status -s
 	st = status
+	s = stash
 	sl = stash list
 	sa = stash apply
-	ss = stash save
 	t = tag
 	ta = tag -a
 
