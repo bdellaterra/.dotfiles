@@ -36,6 +36,16 @@ alias mkcd='_(){ mkdir $1; cd $1; }; _'
 # List all files with long, human-readable info.
 alias l='ls -lAhF $1'
 
+# short-form for common commands
+alias f=find
+alias g=git
+[ -x ranger ] && alias r=ranger
+alias ..='cd ../'
+alias ...='cd ../../'
+alias ....='cd ../../../'
+alias .....='cd ../../../../'
+alias ......='cd ../../../../../'
+
 
 # FUNCTIONS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 

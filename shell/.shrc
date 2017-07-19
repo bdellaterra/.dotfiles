@@ -8,6 +8,17 @@ export MOZ_USE_XINPUT2=1
 
 # INTERACTIVE SHELL CONFIG ::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+# *** Options ***
+
+# make alias for shopt if necessary
+if [[ `type shopt` != *'builtin'* && `type setopt` == *'builtin'* ]] ;then
+    alias shopt='setopt'
+fi
+
+# Change paths without using 'cd' command
+shopt autocd
+
+
 # EXIT if not running interactively.
 [[ $- != *i* ]] && return
 
@@ -40,8 +51,4 @@ fi
 # Use Vim as default pager
 export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
 
-
-# *** Git ***
-
-alias g=git
 

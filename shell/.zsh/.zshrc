@@ -1,5 +1,5 @@
 
-# Source common rc.
+# Source common rc
 [[ -r ~/.shrc ]] && emulate sh -c 'source ~/.shrc'
 
 # Lines configured by zsh-newuser-install
