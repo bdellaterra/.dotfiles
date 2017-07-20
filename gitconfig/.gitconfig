@@ -145,14 +145,20 @@
 	# push tags
 	pt = git push --tags origin
 
+	# rebase
+	r = rebase
+
+	# rebase (interactive)
+	ri = rebase -i
+
 	# reset (soft)
 	rs = reset --soft HEAD~
 
 	# reset (mixed)
-	r = reset --mixed HEAD~
+	rsm = reset --mixed HEAD~
 
 	# reset (hard)
-	rh = !git fetch origin && git reset --hard origin/master
+	rsh = !git fetch origin && git reset --hard origin/master
 	
 	# remote add
 	ra = remote add
