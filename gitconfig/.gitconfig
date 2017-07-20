@@ -100,9 +100,6 @@
     # fetch tags
     ft = fetch --tags
 
-    # merge
-    g = merge
-
     # help
     h = help
 
@@ -115,17 +112,8 @@
     # log (long)
     ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
 
-    # submodule
-    m = submodule
-
-    # submodule add
-    ma = submodule add
-
-    # submodule init
-    mi = !git submodule init && git submodule update
-
-    # submodule update
-    mu = submodule foreach git pull origin master
+    # merge
+    m = merge
 
     # pull
     pl = pull
@@ -198,6 +186,18 @@
 
     # stash keeping indexed (staged) files
     ski = stash save --keep-index
+
+    # submodule
+    sm = submodule
+
+    # submodule add
+    sma = submodule add
+
+    # submodule init
+    smi = !git submodule init && git submodule update
+
+    # submodule update
+    smu = submodule foreach git pull origin master
 
     # tag
     t = tag
