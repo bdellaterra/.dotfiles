@@ -1,222 +1,222 @@
 [user]
-	email = bdellaterra@users.noreply.github.com
-	name = Brian Dellaterra
+    email = bdellaterra@users.noreply.github.com
+    name = Brian Dellaterra
 [core]
-	autocrlf = false
-	safecrlf = false
-	ignorecase = false
-	excludesfile = ~/.gitignore
+    autocrlf = false
+    safecrlf = false
+    ignorecase = false
+    excludesfile = ~/.gitignore
 [branch]
-	autosetuprebase = always
+    autosetuprebase = always
 [diff]
-	renames = copies
+    renames = copies
 [color]
-	ui = true
+    ui = true
 [alias]
 
-	# Refs:
-	# https://www.atlassian.com/blog/git/advanced-git-aliases
-	# https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html
+    # Refs:
+    # https://www.atlassian.com/blog/git/advanced-git-aliases
+    # https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html
 
-	# list aliases
-	aliases = "!git config -l | grep alias | cut -c 7-"
+    # list aliases
+    aliases = "!git config -l | grep alias | cut -c 7-"
 
     # add
-	a = add
+    a = add
 
-	# add including deletions
-	ad = add -u
+    # add including deletions
+    ad = add -u
 
-	# add all
-	aa = !git add . && git commit -am
+    # add all
+    aa = !git add . && git commit -am
 
-	# branch
-	b = branch 
+    # branch
+    b = branch 
 
-	# branch delete
-	bd = branch -d
+    # branch delete
+    bd = branch -d
 
-	# branch move
-	bm = branch -m
+    # branch move
+    bm = branch -m
 
-	# commit (check in)
-	c = commit
-	ci = commit
+    # commit (check in)
+    c = commit
+    ci = commit
 
     # commit amend
-	ca = commit --amend
+    ca = commit --amend
 
-	# commit amend all
-	caa = commit -a --amend -C HEAD
+    # commit amend all
+    caa = commit -a --amend -C HEAD
 
-	# config
-	cf = config
+    # config
+    cf = config
 
-	# config global
-	cfg = config --global
+    # config global
+    cfg = config --global
 
-	# config values
-	cfv = config --list
+    # config values
+    cfv = config --list
 
-	# clone
-	cl = clone
+    # clone
+    cl = clone
 
-	# commit w/ message
-	cm = commit -m
+    # commit w/ message
+    cm = commit -m
 
-	# checkout
-	co = checkout
+    # checkout
+    co = checkout
 
-	# checkout branch
-	cob = checkout -b
+    # checkout branch
+    cob = checkout -b
 
-	# checkout tag
-	cot = "!f() { git checkout tags/$1; }; f"
+    # checkout tag
+    cot = "!f() { git checkout tags/$1; }; f"
 
-	# checkout files
-	cof = "!f() { git checkout -- $@; }; f"
+    # checkout files
+    cof = "!f() { git checkout -- $@; }; f"
 
-	# diff
-	d = diff --word-diff
+    # diff
+    d = diff --word-diff
 
-	# diff cached
-	dc = diff --cached
+    # diff cached
+    dc = diff --cached
 
-	# diff double-check (before push)
-	dd = diff --cached origin/master
+    # diff double-check (before push)
+    dd = diff --cached origin/master
 
-	# diff names-only
-	dn = diff --name-only
+    # diff names-only
+    dn = diff --name-only
 
-	# diff stat
-	ds = diff --stat
+    # diff stat
+    ds = diff --stat
 
-	# edit config
-	ec = config --global -e
+    # edit config
+    ec = config --global -e
 
-	# fetch
-	f = fetch
+    # fetch
+    f = fetch
 
-	# fetch tags
-	ft = fetch --tags
+    # fetch tags
+    ft = fetch --tags
 
-	# merge
-	g = merge
+    # merge
+    g = merge
 
-	# help
-	h = help
+    # help
+    h = help
 
-	# init
-	i = init
+    # init
+    i = init
 
-	# log (short)
-	l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --decorate --date=short
+    # log (short)
+    l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --decorate --date=short
 
-	# log (long)
-	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    # log (long)
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
 
-	# submodule
-	m = submodule
+    # submodule
+    m = submodule
 
-	# submodule add
-	ma = submodule add
+    # submodule add
+    ma = submodule add
 
-	# submodule init
-	mi = !git submodule init && git submodule update
+    # submodule init
+    mi = !git submodule init && git submodule update
 
-	# submodule update
-	mu = submodule foreach git pull origin master
+    # submodule update
+    mu = submodule foreach git pull origin master
 
-	# pull
-	pl = pull
+    # pull
+    pl = pull
 
-	# push
-	pu = push origin master
+    # push
+    pu = push origin master
 
-	# push all branches
-	pa = push -u origin --all
+    # push all branches
+    pa = push -u origin --all
 
-	# push branch
-	pb = push -u origin
+    # push branch
+    pb = push -u origin
 
-	# cherry pick
-	pk = cherry-pick
+    # cherry pick
+    pk = cherry-pick
 
-	# push tags
-	pt = git push --tags origin
+    # push tags
+    pt = git push --tags origin
 
-	# rebase
-	r = rebase
+    # rebase
+    r = rebase
 
-	# rebase (interactive)
-	ri = rebase -i
+    # rebase (interactive)
+    ri = rebase -i
 
-	# reset (soft)
-	rs = reset --soft HEAD~
+    # reset (soft)
+    rs = reset --soft HEAD~
 
-	# reset (mixed)
-	rsm = reset --mixed HEAD~
+    # reset (mixed)
+    rsm = reset --mixed HEAD~
 
-	# reset (hard)
-	rsh = !git fetch origin && git reset --hard origin/master
-	
-	# remote add
-	ra = remote add
+    # reset (hard)
+    rsh = !git fetch origin && git reset --hard origin/master
 
-	# remote add origin
-	rao = remote add origin
+    # remote add
+    ra = remote add
 
-	# remote reset url
-	rr = remote set-url
+    # remote add origin
+    rao = remote add origin
 
-	# remote verbose
-	rv = remote -v
+    # remote reset url
+    rr = remote set-url
 
-	# short status
-	s = status -s
+    # remote verbose
+    rv = remote -v
 
-	# show
-	sh = show
+    # short status
+    s = status -s
 
-	# status
-	st = status
+    # show
+    sh = show
 
-	# stash save
-	ss = stash save
+    # status
+    st = status
 
-	# stash show
-	ssh = stash show
+    # stash save
+    ss = stash save
 
-	# stash list
-	sl = stash list
+    # stash show
+    ssh = stash show
 
-	# stash apply
-	sa = stash apply
+    # stash list
+    sl = stash list
 
-	# stash pop
-	sp = stash pop
+    # stash apply
+    sa = stash apply
 
-	# stash keeping indexed (staged) files
-	ski = stash save --keep-index
+    # stash pop
+    sp = stash pop
 
-	# tag
-	t = tag
+    # stash keeping indexed (staged) files
+    ski = stash save --keep-index
+
+    # tag
+    t = tag
 
     # unstage
     u = reset HEAD
 
     # undo last commit
-	un = reset HEAD^
+    un = reset HEAD^
 
-	# tag add (annotate)
-	ta = tag -a
+    # tag add (annotate)
+    ta = tag -a
 
-	# remove local branches that have already been merged to master (Credit to haacked)
-	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+    # remove local branches that have already been merged to master (Credit to haacked)
+    bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
 
-	# see what new commits have been created by the last command
-	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
+    # see what new commits have been created by the last command
+    new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
 
     # Show all refs in local repo
-	refs = show-ref --head --dereference
+    refs = show-ref --head --dereference
 
