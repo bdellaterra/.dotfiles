@@ -10,3 +10,6 @@
     path = liquidprompt/liquidprompt
     url = https://github.com/nojhan/liquidprompt
     ignore = dirty
+[submodule "powerline/fonts"]
+	path = powerline/fonts
+	url = https://github.com/powerline/fonts.git
