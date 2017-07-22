@@ -39,7 +39,9 @@ URxvt.color15:      #f7f6e2
 
 
 ! Set default font
-URxvt*font:           xft:Liberation Mono:size=13
+!URxvt*font:           xft:Liberation Mono:size=13
+!URxvt*font:           xft:InconsolataForPowerline Nerd Font:size=16
+URxvt*font:           xft:SauceCodePro Nerd Font:size=14
 
 ! Bind C--, C-0(=) and C-+ to activate small, medium, and big font size.
 ! Source: https://wiki.gentoo.org/wiki/Rxvt-unicode 
@@ -59,7 +61,7 @@ URxvt*termName:  screen-256color
 ! Start as login shell (Helpful for Tmux)
 URxvt*loginShell:  true
 
-! Don't use scrollback buffer (Tmux has its own)
+! Don not use scrollback buffer (Tmux has its own)
 URxvt*scrollWithBuffer:  false
 URxvt*saveLines:  0
 
