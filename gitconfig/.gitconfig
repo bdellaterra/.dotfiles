@@ -139,6 +139,9 @@
     # rebase (interactive)
     ri = rebase -i
 
+    # reflog
+    rl = reflog
+
     # reset (soft)
     rs = reset --soft HEAD~
 
