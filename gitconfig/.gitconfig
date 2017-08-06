@@ -30,6 +30,12 @@
     # add all
     aa = !git add . && git commit -am
 
+    # add interactive
+    ai = add -i
+
+    # add interactive (straight to patch mode)
+    ap = add -p
+
     # branch
     b = branch 
 
