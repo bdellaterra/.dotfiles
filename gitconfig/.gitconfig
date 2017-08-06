@@ -235,3 +235,50 @@
     # Show all refs in local repo
     refs = show-ref --head --dereference
 
+
+    # GitFlow
+    # ref: https://github.com/nvie/gitflow
+
+    # initialize a new repo with flow branches
+    if = flow init
+
+    # list feature branches
+    fb = flow feature
+
+    # start a feature branch
+    fbs = flow feature start
+
+    # finish a feature branch
+    fbf = flow feature finish
+
+    # push a feature branch to the remote repo
+    fbpu = flow feature publish
+
+    # pull a feature branch from a remote repo
+    fbpl = flow feature publish
+
+    # list release branches
+    rb = flow release
+
+    # start a release branch
+    rbs = flow release start
+
+    # finish a release branch
+    rbf = flow release finish
+
+    # list hotfix branches
+    hb = flow hotfix
+
+    # start a hotfix branch
+    hbs = flow hotfix start
+
+    # finish a hotfix branch
+    hbf = flow hotfix finish
+
+    # list support branches
+    sb = flow support
+
+    # start a support branch
+    sbs = flow support start
+
+
