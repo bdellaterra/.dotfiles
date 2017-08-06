@@ -52,8 +52,14 @@
     # commit amend
     ca = commit --amend
 
+    # commit amend w/ message
+    cam = commit --amend -m
+
     # commit amend all
     caa = commit -a --amend -C HEAD
+
+    # commit amend all w/ message
+    caa = commit -a --amend -C HEAD -m
 
     # config
     cf = config
