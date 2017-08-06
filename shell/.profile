@@ -37,12 +37,12 @@ alias mkcd='_(){ mkdir $1; cd $1; }; _'
 alias l='ls -lAhF $1'
 
 # short-form for common commands
-[ -x docker ] && alias d=docker
-[ -x find ] && alias f=find
-[ -x git ] && alias g=git
-[ -x ranger ] && alias r=ranger
-[ -x sudo ] && alias s=sudo
-[ -x vim ] && alias v=vim
+[ -x `which docker` ] && alias d=docker
+[ -x `which find` ] && alias f=find
+[ -x `which git` ] && alias g=git
+[ -x `which ranger` ] && alias r=ranger
+[ -x `which sudo` ] && alias s=sudo
+[ -x `which vim` ] && alias v=vim
 
 # short-form for built-in commands
 alias h=history
