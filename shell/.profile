@@ -37,15 +37,23 @@ alias mkcd='_(){ mkdir $1; cd $1; }; _'
 alias l='ls -lAhF $1'
 
 # short-form for common commands
+#unalias grep
+[ -x `which ack` ] && alias a=ack
+[ -x `which ag` ] && alias a=ag
+[ -x `which bundle` ] && alias b=bundle
 [ -x `which docker` ] && alias d=docker
+[ -x `which docker-compose` ] && alias d-c=docker-compose
 [ -x `which find` ] && alias f=find
 [ -x `which git` ] && alias g=git
+[ -x `which kill` ] && alias k=kill
 [ -x `which ranger` ] && alias r=ranger
 [ -x `which sudo` ] && alias s=sudo
 [ -x `which vim` ] && alias v=vim
 
 # short-form for built-in commands
+alias e=echo
 alias h=history
+alias q=exit
 alias ..='cd ../'
 alias ...='cd ../../'
 alias ....='cd ../../../'
