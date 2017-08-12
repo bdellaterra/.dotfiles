@@ -2,3 +2,4 @@ node_modules
 *ssh*
 *secret*
 *history*
+.zcompcache
