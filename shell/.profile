@@ -38,17 +38,18 @@ alias l='ls -lAhF $1'
 
 # short-form for common commands
 #unalias grep
-[ -x `which ack` ] && alias a=ack
-[ -x `which ag` ] && alias a=ag
-[ -x `which bundle` ] && alias b=bundle
-[ -x `which docker` ] && alias d=docker
-[ -x `which docker-compose` ] && alias d-c=docker-compose
-[ -x `which find` ] && alias f=find
-[ -x `which git` ] && alias g=git
-[ -x `which kill` ] && alias k=kill
-[ -x `which ranger` ] && alias r=ranger
-[ -x `which sudo` ] && alias s=sudo
-[ -x `which vim` ] && alias v=vim
+[[ `command -v grep` ]] && alias a="grep --color=auto"
+[[ `command -v ack` ]] && alias a=ack
+[[ `command -v ag` ]] && alias a=ag
+[[ `command -v bundle` ]] && alias b=bundle
+[[ `command -v docker` ]] && alias d=docker
+[[ `command -v docker-compose` ]] && alias d-c=docker-compose
+[[ `command -v find` ]] && alias f=find
+[[ `command -v git` ]] && alias g=git
+[[ `command -v kill` ]] && alias k=kill
+[[ `command -v ranger` ]] && alias r=ranger
+[[ `command -v sudo` ]] && alias s=sudo
+[[ `command -v vim` ]] && alias v=vim
 
 # short-form for built-in commands
 alias e=echo
