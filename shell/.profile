@@ -37,7 +37,6 @@ alias mkcd='_(){ mkdir $1; cd $1; }; _'
 alias l='ls -lAhF $1'
 
 # short-form for common commands
-#unalias grep
 [[ `command -v grep` ]] && alias a="grep --color=auto"
 [[ `command -v ack` ]] && alias a=ack
 [[ `command -v ag` ]] && alias a=ag
@@ -49,6 +48,7 @@ alias l='ls -lAhF $1'
 [[ `command -v kill` ]] && alias k=kill
 [[ `command -v ranger` ]] && alias r=ranger
 [[ `command -v sudo` ]] && alias s=sudo
+[[ `command -v tmux` ]] && alias t=tmux
 [[ `command -v vim` ]] && alias v=vim
 
 # short-form for built-in commands

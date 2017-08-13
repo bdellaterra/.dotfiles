@@ -130,8 +130,8 @@
     # pull
     pl = pull
 
-    # push
-    pu = push origin master
+    # push current branch
+    pu = push origin HEAD
 
     # push all branches
     pa = push -u origin --all
