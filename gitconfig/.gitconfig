@@ -45,6 +45,9 @@
     # branch move
     bm = branch -m
 
+    # show current branch
+    bs = symbolic-ref --short HEAD 
+
     # commit (check in)
     c = commit
     ci = commit
@@ -216,6 +219,9 @@
 
     # tag
     t = tag
+
+    # show current tag
+    ts = describe --tags --abbrev=0
 
     # unstage
     u = reset HEAD
