@@ -3,8 +3,8 @@
 
 
 "@cycle/dom@^17.1.0":
-  version "17.4.0"
-  resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-17.4.0.tgz#232e9f21323b34b244000e0fa0a067642ae905d2"
+  version "17.6.0"
+  resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-17.6.0.tgz#4512be5e5cd1ce90fa00e5674a31d0c2957a481d"
   dependencies:
     "@cycle/run" "*"
     es6-map "^0.1.4"
@@ -12,8 +12,8 @@
     snabbdom-selector "1.2.0"
 
 "@cycle/run@*", "@cycle/run@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@cycle/run/-/run-3.1.0.tgz#76df582a501d2d1b871f8f6decf263afae090384"
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@cycle/run/-/run-3.2.0.tgz#fb8aaae9e637d621f78b769d3ae185881ec92897"
   dependencies:
     xstream "10.x"
 
@@ -30,8 +30,8 @@ d@1:
     es5-ext "^0.10.9"
 
 es5-ext@^0.10.14, es5-ext@^0.10.9, es5-ext@~0.10.14:
-  version "0.10.23"
-  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.23.tgz#7578b51be974207a5487821b56538c224e4e7b38"
+  version "0.10.30"
+  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.30.tgz#7141a16836697dbabfaaaeee41495ce29f52c939"
   dependencies:
     es6-iterator "2"
     es6-symbol "~3.1"
@@ -98,7 +98,7 @@ through@X.X.X:
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
 xstream@10.x, xstream@^10.6.0:
-  version "10.8.0"
-  resolved "https://registry.yarnpkg.com/xstream/-/xstream-10.8.0.tgz#f3c70b12a71ef34dcc6af44ea7e1b0c40d320f4f"
+  version "10.9.0"
+  resolved "https://registry.yarnpkg.com/xstream/-/xstream-10.9.0.tgz#db7934cec2da01360d43abbbc879b84524397b55"
   dependencies:
     symbol-observable "^1.0.2"
