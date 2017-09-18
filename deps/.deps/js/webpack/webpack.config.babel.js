@@ -17,7 +17,7 @@ const DefinePlugin = new webpack.DefinePlugin({
 const baseConfig = {
   entry: [
     'babel-regenerator-runtime',
-    resolve('src', 'js')
+    resolve('src')
   ],
   output: {
     path:     resolve('dist'),
@@ -25,7 +25,6 @@ const baseConfig = {
   },
   resolve: {
     modules: [
-      resolve('src', 'js'),
       resolve('src'),
       resolve('node_modules')
     ]

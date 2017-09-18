@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Pull files from each dependency listed in '.deps' (Including nested dependencies)
+# NOTE: "bash -c" is used to enable glob expansion
+find -L .deps -iname '.deps' -exec bash -c "rsync -Lr --exclude .deps {}\/*/ ." \;
+
 # Setup 'package.json', initializing 'base.package.json' if necessary.
 init-package-json
 
