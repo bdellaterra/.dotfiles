@@ -5,7 +5,7 @@ export default {
     loaders: [
       {
         test:    /\.css$/,
-        include: resolve('src', 'styles'),
+        include: resolve('src'),
         use:     ['style-loader', 'css-loader']
       }
     ]

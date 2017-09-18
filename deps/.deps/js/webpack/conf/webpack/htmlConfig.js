@@ -7,7 +7,7 @@ export default {
     new HtmlWebpackPlugin({
       hash:     true,
       filename: 'index.html',
-      template: resolve('src', 'html', 'index.tmpl.html')
+      template: resolve('src', 'index.tmpl.html')
     })
   ]
 }
