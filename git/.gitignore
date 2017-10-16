@@ -184,6 +184,9 @@ nbproject
 vendor
 core/node_modules
 
+# Marko
+*.marko.js
+
 # Node
 node_modules
 
