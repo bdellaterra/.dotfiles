@@ -133,6 +133,10 @@ elseif &background == "dark"
 	hi Identifier gui=NONE guifg=NONE guibg=NONE
 	hi PreProc gui=NONE guifg=NONE guibg=NONE
 
+	hi MatchParen cterm=bold ctermbg=0 ctermfg=12
+	hi Pmenu ctermbg=4 ctermfg=0
+	hi PmenuSel ctermbg=12 ctermfg=15
+	hi SpellBad ctermbg=9 ctermfg=15
 	hi SpellCap ctermfg=7 ctermbg=0
 	hi TabLine cterm=bold,reverse ctermfg=16 ctermbg=7
 	hi TabLineFill cterm=NONE ctermfg=NONE ctermbg=16

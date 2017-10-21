@@ -78,6 +78,11 @@ endif
 
 " Set the font
 " set guifont=Liberation\ Mono\ 14
+" set guifont=Cousine\ for\ Powerline\ 14
+" set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 14
+" set guifont=Hack-Regular\ 14
+" set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
+" set guifont=Inconsolata\ for\ Powerline\ 14
 set guifont=InconsolataForPowerline\ Nerd\ Font\ 16
 
 " Fix some paste problems by allowing cursor over EOL
