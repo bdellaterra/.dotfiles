@@ -234,6 +234,11 @@
 
     # remove local branches that have already been merged to master (Credit to haacked)
     bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+    
+    # Amend a specific commit
+    # source: https://blog.filippo.io/git-fixup-amending-an-older-commit/ (Filippo Valsorda)
+    # example: git fixup HEAD^ Makefile
+    fixup = "!f() { TARGET=$(git rev-parse "$1"); git commit --fixup=$TARGET ${@:2} && EDITOR=true git rebase -i --autostash --autosquash $TARGET^; }; f"
 
     # see what new commits have been created by the last command
     new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
@@ -261,7 +266,7 @@
     fbpu = flow feature publish
 
     # pull a feature branch from a remote repo
-    fbpl = flow feature publish
+    fbpl = flow feature pull
 
     # list release branches
     rb = flow release

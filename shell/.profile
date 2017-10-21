@@ -23,7 +23,7 @@ export PKG_CONFIG_PATH="$HOME/local/lib64/pkgconfig/"
 # Set path to NVM and initialize.
 export NVM_DIR=~/.nvm
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-# 
+
 # Set path to yarn
 # https://yarnpkg.com
 export PATH="$HOME/.yarn/bin:$PATH"

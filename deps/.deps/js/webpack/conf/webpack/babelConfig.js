@@ -5,7 +5,7 @@ export default {
     loaders: [
       {
         test:    /\.jsx?$/,
-        include: resolve('src', 'js'),
+        include: resolve('src'),
         loader:  'babel-loader'
       }
     ]
