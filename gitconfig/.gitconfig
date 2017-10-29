@@ -62,7 +62,7 @@
     caa = commit -a --amend -C HEAD
 
     # commit amend all w/ message
-    caa = commit -a --amend -C HEAD -m
+    caam = commit -a --amend -C HEAD -m
 
     # config
     cf = config
