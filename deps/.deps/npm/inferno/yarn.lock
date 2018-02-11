@@ -3,8 +3,8 @@
 
 
 babel-plugin-inferno@^3.2.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-inferno/-/babel-plugin-inferno-3.3.0.tgz#4815e563fe5e4658837da9974851d5cfbb9be623"
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-inferno/-/babel-plugin-inferno-3.5.1.tgz#41b54781283299a4eee869a87017d8942a38f9f1"
   dependencies:
     babel-plugin-syntax-jsx "^6.18.0"
     inferno-vnode-flags "3.10.1"
