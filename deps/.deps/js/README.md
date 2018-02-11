@@ -14,7 +14,7 @@ cd ~/dev/new-project
 # pull-in dependencies (trailing slashes on deps are required)
 rsync -Lr ~/deps/js/dep1/ ~/deps/js/dep2/ ./
 
-# initialize and install
+# initialize and install using custom bin script
 init-node-project
 ```
 
