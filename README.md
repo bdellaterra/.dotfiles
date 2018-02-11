@@ -1,7 +1,9 @@
 Brian Dellaterra's personal dotfiles
 ====================================
 
-Install GNU stow and use it to manage dotfile symlinks in home dir
+- Clone to ~/.dotfiles
+- Install GNU stow
+- Use it to setup dotfile symlinks in home dir
 
 Example:
 --------
