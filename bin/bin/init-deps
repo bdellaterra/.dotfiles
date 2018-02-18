@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Create a symlink to each dependency in .deps directory
+if [[ -d $PROJECT_DEP_DIR ]]; then
+    mkdir ./.deps
+    IFS=" "
+    for dep in $PROJECT_DEPENDENCIES; do
+        ln -s "$PROJECT_DEP_DIR/$dep" .deps/
+    done
+    unset IFS
+fi
+
+# Copy files for each dependency in '.deps' (Including nested dependencies)
+# NOTE: "bash -c" is used to enable glob expansion
+find -L .deps -iname '.deps' -exec bash -c "rsync -Lr --ignore-existing --exclude .deps {}\/*/ ." \;
+
