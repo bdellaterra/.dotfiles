@@ -121,14 +121,9 @@ export MOZ_USE_XINPUT2=1
 
 # *** Options ***
 
-# make alias for shopt if necessary
-if [[ `type shopt` != *'builtin'* && `type setopt` == *'builtin'* ]] ;then
-    alias shopt='setopt'
-fi
-
 # Change paths without using 'cd' command
-shopt autocd
-
+[[ `type shopt` == *'builtin'* ]] && shopt -s autocd # bash
+[[ `type setopt 2>/dev/null` == *'builtin'* ]] && setopt autocd  # zsh
 
 # EXIT if not running interactively.
 [[ $- != *i* ]] && return
