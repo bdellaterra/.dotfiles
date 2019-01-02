@@ -1,3 +1,5 @@
+# *** Common configuration for interactive shells (shared by bash/zsh) ***
+
 # ALIASES :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 # Create intermediate directories automatically w/ verbose output.
@@ -160,16 +162,7 @@ fi
 export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
 
 
-# *** Ruby ***
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-[[ -d "$HOME/.rvm/bin" ]] && export PATH="$PATH:$HOME/.rvm/bin"
-
-# Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-
-
-# EXTENDED PROFILE ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# EXTENDED CONFIGURATION ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 # Source personal profile, if present.
 [[ -r ~/.personal.sh ]] && . ~/.personal.sh

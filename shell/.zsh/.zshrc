@@ -18,6 +18,19 @@ compinit
 # Tab-complete hidden dotfiles without specifying the '.'.
 _comp_options+=(globdots)
 
+# Bind alt-m to insert previous word from the current line
+bindkey '^[m' copy-prev-shell-word
+
+# Bind alt-k to kill word before cursor in vi-style
+bindkey '^[k' vi-backward-kill-word
+
+
+# *** FZF (Command-line Fuzzy Finder) ***
+# https://github.com/junegunn/fzf
+
+# Source zsh config
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 
 # MAC :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
