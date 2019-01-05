@@ -4,5 +4,4 @@ gioele/vim-autoswap
 romainl/Apprentice
 shougo/denite.nvim
 tpope/vim-obsession
-dhruvasagar/vim-prosession
 tpope/vim-sensible

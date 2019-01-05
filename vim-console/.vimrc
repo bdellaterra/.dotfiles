@@ -148,16 +148,3 @@ let g:buftabline_numbers = 1
 " Show separators between buffer names.
 let g:buftabline_separators = 0
 
-
-" SESSIONS
-
-" set temp file location
-let g:prosession_dir = s:TmpDir
-
-" update tmux window titles to session folder name
-let g:prosession_tmux_title = 1
-let g:prosession_tmux_title_format = "@@@"
-
-" autmatically load session on startup
-let g:prosession_on_startup = 1
-
