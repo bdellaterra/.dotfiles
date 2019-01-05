@@ -1,38 +1,22 @@
-" don't worry about backwards-compatibility with vi 
-set nocompatible
+" PLUGIN MANAGER
 
-" manage plugins
+" auto-install plug.vim
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
                 \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
+" load plugins listed in /.vim/plugs (order can matter)
 call plug#begin('~/.vim/bundle')
 call map(readfile($HOME . '/.vim/plugs'), {_, p -> plug#(p)})
 call plug#end()
 
-" Fix arrow keys
-" ref: https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly
-" ref: https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode
-if &term =~ '^screen' || has('Mac')
-    execute "set <xUp>=\e[1;*A"
-    execute "set <xDown>=\e[1;*B"
-    execute "set <xRight>=\e[1;*C"
-    execute "set <xLeft>=\e[1;*D"
-    nnoremap <Esc>A <up>
-    nnoremap <Esc>B <down>
-    nnoremap <Esc>C <right>
-    nnoremap <Esc>D <left>
-    inoremap <Esc>A <up>
-    inoremap <Esc>B <down>
-    inoremap <Esc>C <right>
-    inoremap <Esc>D <left>
-endif
 
-" improve console colors
-if $TERM =~ "256color" || $COLORTERM == "gnome-terminal"
-    set t_Co=256
-endif
+" VIM SETTINGS
+
+" don't worry about backwards-compatibility with vi 
+set nocompatible
 
 " Specify the mapleader for Vim mappings.
 let mapleader = ','
@@ -102,6 +86,42 @@ set guioptions-=T
 colorscheme apprentice
 
 
+" TERMINAL
+
+" Fix arrow keys
+" ref: https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly
+" ref: https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode
+if &term =~ '^screen' || has('Mac')
+    execute "set <xUp>=\e[1;*A"
+    execute "set <xDown>=\e[1;*B"
+    execute "set <xRight>=\e[1;*C"
+    execute "set <xLeft>=\e[1;*D"
+    nnoremap <Esc>A <up>
+    nnoremap <Esc>B <down>
+    nnoremap <Esc>C <right>
+    nnoremap <Esc>D <left>
+    inoremap <Esc>A <up>
+    inoremap <Esc>B <down>
+    inoremap <Esc>C <right>
+    inoremap <Esc>D <left>
+endif
+
+" Modal cursor in terminal/tmux
+" Source https://vi.stackexchange.com/questions/3379/cursor-shape-under-vim-tmux
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
+else
+  let &t_SI = "\e[5 q"
+  let &t_EI = "\e[2 q"
+endif
+
+" improve console colors
+if $TERM =~ "256color" || $COLORTERM == "gnome-terminal"
+    set t_Co=256
+endif
+
+
 " FILE MANAGER
 
 " replace default file manager when viewing directories
@@ -138,6 +158,6 @@ let g:prosession_dir = s:TmpDir
 let g:prosession_tmux_title = 1
 let g:prosession_tmux_title_format = "@@@"
 
-" autmatically load session on startup, using "default" if none exists
+" autmatically load session on startup
 let g:prosession_on_startup = 1
 
