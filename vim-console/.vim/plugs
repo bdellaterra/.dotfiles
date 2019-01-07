@@ -1,13 +1,27 @@
-# use some standard/popular mappings
+# Apply commonly accepted Vim configurations
+tpope/vim-sensible
+
+# Use some standard/popular mappings
 tpope/vim-rsi # see https://en.wikipedia.org/wiki/GNU_Readline 
 
+# Show buffers with numbers at top
 ap/vim-buftabline
-bdellaterra/vim-pick-me-up
+
+# Determine path to root of current project
+# (supplements bdellaterra/vim-pick-me-up)
 dbakker/vim-projectroot
+
+# Automatically save/restore per-project sessions
+bdellaterra/vim-pick-me-up
+
+# Vim-friendly file manager
 francoiscabrol/ranger.vim
+
+# Less annoying swap file messages
 gioele/vim-autoswap
-romainl/Apprentice
-shougo/denite.nvim
+
+# Persistent search-highlighting
 timakro/vim-searchant
-tpope/vim-obsession
-tpope/vim-sensible
+
+# Terminal friendly colorscheme
+romainl/Apprentice
