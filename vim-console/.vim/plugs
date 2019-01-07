@@ -5,5 +5,6 @@ francoiscabrol/ranger.vim
 gioele/vim-autoswap
 romainl/Apprentice
 shougo/denite.nvim
+timakro/vim-searchant
 tpope/vim-obsession
 tpope/vim-sensible
