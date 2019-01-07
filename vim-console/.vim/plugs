@@ -25,3 +25,6 @@ timakro/vim-searchant
 
 # Terminal friendly colorscheme
 romainl/Apprentice
+
+# Make it easier to repeat window resize commands
+roxma/vim-window-resize-easy
