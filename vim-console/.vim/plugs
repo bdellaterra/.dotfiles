@@ -1,30 +1,24 @@
-# Apply commonly accepted Vim configurations
-tpope/vim-sensible
+# STANDARDS
+tpope/vim-sensible # commonly accepted Vim settings
+tpope/vim-rsi # support ubiquitous keymaps (see https://en.wikipedia.org/wiki/GNU_Readline)
 
-# Use some standard/popular mappings
-tpope/vim-rsi # see https://en.wikipedia.org/wiki/GNU_Readline 
+# BUFFERS
+ap/vim-buftabline # Show buffers w/ numbers in top bar
+dbakker/vim-projectroot # utils to find project dir (supplements bdellaterra/vim-pick-me-up)
 
-# Show buffers with numbers at top
-ap/vim-buftabline
+# SESSIONS
+bdellaterra/vim-pick-me-up # automatically save/restore per-project sessions
 
-# Determine path to root of current project
-# (supplements bdellaterra/vim-pick-me-up)
-dbakker/vim-projectroot
+# FILES
+francoiscabrol/ranger.vim # vim-friendly file manager
+gioele/vim-autoswap # less annoying swap file messages
 
-# Automatically save/restore per-project sessions
-bdellaterra/vim-pick-me-up
+# WINDOWS
+roxma/vim-window-resize-easy # easier window-resize commands
 
-# Vim-friendly file manager
-francoiscabrol/ranger.vim
+# SEARCH
+timakro/vim-searchant # persistent search-highlighting
 
-# Less annoying swap file messages
-gioele/vim-autoswap
+# COLORS
+romainl/Apprentice # terminal-friendly colorscheme
 
-# Persistent search-highlighting
-timakro/vim-searchant
-
-# Terminal friendly colorscheme
-romainl/Apprentice
-
-# Make it easier to repeat window resize commands
-roxma/vim-window-resize-easy
