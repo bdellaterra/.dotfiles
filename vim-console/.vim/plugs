@@ -1,3 +1,6 @@
+# use some standard/popular mappings
+tpope/vim-rsi # see https://en.wikipedia.org/wiki/GNU_Readline 
+
 ap/vim-buftabline
 bdellaterra/vim-pick-me-up
 dbakker/vim-projectroot
