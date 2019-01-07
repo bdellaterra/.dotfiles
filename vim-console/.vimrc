@@ -184,9 +184,17 @@ let g:pickMeUpSessionDir = s:TmpDir
 
 " PLUGINS
 
-" load plugins listed in /.vim/plugs (order can matter)
+" load plugins listed in /.vim/plugs
+" (order can matter, '#' style comments, empty lines skipped)
+let s:plugins = readfile($HOME . '/.vim/plugs')
+function! s:plugin(plug)
+    let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
+    if len(locator)
+      call call('plug#', len(options) ? [locator, eval(options)] : [locator])
+    end
+endfunction
 call plug#begin('~/.vim/bundle')
-call map(readfile($HOME . '/.vim/plugs'), {_, p -> plug#(p)})
+call map(s:plugins, {_, p -> s:plugin(p)})
 call plug#end()
 
 
