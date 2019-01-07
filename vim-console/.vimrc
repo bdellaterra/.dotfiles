@@ -171,7 +171,15 @@ endfunction
 " Number zero signifies the althernate buffer. (See :help alternate-file)
 " Otherwise the default re-indent behavior is used.
 noremap <expr>=  <SID>EditBufferOrReindent(v:count)
-noremap 0=  :<C-u>confirm buffer #<CR>  " Vim won't pass zero-counts to mappings
+noremap 0= :<C-u>confirm buffer #<CR>  " Vim won't pass zero-counts to mappings
+
+" '=-' will delete current buffer or # buffer number via command-count
+nnoremap =- :<C-u>exe (v:count ? v:count : '') . 'bdelete'<CR>
+nnoremap 0=- :<C-u>confirm bdelete #<CR>
+
+" '=+' will prompt for editing a file with filename needing to be specified.
+" Path will be that of the current buffer or # buffer via command-count
+nnoremap =+ :<C-u>edit <C-r>=expand((v:count ? '#'.v:count : '%') . ':p:h') . '/'<CR>
 
 
 " SESSION MANAGER
