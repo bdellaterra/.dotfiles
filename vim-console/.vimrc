@@ -76,8 +76,20 @@ set expandtab
 " Always show status line
 set laststatus=2
 
+" use modern encoding
+set encoding=utf8
+
+" Faster updates
+set updatetime=1000
+
+
+" GUI
+
 " Don't show the toolbar/icons
 set guioptions-=T
+
+" Share system clipboard with unnamed register for copy/paste
+set clipboard=unnamed,unnamedplus
 
 
 " TERMINAL
