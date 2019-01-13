@@ -19,7 +19,10 @@ roxma/vim-window-resize-easy # easier window-resize commands
 # SEARCH/REPLACE
 timakro/vim-searchant # persistent search-highlighting
 tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of a word
+
+# DELIMITERS
 tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
+jiangmiao/auto-pairs # insert or delete brackets, parens, quotes in pairs
 
 # TEXT OBJECTS
 wellle/targets.vim # provides additional text objects
