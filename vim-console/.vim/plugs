@@ -1,6 +1,12 @@
 # STANDARDS
 tpope/vim-sensible # commonly accepted Vim settings
+
+# MAPPINGS
 tpope/vim-rsi # support ubiquitous keymaps (see https://en.wikipedia.org/wiki/GNU_Readline)
+tpope/vim-repeat # enable repeating supported plugin maps with "."
+
+# CLIPBOARD
+svermeulen/vim-easyclip # make using the clipboard in Vim simpler and more intuitive
 
 # BUFFERS
 ap/vim-buftabline # Show buffers w/ numbers in top bar
