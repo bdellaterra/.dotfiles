@@ -181,6 +181,12 @@ nnoremap 0-= :<C-u>confirm bdelete #<CR>
 " Path will be that of the current buffer or # buffer via command-count
 nnoremap += :<C-u>edit <C-r>=expand((v:count ? '#'.v:count : '%') . ':p:h') . '/'<CR>
 
+" '=]' will switch to previous buffer, or command-count buffers back
+nnoremap =] :<C-u>exe (v:count ? v:count : '') . 'bnext'<CR>
+
+" '=[' will switch to previous buffer, or command-count buffers back
+nnoremap =[ :<C-u>exe (v:count ? v:count : '') . 'bprev'<CR>
+
 
 " SESSION MANAGER
 
