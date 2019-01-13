@@ -188,6 +188,12 @@ nnoremap += :<C-u>edit <C-r>=expand((v:count ? '#'.v:count : '%') . ':p:h') . '/
 let g:pickMeUpSessionDir = s:TmpDir
 
 
+" UNDO
+
+" toggle interactive undo-history
+map <leader>uh :GundoToggle<CR>
+
+
 " ALIGNMENT
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)

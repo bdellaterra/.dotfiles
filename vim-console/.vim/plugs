@@ -14,6 +14,9 @@ dbakker/vim-projectroot # utils to find project dir (supplements bdellaterra/vim
 # SESSIONS
 bdellaterra/vim-pick-me-up # automatically save/restore per-project sessions
 
+# UNDO
+sjl/gundo.vim # visualize the undo tree
+
 # FILES
 francoiscabrol/ranger.vim # vim-friendly file manager
 gioele/vim-autoswap # less annoying swap file messages
