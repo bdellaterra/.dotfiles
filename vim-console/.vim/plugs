@@ -42,6 +42,9 @@ junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easya
 wellle/targets.vim # provides additional text objects
 michaeljsmith/vim-indent-object # defines a new text object based on indentation levels
 
+# COMMENTS
+tomtom/tcomment_vim # file-type sensible comments
+
 # COLORS
 romainl/Apprentice # terminal-friendly colorscheme
 
