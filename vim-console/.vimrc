@@ -188,6 +188,15 @@ nnoremap += :<C-u>edit <C-r>=expand((v:count ? '#'.v:count : '%') . ':p:h') . '/
 let g:pickMeUpSessionDir = s:TmpDir
 
 
+" ALIGNMENT
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)"
+
+
 " *** Delayed Configuration **************************************************
 
 " PLUGINS
