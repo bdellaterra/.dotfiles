@@ -16,8 +16,13 @@ gioele/vim-autoswap # less annoying swap file messages
 # WINDOWS
 roxma/vim-window-resize-easy # easier window-resize commands
 
-# SEARCH
+# SEARCH/REPLACE
 timakro/vim-searchant # persistent search-highlighting
+tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of a word
+tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
+
+# TEXT OBJECTS
+wellle/targets.vim # provides additional text objects
 
 # COLORS
 romainl/Apprentice # terminal-friendly colorscheme
