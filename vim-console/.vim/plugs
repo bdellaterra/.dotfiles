@@ -40,6 +40,7 @@ junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easya
 
 # TEXT OBJECTS
 wellle/targets.vim # provides additional text objects
+michaeljsmith/vim-indent-object # defines a new text object based on indentation levels
 
 # COLORS
 romainl/Apprentice # terminal-friendly colorscheme
