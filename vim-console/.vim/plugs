@@ -47,4 +47,5 @@ tomtom/tcomment_vim # file-type sensible comments
 
 # COLORS
 romainl/Apprentice # terminal-friendly colorscheme
+noahfrederick/vim-noctu # inherit restricted 16-color terminal scheme
 
