@@ -28,7 +28,7 @@ jiangmiao/auto-pairs # insert or delete brackets, parens, quotes in pairs
 nathanaelkane/vim-indent-guides # visually display indent levels
 
 # ALIGNMENT
-junegunn/vim-easy-align
+junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easyalign)
 
 # TEXT OBJECTS
 wellle/targets.vim # provides additional text objects
