@@ -41,6 +41,8 @@ URxvt.color15:      #f7f6e2
 ! Set default font
 !URxvt*font:           xft:Liberation Mono:size=13
 !URxvt*font:           xft:InconsolataForPowerline Nerd Font:size=16
+!URxvt*font:           xft:SourceCodePro:size=12
+!URxvt*font:           xft:Hack:size=12
 URxvt*font:           xft:SauceCodePro Nerd Font:size=12
 
 ! Bind C--, C-0(=) and C-+ to activate small, medium, and big font size.
