@@ -81,6 +81,7 @@ set encoding=utf8
 
 " Faster updates
 set updatetime=1000
+set timeout timeoutlen=500 ttimeoutlen=500
 
 
 " GUI
@@ -115,11 +116,11 @@ endif
 " Modal cursor in terminal/tmux
 " Source https://vi.stackexchange.com/questions/3379/cursor-shape-under-vim-tmux
 if exists('$TMUX')
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
+    let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
+    let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
 else
-  let &t_SI = "\e[5 q"
-  let &t_EI = "\e[2 q"
+    let &t_SI = "\e[5 q"
+    let &t_EI = "\e[2 q"
 endif
 
 " improve console colors
@@ -170,7 +171,7 @@ endfunction
 " If used after a numeric count the equals key switches to that number buffer.
 " Number zero signifies the althernate buffer. (See :help alternate-file)
 " Otherwise the default re-indent behavior is used.
-noremap <expr>=  <SID>EditBufferOrReindent(v:count)
+noremap <expr>= <SID>EditBufferOrReindent(v:count)
 noremap 0= :<C-u>confirm buffer #<CR>  " Vim won't pass zero-counts to mappings
 
 " '-=' will delete current buffer or # buffer number via command-count
@@ -219,7 +220,7 @@ let s:plugins = readfile($HOME . '/.vim/plugs')
 function! s:plugin(plug)
     let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
     if len(locator)
-      call call('plug#', len(options) ? [locator, eval(options)] : [locator])
+        call call('plug#', len(options) ? [locator, eval(options)] : [locator])
     end
 endfunction
 call plug#begin('~/.vim/bundle')
