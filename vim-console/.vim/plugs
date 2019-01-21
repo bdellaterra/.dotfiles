@@ -45,6 +45,10 @@ michaeljsmith/vim-indent-object # defines a new text object based on indentation
 # COMMENTS
 tomtom/tcomment_vim # file-type sensible comments
 
+# COMPLETION
+
+lifepillar/vim-mucomplete # minmalist implementation of chained (fallback) completion
+
 # COLORS
 romainl/Apprentice # terminal-friendly colorscheme
 noahfrederick/vim-noctu # inherit restricted 16-color terminal scheme

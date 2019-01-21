@@ -212,6 +212,22 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)"
 
 
+" Completion
+
+" Show completion menu even if it has one item
+set completeopt+=menuone
+
+" User must select completion option
+set completeopt+=noselect
+
+" Shut off completion messages and beeps
+set shortmess+=c
+set belloff+=ctrlg
+
+" Auto-complete without hitting <Tab>
+let g:mucomplete#enable_auto_at_startup = 1
+
+
 " *** Delayed Configuration **************************************************
 
 " PLUGINS
