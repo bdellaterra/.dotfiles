@@ -2,7 +2,7 @@
 
 " PLUGIN MANAGER
 
-" auto-install plug.vim
+" Auto-install plug.vim
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
                 \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -12,63 +12,63 @@ endif
 
 " VIM SETTINGS
 
-" don't worry about backwards-compatibility with vi 
+" Don't worry about backwards-compatibility with vi 
 set nocompatible
 
-" Specify the mapleader for Vim mappings.
+" Specify the mapleader for Vim mappings
 let mapleader = ','
 
-" Disable backwards-compatibility with Vi. (ancestor of Vim)
+" Disable backwards-compatibility with Vi (ancestor of Vim)
 set cpoptions&vim
 
-" disable modelines for better security
+" Disable modelines for better security
 set modelines=0
 
-" Allow backspacing over everything.
+" Allow backspacing over everything
 set backspace=indent,eol,start
 
-" Display most of a last line that doesn't fit in the window.
+" Display most of a last line that doesn't fit in the window
 set display=lastline
 
-" Auto-save when opening/changing buffers.
+" Auto-save when opening/changing buffers
 set autowriteall
 
-" Set directory where temporary files can be stored.
+" Set directory where temporary files can be stored
 let s:TmpDir = $HOME . "/tmp/vim"
 if !isdirectory(s:TmpDir)
     try | call mkdir(s:TmpDir) | endtry
 endif
 
-" Keep swap/backup/undo files from cluttering the working directory.
+" Keep swap/backup/undo files from cluttering the working directory
 set nobackup
 exe 'set directory=' . s:TmpDir
 set undofile
 exe 'set undodir=' . s:TmpDir
 
-" Disable beep and visual flash alerts.
+" Disable beep and visual flash alerts
 autocmd VimEnter * set vb t_vb=
 
-" Clear the screen so there are no initial status messages.
+" Clear the screen so there are no initial status messages
 autocmd VimEnter * silent! redraw!
 
-" Don't automatically wrap lines.
+" Don't automatically wrap lines
 set formatoptions-=t
 
-" Ignore case in searches using only lowercase letters.
+" Ignore case in searches using only lowercase letters
 set ignorecase smartcase
 
-" Keep a long command history.
+" Keep a long command history
 set history=100
 
-" Have all folds open when a new file is loaded.
+" Have all folds open when a new file is loaded
 set foldlevelstart=999
 
-" Prevent "Hit enter to continue" message.
+" Prevent "Hit enter to continue" message
 set shortmess+=T
-" Further reduce prompts by increasing the height of the command line.
+" Further reduce prompts by increasing the height of the command line
 set cmdheight=1
 
-" Set tabbing behavior.
+" Set tabbing behavior
 set shiftwidth=4
 set tabstop=4
 set expandtab
@@ -76,11 +76,13 @@ set expandtab
 " Always show status line
 set laststatus=2
 
-" use modern encoding
+" Use modern encoding
 set encoding=utf8
 
 " Faster updates
 set updatetime=1000
+
+" Reduce timeout for operator-pending mode
 set timeout timeoutlen=500 ttimeoutlen=500
 
 
@@ -96,8 +98,8 @@ set clipboard=unnamed,unnamedplus
 " TERMINAL
 
 " Fix arrow keys
-" ref: https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly
-" ref: https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode
+" Ref: https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly
+" Ref: https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode
 if &term =~ '^screen' || has('Mac')
     execute "set <xUp>=\e[1;*A"
     execute "set <xDown>=\e[1;*B"
@@ -123,7 +125,7 @@ else
     let &t_EI = "\e[2 q"
 endif
 
-" improve console colors
+" Improve console colors
 if $TERM =~ "256color" || $COLORTERM == "gnome-terminal"
     set t_Co=256
 endif
@@ -131,13 +133,13 @@ endif
 
 " FILE MANAGER
 
-" replace default file manager when viewing directories
+" Replace default file manager when viewing directories
 let g:ranger_replace_netrw = 1
 
-" set temp file location
+" Set temp file location
 let g:ranger_choice_file = s:TmpDir . '/RangerChosenFile'
 
-" don't use plugin mappings
+" Don't use plugin mappings
 let g:ranger_map_keys = 0
 
 map <leader>. :Ranger<CR>
@@ -146,13 +148,13 @@ map <leader>e :RangerWorkingDirectory<CR>
 
 " BUFFERS
 
-" Show buffers if two or more are open.
+" Show buffers if two or more are open
 let g:buftabline_show = 2
 
-" Show buffer numbers.
+" Show buffer numbers
 let g:buftabline_numbers = 1
 
-" Show separators between buffer names.
+" Show separators between buffer names
 let g:buftabline_separators = 0
 
 " Helper function to control behavior of the equals key:
@@ -191,13 +193,13 @@ nnoremap =[ :<C-u>exe (v:count ? v:count : '') . 'bprev'<CR>
 
 " SESSION MANAGER
 
-" set temp file location
+" Set temp file location
 let g:pickMeUpSessionDir = s:TmpDir
 
 
 " UNDO
 
-" toggle interactive undo-history
+" Toggle interactive undo-history
 map <leader>uh :GundoToggle<CR>
 
 
@@ -214,8 +216,8 @@ nmap ga <Plug>(EasyAlign)"
 
 " PLUGINS
 
-" load plugins listed in /.vim/plugs
-" (order can matter, '#' style comments, empty lines skipped)
+" Load plugins listed in /.vim/plugs
+" (Order can matter, '#' style comments, empty lines skipped)
 let s:plugins = readfile($HOME . '/.vim/plugs')
 function! s:plugin(plug)
     let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
@@ -230,7 +232,7 @@ call plug#end()
 
 " POST-PLUGIN CONFIGURATION
 
-" set colorscheme
+" Set colorscheme
 colorscheme apprentice
 
 
