@@ -46,8 +46,8 @@ michaeljsmith/vim-indent-object # defines a new text object based on indentation
 tomtom/tcomment_vim # file-type sensible comments
 
 # COMPLETION
-
 lifepillar/vim-mucomplete # minmalist implementation of chained (fallback) completion
+tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 
 # COLORS
 romainl/Apprentice # terminal-friendly colorscheme
