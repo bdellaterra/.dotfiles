@@ -141,7 +141,7 @@ let g:ranger_choice_file = s:TmpDir . '/RangerChosenFile'
 let g:ranger_map_keys = 0
 
 map <leader>. :Ranger<CR>
-map <leader>e :RangerWorkingDirectory<CR>
+map <leader>r :RangerWorkingDirectory<CR> " working-dir is usually project root
 
 
 " BUFFERS
@@ -224,6 +224,38 @@ set belloff+=ctrlg
 
 " Auto-complete without hitting <Tab>
 let g:mucomplete#enable_auto_at_startup = 1
+
+
+" Fuzzy-Find
+" (All commands are prefized with <leader>/)
+
+map <leader>/p   :Files 
+map <leader>/~   :Files ~<CR>
+map <leader>/.   :Files ./<CR>
+map <leader>/r   :exe 'Files ' . ProjectRootGuess()<CR> " requires ProjectRoot plugin
+map <leader>/gf  :GFiles<CR>
+map <leader>/gs  :GFiles?<CR>
+map <leader>/b   :Buffers<CR>
+map <leader>/cs  :Colors<CR>
+map <leader>/a   :Ag<CR> " (See https://github.com/ggreer/the_silver_searcher)
+map <leader>/gr  :Rg<CR> " (See https://github.com/BurntSushi/ripgrep)
+map <leader>/l   :Lines<CR>
+map <leader>/bl  :BLines<CR>
+map <leader>/tg  :Tags<CR>
+map <leader>/tb  :BTags<CR>
+map <leader>/'   :Marks<CR>
+map <leader>/`   :Marks<CR>
+map <leader>/w   :Windows<CR>
+map <leader>/ml  :Locate<CR>
+map <leader>/h   :History<CR>
+map <leader>/:   :History:<CR>
+map <leader>//   :History/<CR>
+map <leader>/s   :Snippets<CR>
+map <leader>/cm  :Commands<CR>
+map <leader>/mp  :Maps<CR>
+map <leader>/?   :Helptags<CR>
+map <leader>/gg  :Commits<CR> " Requires Fugitive plugin
+map <leader>/gbg :BCommits<CR>
 
 
 " *** Delayed Configuration **************************************************

@@ -28,6 +28,10 @@ roxma/vim-window-resize-easy # easier window-resize commands
 timakro/vim-searchant # persistent search-highlighting
 tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of a word
 
+# FUZZY-FIND
+junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder.
+junegunn/fzf.vim # fzf-based commands and mappings
+
 # DELIMITERS
 tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
 jiangmiao/auto-pairs # insert or delete brackets, parens, quotes in pairs
