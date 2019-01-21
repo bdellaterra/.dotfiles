@@ -54,6 +54,6 @@ lifepillar/vim-mucomplete # minmalist implementation of chained (fallback) compl
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 
 # COLORS
-romainl/Apprentice # terminal-friendly colorscheme
-noahfrederick/vim-noctu # inherit restricted 16-color terminal scheme
+flazz/vim-colorschemes # one stop shop for vim colorschemes
+noahfrederick/vim-noctu # inherits restricted 16-color terminal scheme
 
