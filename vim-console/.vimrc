@@ -34,9 +34,9 @@ set display=lastline
 set autowriteall
 
 " Set directory where temporary files can be stored
-let s:TmpDir = $HOME . "/tmp/vim"
-if !isdirectory(s:TmpDir)
-    try | call mkdir(s:TmpDir) | endtry
+let s:TmpDir = $HOME . '/tmp/vim'
+if !isdirectory(s:TmpDir) && exists('*mkdir')
+    try | call mkdir(s:TmpDir, 'p') | endtry
 endif
 
 " Keep swap/backup/undo files from cluttering the working directory
