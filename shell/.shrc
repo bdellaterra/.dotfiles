@@ -12,9 +12,6 @@ alias mkcd='_(){ mkdir $1; cd $1; }; _'
 alias l='ls -lAhF'
 
 # short-form for common commands
-[[ `command -v grep` ]] && alias a="grep --color=auto"
-[[ `command -v ack` ]] && alias a=ack
-[[ `command -v ag` ]] && alias a=ag
 [[ `command -v bundle` ]] && alias b=bundle
 [[ `command -v docker` ]] && alias d=docker
 [[ `command -v docker` ]] && alias i="docker image"
@@ -23,10 +20,17 @@ alias l='ls -lAhF'
 [[ `command -v find` ]] && alias f=find
 [[ `command -v git` ]] && alias g=git
 [[ `command -v kill` ]] && alias k=kill
-[[ `command -v ranger` ]] && alias r=ranger
 [[ `command -v sudo` ]] && alias s=sudo
 [[ `command -v tmux` ]] && alias t=tmux
 [[ `command -v vim` ]] && alias v=vim
+# m: preferred file-manager w/ fallbacks
+[[ `command -v mc` ]] && alias m=mc
+[[ `command -v ranger` ]] && alias m=ranger
+# r: preferred grep w/ fallbacks
+[[ `command -v grep` ]] && alias r="grep --color=auto"
+[[ `command -v ack` ]] && alias r=ack
+[[ `command -v ag` ]] && alias r=ag
+[[ `command -v rg` ]] && alias r=rg
 
 # short-form for built-in commands
 alias e=echo
