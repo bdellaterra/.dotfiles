@@ -1,4 +1,4 @@
-" *** Inital Confiuration ****************************************************
+" *** Inital Configuration ****************************************************
 
 " PLUGIN MANAGER
 
@@ -9,6 +9,53 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+
+" HELPER FUNCTIONS
+
+" Support loading plugin/options from file w/ empty line and comment removal
+function s:Plugin(plug)
+    let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
+    if len(locator)
+        call call('plug#', len(options) ? [locator, eval(options)] : [locator])
+    end
+endfunction
+
+" Convert path to forward slashes with a slash at the end
+function s:DirSlashes(path)
+    return substitute(a:path, '[^/\\]\@<=$\|\\', '/', 'g')
+endfunction
+
+" Create directory if necessary and normalize slashes
+function s:MakeDir(path)
+    try
+        if !isdirectory(a:path) && exists('*mkdir')
+            call mkdir(a:path, 'p')
+        endif
+    endtry
+    return s:DirSlashes(a:path)
+endfunction
+
+" Overload behavior of the equals key
+function s:EditBufferOrReindent(...)
+    let bufNum = get(a:000, 0, '')
+    if bufNum == ''
+        return "="
+    elseif bufNum == 0
+        return ":\<C-u>confirm buffer #\<CR>"
+    else
+        return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
+    endif
+    return ""
+endfunction
+
+" Get full file path for current buffer or # buffer if command-count provided
+function s:BufferFile(...)
+    let fnameMods = get(a:000, 0, '')
+    return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
+endfunction
+
+
+" *** General Configuration ***************************************************
 
 " VIM SETTINGS
 
@@ -32,10 +79,7 @@ set display=lastline
 set autowriteall
 
 " Set directory where temporary files can be stored
-let s:TmpDir = $HOME . '/tmp/vim'
-if !isdirectory(s:TmpDir) && exists('*mkdir')
-    try | call mkdir(s:TmpDir, 'p') | endtry
-endif
+let s:TmpDir = s:MakeDir($HOME . '/tmp/vim')
 
 " Keep swap/backup/undo files from cluttering the working directory
 set nobackup
@@ -141,7 +185,7 @@ let g:ranger_choice_file = s:TmpDir . '/RangerChosenFile'
 let g:ranger_map_keys = 0
 
 map <leader>. :Ranger<CR>
-map <leader>r :RangerWorkingDirectory<CR> " working-dir is usually project root
+map <leader>f :RangerWorkingDirectory<CR> " working-dir is usually project root
 
 
 " BUFFERS
@@ -155,19 +199,6 @@ let g:buftabline_numbers = 1
 " Show separators between buffer names
 let g:buftabline_separators = 0
 
-" Helper function to control behavior of the equals key:
-function! s:EditBufferOrReindent(...)
-    let bufNum = get(a:000, 0, '')
-    if bufNum == ''
-        return "="
-    elseif bufNum == 0
-        return ":\<C-u>confirm buffer #\<CR>"
-    else
-        return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
-    endif
-    return ""
-endfunction
-
 " If used after a numeric count the equals key switches to that number buffer.
 " Number zero signifies the althernate buffer. (See :help alternate-file)
 " Otherwise the default re-indent behavior is used.
@@ -180,7 +211,7 @@ nnoremap 0-= :<C-u>confirm bdelete #<CR>
 
 " '+=' will prompt for editing a file with filename needing to be specified.
 " Path will be same as the current buffer or # buffer via command-count
-nnoremap += :<C-u>edit <C-r>=expand((v:count ? '#'.v:count : '%') . ':p:h') . '/'<CR>
+nnoremap += :<C-u>edit <C-r>=<SID>BufferFile(':h') . '/'<CR>
 
 " '=]' will switch to previous buffer, or command-count buffers back
 nnoremap =] :<C-u>exe (v:count ? v:count : '') . 'bnext'<CR>
@@ -231,14 +262,12 @@ let g:mucomplete#enable_auto_at_startup = 1
 
 map <leader>/p   :Files 
 map <leader>/~   :Files ~<CR>
-map <leader>/.   :Files ./<CR>
-map <leader>/r   :exe 'Files ' . ProjectRootGuess()<CR> " requires ProjectRoot plugin
+map <leader>/.   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
+map <leader>/f   :exe 'Files ' . ProjectRootGuess()<CR> " requires ProjectRoot plugin
 map <leader>/gf  :GFiles<CR>
 map <leader>/gs  :GFiles?<CR>
 map <leader>/b   :Buffers<CR>
 map <leader>/cs  :Colors<CR>
-map <leader>/a   :Ag<CR> " (See https://github.com/ggreer/the_silver_searcher)
-map <leader>/gr  :Rg<CR> " (See https://github.com/BurntSushi/ripgrep)
 map <leader>/l   :Lines<CR>
 map <leader>/bl  :BLines<CR>
 map <leader>/tg  :Tags<CR>
@@ -256,6 +285,12 @@ map <leader>/mp  :Maps<CR>
 map <leader>/?   :Helptags<CR>
 map <leader>/gg  :Commits<CR> " Requires Fugitive plugin
 map <leader>/gbg :BCommits<CR>
+if executable('ag')
+    map <leader>/r   :Ag<CR> " (See https://github.com/ggreer/the_silver_searcher)
+endif
+if executable('rg')
+    map <leader>/r   :Rg<CR> " (See https://github.com/BurntSushi/ripgrep)
+endif
 
 
 " *** Delayed Configuration **************************************************
@@ -263,16 +298,9 @@ map <leader>/gbg :BCommits<CR>
 " PLUGINS
 
 " Load plugins listed in /.vim/plugs
-" (Order can matter, '#' style comments, empty lines skipped)
 let s:plugins = readfile($HOME . '/.vim/plugs')
-function! s:plugin(plug)
-    let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
-    if len(locator)
-        call call('plug#', len(options) ? [locator, eval(options)] : [locator])
-    end
-endfunction
 call plug#begin('~/.vim/bundle')
-call map(s:plugins, {_, p -> s:plugin(p)})
+call map(s:plugins, {_, p -> s:Plugin(p)})
 call plug#end()
 
 
