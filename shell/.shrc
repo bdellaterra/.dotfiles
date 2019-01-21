@@ -25,7 +25,7 @@ alias l='ls -lAhF'
 [[ `command -v vim` ]] && alias v=vim
 # m: preferred file-manager w/ fallbacks
 [[ `command -v mc` ]] && alias m=mc
-[[ `command -v ranger` ]] && alias m=ranger
+[[ `command -v ranger` ]] && alias m="source ranger" # source embedded script to cd on exit
 # r: preferred grep w/ fallbacks
 [[ `command -v grep` ]] && alias r="grep --color=auto"
 [[ `command -v ack` ]] && alias r=ack
