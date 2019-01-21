@@ -37,7 +37,7 @@ tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
 jiangmiao/auto-pairs # insert or delete brackets, parens, quotes in pairs
 
 # INDENTATION
-nathanaelkane/vim-indent-guides # visually display indent levels
+Yggdroot/indentLine # display the indention levels with thin vertical lines
 
 # ALIGNMENT
 junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easyalign)

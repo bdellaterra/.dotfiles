@@ -293,6 +293,12 @@ if executable('rg')
 endif
 
 
+" Indent-Guides
+
+" let g:indentLine_setColors = 0
+let g:indentLine_char = '·'
+
+
 " *** Delayed Configuration **************************************************
 
 " PLUGINS
