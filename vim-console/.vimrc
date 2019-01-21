@@ -12,14 +12,12 @@ endif
 
 " VIM SETTINGS
 
-" Don't worry about backwards-compatibility with vi 
+" Disable backwards-compatibility with Vi (ancestor of Vim)
 set nocompatible
+set cpoptions&vim
 
 " Specify the mapleader for Vim mappings
 let mapleader = ','
-
-" Disable backwards-compatibility with Vi (ancestor of Vim)
-set cpoptions&vim
 
 " Disable modelines for better security
 set modelines=0
@@ -68,7 +66,7 @@ set shortmess+=T
 " Further reduce prompts by increasing the height of the command line
 set cmdheight=1
 
-" Set tabbing behavior
+" Set default tabbing behavior
 set shiftwidth=4
 set tabstop=4
 set expandtab
@@ -98,8 +96,8 @@ set clipboard=unnamed,unnamedplus
 " TERMINAL
 
 " Fix arrow keys
-" Ref: https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly
-" Ref: https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode
+" (See https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly)
+" (See https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode)
 if &term =~ '^screen' || has('Mac')
     execute "set <xUp>=\e[1;*A"
     execute "set <xDown>=\e[1;*B"
@@ -116,7 +114,7 @@ if &term =~ '^screen' || has('Mac')
 endif
 
 " Modal cursor in terminal/tmux
-" Source https://vi.stackexchange.com/questions/3379/cursor-shape-under-vim-tmux
+" (See https://vi.stackexchange.com/questions/3379/cursor-shape-under-vim-tmux)
 if exists('$TMUX')
     let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
     let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
@@ -126,7 +124,7 @@ else
 endif
 
 " Improve console colors
-if $TERM =~ "256color" || $COLORTERM == "gnome-terminal"
+if $TERM =~ '256color' || $COLORTERM == 'gnome-terminal'
     set t_Co=256
 endif
 
@@ -181,7 +179,7 @@ nnoremap -= :<C-u>exe (v:count ? v:count : '') . 'bdelete'<CR>
 nnoremap 0-= :<C-u>confirm bdelete #<CR>
 
 " '+=' will prompt for editing a file with filename needing to be specified.
-" Path will be that of the current buffer or # buffer via command-count
+" Path will be same as the current buffer or # buffer via command-count
 nnoremap += :<C-u>edit <C-r>=expand((v:count ? '#'.v:count : '%') . ':p:h') . '/'<CR>
 
 " '=]' will switch to previous buffer, or command-count buffers back
@@ -217,7 +215,7 @@ nmap ga <Plug>(EasyAlign)"
 " Show completion menu even if it has one item
 set completeopt+=menuone
 
-" User must select completion option
+" Do not auto-select completion option
 set completeopt+=noselect
 
 " Shut off completion messages and beeps
