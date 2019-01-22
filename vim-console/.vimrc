@@ -299,6 +299,20 @@ endif
 let g:indentLine_char = '·'
 
 
+" Linting
+
+" Set signs for sign column
+let g:ale_sign_warning = '•'
+let g:ale_sign_error = '→'
+
+" Set highlight groups for signs
+highlight link ALEWarningSign SignColumn
+highlight link ALEErrorSign ErrorMsg
+
+" Always keep sign column open
+let g:ale_sign_column_always = 1
+
+
 " *** Delayed Configuration **************************************************
 
 " PLUGINS
