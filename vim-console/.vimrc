@@ -12,7 +12,7 @@ endif
 
 " HELPER FUNCTIONS
 
-" Support loading plugin/options from file w/ empty line and comment removal
+" Support loading plugin/options from file w/ empty lines and comments removed
 function s:Plugin(plug)
     let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
     if len(locator)
@@ -184,8 +184,11 @@ let g:ranger_choice_file = s:TmpDir . '/RangerChosenFile'
 " Don't use plugin mappings
 let g:ranger_map_keys = 0
 
+" ',.' will browse files at current buffer's directory
 map <leader>. :Ranger<CR>
-map <leader>f :RangerWorkingDirectory<CR> " working-dir is usually project root
+
+" ',f' will browse files at working-directory (usually project root)
+map <leader>f :RangerWorkingDirectory<CR>
 
 
 " BUFFERS
@@ -215,9 +218,11 @@ nnoremap += :<C-u>edit <C-r>=<SID>BufferFile(':h') . '/'<CR>
 
 " '=]' will switch to previous buffer, or command-count buffers back
 nnoremap =] :<C-u>exe (v:count ? v:count : '') . 'bnext'<CR>
+nmap <Tab> =]
 
 " '=[' will switch to previous buffer, or command-count buffers back
 nnoremap =[ :<C-u>exe (v:count ? v:count : '') . 'bprev'<CR>
+nmap <S-Tab> =[
 
 
 " SESSION MANAGER
@@ -228,16 +233,16 @@ let g:pickMeUpSessionDir = s:TmpDir
 
 " UNDO
 
-" Toggle interactive undo-history
+" ',uh' will Toggle interactive undo-history
 map <leader>uh :GundoToggle<CR>
 
 
 " ALIGNMENT
 
-" Start interactive EasyAlign in visual mode (e.g. vipga)
+" 'ga' wil start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
 
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+" 'ga' will start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)"
 
 
