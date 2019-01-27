@@ -144,13 +144,6 @@ set timeout timeoutlen=500 ttimeoutlen=500
 " Don't show the toolbar/icons
 set guioptions-=T
 
-" Share system clipboard with unnamed register for copy/paste
-if has('clipboard')
-  set clipboard=unnamed,unnamedplus
-else
-  autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
-endif
-
 
 " TERMINAL
 
@@ -185,6 +178,16 @@ endif
 " Improve console colors
 if $TERM =~ '256color' || $COLORTERM == 'gnome-terminal'
     set t_Co=256
+endif
+
+
+" CLIPBOARD
+
+" Share system clipboard with unnamed register for copy/paste
+if has('clipboard')
+  set clipboard=unnamed,unnamedplus
+else
+  autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
 endif
 
 
@@ -330,7 +333,7 @@ map <leader>ig :IndentLinesToggle<CR>
 
 " Set signs for sign column
 let g:ale_sign_warning = '•'
-let g:ale_sign_error = '→'
+let g:ale_sign_error = '▶'
 
 " Set highlight groups for signs
 highlight link ALEWarningSign SignColumn
@@ -355,5 +358,4 @@ call plug#end()
 
 " Set colorscheme
 colorscheme apprentice
-
 
