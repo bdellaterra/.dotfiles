@@ -162,8 +162,10 @@ fi
 
 # *** Pager ***
 
-# Use Vim as default pager
-export MANPAGER="env MAN_PN=1 vim -M +MANPAGER -"
+# Override default pager
+[[ -x "$HOME/bin/pager" ]] && export PAGER="$HOME/bin/pager"
+alias less="$PAGER"
+alias zless="$PAGER"
 
 
 # EXTENDED CONFIGURATION ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
