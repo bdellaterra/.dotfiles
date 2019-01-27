@@ -54,6 +54,17 @@ function s:BufferFile(...)
     return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
 endfunction
 
+" Share yanked text with system clipboard when Vim lacks 'clipboard' support
+" Note: paste should work via Shift-Insert or similar terminal keymap
+if executable('xclip') | let s:clip = 'xclip' | endif
+if executable('pbcopy') | let s:clip = 'pbcopy' | endif
+function s:CopyToClipboard(text, ...)
+    let register = get(a:000, 0, '')
+    if exists('s:clip') && register == ''
+       call system(s:clip, a:text)
+   endif
+endfunction
+
 
 " *** General Configuration ***************************************************
 
@@ -134,7 +145,11 @@ set timeout timeoutlen=500 ttimeoutlen=500
 set guioptions-=T
 
 " Share system clipboard with unnamed register for copy/paste
-set clipboard=unnamed,unnamedplus
+if has('clipboard')
+  set clipboard=unnamed,unnamedplus
+else
+  autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
+endif
 
 
 " TERMINAL
@@ -302,6 +317,13 @@ endif
 
 " let g:indentLine_setColors = 0
 let g:indentLine_char = '·'
+
+" set file/buffer type exclusions
+let g:indentLine_fileTypeExclude = ['text', 'sh', 'man']
+let g:indentLine_bufTypeExclude = ['help', 'terminal', 'nowrite']
+
+" ',ig' will toggle indent guides
+map <leader>ig :IndentLinesToggle<CR>
 
 
 " Linting
