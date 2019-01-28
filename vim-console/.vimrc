@@ -229,6 +229,9 @@ noremap 0= :<C-u>confirm buffer #<CR>  " Vim won't pass zero-counts to mappings
 " '-=' will delete current buffer or # buffer number via command-count
 nnoremap -= :<C-u>exe (v:count ? v:count : '') . 'bdelete'<CR>
 nnoremap 0-= :<C-u>confirm bdelete #<CR>
+" Alias 'Ctrl-w,Ctrl-w'
+nmap <C-w><C-w> -=
+nmap 0<C-w><C-w> 0-=
 
 " '+=' will prompt for editing a file with filename needing to be specified.
 " Path will be same as the current buffer or # buffer via command-count
@@ -236,10 +239,12 @@ nnoremap += :<C-u>edit <C-r>=<SID>BufferFile(':h') . '/'<CR>
 
 " '=]' will switch to previous buffer, or command-count buffers back
 nnoremap =] :<C-u>exe (v:count ? v:count : '') . 'bnext'<CR>
+" Alias 'Tab'
 nmap <Tab> =]
 
 " '=[' will switch to previous buffer, or command-count buffers back
 nnoremap =[ :<C-u>exe (v:count ? v:count : '') . 'bprev'<CR>
+" Alias 'Shift-Tab'
 nmap <S-Tab> =[
 
 
