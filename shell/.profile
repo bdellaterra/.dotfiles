@@ -8,8 +8,8 @@ test -z "$PROFILEREAD" && . /etc/profile || true
 
 # Set where command history is saved and max number of lines. 
 HISTFILE=~/.history
-HISTSIZE=2500
-HISTFILESIZE=2500
+HISTSIZE=2500 # in memory
+HISTFILESIZE=2500 # on disk
 
 # Find local executables.
 PATH=$PATH:~/bin:~/local/bin
@@ -31,7 +31,7 @@ export NVM_DIR=~/.nvm
 # https://yarnpkg.com
 
 # Set path to yarn
-export PATH="$HOME/.yarn/bin:$PATH"
+[[ -d "$HOME/.yarn/bin" ]] && export PATH="$HOME/.yarn/bin:$PATH"
 
 
 # *** Ruby ***

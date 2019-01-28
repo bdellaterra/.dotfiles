@@ -118,7 +118,7 @@ pkgID() {
 }
 
 
-# GENERAL CONFIG ::::::::::::::::::::::::::::::::::::::::::::::::::::
+# WEB BROWSER CONFIG ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 # Enbable smoother scrolling in Firefox.
 # Source: https://lists.opensuse.org/opensuse-factory/2017-04/msg00001.html
@@ -129,12 +129,12 @@ export MOZ_USE_XINPUT2=1
 
 # *** Options ***
 
+# EXIT if not running interactively.
+[[ $- != *i* ]] && return
+
 # Change paths without using 'cd' command
 [[ `type shopt` == *'builtin'* ]] && shopt -s autocd # bash
 [[ `type setopt 2>/dev/null` == *'builtin'* ]] && setopt autocd  # zsh
-
-# EXIT if not running interactively.
-[[ $- != *i* ]] && return
 
 # Increase terminal colors.
 [[ -n "$DISPLAY" && "$TERM" = "xterm" ]] && export TERM=xterm-256color
