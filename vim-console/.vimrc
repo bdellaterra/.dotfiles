@@ -347,6 +347,14 @@ highlight link ALEErrorSign ErrorMsg
 " Always keep sign column open
 let g:ale_sign_column_always = 1
 
+" Set eslint executable
+if executable('eslint_d')
+  let g:ale_javascript_eslint_executable = 'eslint_d'
+endif
+if executable('eslintme')
+  let g:ale_javascript_eslint_executable = 'eslintme'
+endif
+
 
 " *** Delayed Configuration **************************************************
 
