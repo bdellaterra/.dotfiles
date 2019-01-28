@@ -148,13 +148,13 @@ set guioptions-=T
 " TERMINAL
 
 " Fix arrow keys
-" (See https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly)
-" (See https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode)
 if &term =~ '^screen' || has('Mac')
+	" From Chris Johnsen, 2012, https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly
     execute "set <xUp>=\e[1;*A"
     execute "set <xDown>=\e[1;*B"
     execute "set <xRight>=\e[1;*C"
-    execute "set <xLeft>=\e[1;*D"
+	execute "set <xLeft>=\e[1;*D"
+	" From romainl, 2012, https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode
     nnoremap <Esc>A <up>
     nnoremap <Esc>B <down>
     nnoremap <Esc>C <right>
@@ -166,7 +166,7 @@ if &term =~ '^screen' || has('Mac')
 endif
 
 " Modal cursor in terminal/tmux
-" (See https://vi.stackexchange.com/questions/3379/cursor-shape-under-vim-tmux)
+" From avivr, 2015, https://vi.stackexchange.com/questions/3379/cursor-shape-under-vim-tmux
 if exists('$TMUX')
     let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
     let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
@@ -313,11 +313,11 @@ map <leader>/mp  :Maps<CR>
 map <leader>/?   :Helptags<CR>
 map <leader>/gg  :Commits<CR> " Requires Fugitive plugin
 map <leader>/gbg :BCommits<CR>
-if executable('ag')
-    map <leader>/r   :Ag<CR> " (See https://github.com/ggreer/the_silver_searcher)
+if executable('ag') " https://github.com/ggreer/the_silver_searcher
+    map <leader>/r   :Ag<CR>
 endif
-if executable('rg')
-    map <leader>/r   :Rg<CR> " (See https://github.com/BurntSushi/ripgrep)
+if executable('rg') " https://github.com/BurntSushi/ripgrep
+    map <leader>/r   :Rg<CR>
 endif
 
 
