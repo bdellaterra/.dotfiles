@@ -5,7 +5,7 @@
 " Auto-install plug.vim
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -346,14 +346,6 @@ highlight link ALEErrorSign ErrorMsg
 
 " Always keep sign column open
 let g:ale_sign_column_always = 1
-
-" Set eslint executable
-if executable('eslint_d')
-  let g:ale_javascript_eslint_executable = 'eslint_d'
-endif
-if executable('eslintme')
-  let g:ale_javascript_eslint_executable = 'eslintme'
-endif
 
 
 " *** Delayed Configuration **************************************************
