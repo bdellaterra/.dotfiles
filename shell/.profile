@@ -21,4 +21,9 @@ export PKG_CONFIG_PATH="$HOME/local/lib64/pkgconfig/"
 
 # ENVIRONMENT VARS ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+# *** Firefox ***
+
+# Enbable smoother scrolling
+# Source: https://lists.opensuse.org/opensuse-factory/2017-04/msg00001.html
+export MOZ_USE_XINPUT2=1
 

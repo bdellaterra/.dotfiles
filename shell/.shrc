@@ -118,19 +118,44 @@ pkgID() {
 }
 
 
-# WEB BROWSER CONFIG ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# LANGUAGE SUPPORT ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-# Enbable smoother scrolling in Firefox.
-# Source: https://lists.opensuse.org/opensuse-factory/2017-04/msg00001.html
-export MOZ_USE_XINPUT2=1
+# *** NVM (Node Version Manager) ***
+# https://github.com/creationix/nvm
+
+# Set path to NVM and initialize. Requres fix for symlink into .dotfiles
+# From CristianCantoro, 2018, https://github.com/creationix/nvm/issues/617
+export NVM_DIR="$(realpath $HOME/.nvm)" 
+[[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[[ -r "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
+
+
+# *** Yarn (Node Dependency Manager) ***
+# https://yarnpkg.com
+
+# Set path to yarn
+[[ -d "$HOME/.yarn/bin" ]] && export PATH="$HOME/.yarn/bin:$PATH"
+
+
+# *** Ruby ***
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+[[ -d "$HOME/.rvm/bin" ]] && export PATH="$PATH:$HOME/.rvm/bin"
+
+# Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+
+###############################################################################
 
 
 # INTERACTIVE SHELL CONFIG ::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-# *** Options ***
-
 # EXIT if not running interactively.
 [[ $- != *i* ]] && return
+
+
+# *** Options ***
 
 # Change paths without using 'cd' command
 [[ `type shopt` == *'builtin'* ]] && shopt -s autocd # bash
@@ -166,34 +191,6 @@ fi
 [[ -x "$HOME/bin/pager" ]] && export PAGER="$HOME/bin/pager"
 alias less="$PAGER"
 alias zless="$PAGER"
-
-
-# LANGUAGE SUPPORT ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-# *** NVM (Node Version Manager) ***
-# https://github.com/creationix/nvm
-
-# Set path to NVM and initialize. Requres fix for symlink into .dotfiles
-# From CristianCantoro, 2018, https://github.com/creationix/nvm/issues/617
-export NVM_DIR="$(realpath $HOME/.nvm)" 
-[[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-[[ -r "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
-
-
-# *** Yarn (Node Dependency Manager) ***
-# https://yarnpkg.com
-
-# Set path to yarn
-[[ -d "$HOME/.yarn/bin" ]] && export PATH="$HOME/.yarn/bin:$PATH"
-
-
-# *** Ruby ***
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-[[ -d "$HOME/.rvm/bin" ]] && export PATH="$PATH:$HOME/.rvm/bin"
-
-# Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 
 # EXTENDED CONFIGURATION ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
