@@ -66,6 +66,14 @@ function s:CopyToClipboard(text, ...)
 endfunction
 
 
+" Show syntax group and translated syntax group of character under cursor
+" From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
+function! s:SynGroup()
+    let l:s = synID(line('.'), col('.'), 1)
+    echo synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
+endfunction
+
+
 " *** General Configuration ***************************************************
 
 " VIM SETTINGS
@@ -262,11 +270,11 @@ map <leader>uh :GundoToggle<CR>
 
 " ALIGNMENT
 
-" 'ga' wil start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
+" ',a' wil start interactive EasyAlign in visual mode (e.g. vip,a)
+xmap <leader>a <Plug>(EasyAlign)
 
-" 'ga' will start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)"
+" ',a' will start interactive EasyAlign for a motion/text object (e.g. ,aip)
+nmap <leader>a <Plug>(EasyAlign)"
 
 
 " Completion
@@ -321,12 +329,22 @@ if executable('rg') " https://github.com/BurntSushi/ripgrep
 endif
 
 
+" Conceal
+
+" ',c' will toggle concealed text
+map <leader>c :let &conceallevel = &conceallevel ? 0 : 2<CR>
+
+
 " Indent-Guides
 
-" let g:indentLine_setColors = 0
+" Don't visually indicate indentation by default
+let g:indentLine_enabled = 0
+
+" Customize visual indicator
+let g:indentLine_setColors = 0
 let g:indentLine_char = '·'
 
-" set file/buffer type exclusions
+" Set file/buffer type exclusions
 let g:indentLine_fileTypeExclude = ['text', 'sh', 'man']
 let g:indentLine_bufTypeExclude = ['help', 'terminal', 'nowrite']
 
@@ -346,6 +364,12 @@ highlight link ALEErrorSign ErrorMsg
 
 " Always keep sign column open
 let g:ale_sign_column_always = 1
+
+
+" Vim Scripting
+
+" Display syntax information
+map gs :call <SID>SynGroup()<CR>
 
 
 " *** Delayed Configuration **************************************************
