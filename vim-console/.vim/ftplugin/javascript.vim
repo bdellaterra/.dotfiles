@@ -8,6 +8,7 @@ if executable('eslintme')
 endif
 
 " Support autofix using prettier and/or ESLint
+let g:ale_fix_on_save = 0
 let b:ale_fixers = []
 if ($EDITOR_AUTO_PRETTIFY || $EDITOR_AUTO_PRETTIFY == '')
     let b:ale_fixers += ['prettier']
@@ -15,4 +16,7 @@ endif
 if ($EDITOR_AUTO_FIX || $EDITOR_AUTO_FIX == '')
     let b:ale_fixers += ['eslint']
 endif
+
+" Auto-fold long imports
+%g#^import#silent! normal zc
 

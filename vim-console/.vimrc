@@ -329,6 +329,35 @@ if executable('rg') " https://github.com/BurntSushi/ripgrep
 endif
 
 
+" Linting
+
+" Set signs for sign column
+let g:ale_sign_warning = '•'
+let g:ale_sign_error = '▶'
+
+" Set highlight groups for signs
+highlight link ALEWarningSign SignColumn
+highlight link ALEErrorSign ErrorMsg
+
+" Always keep sign column open
+let g:ale_sign_column_always = 1
+
+" ',l' will auto-fix linter errors (without saving)
+map <leader>l :ALEFix && %foldopen!<CR> " unclear why ALEFix closes folds
+
+
+" Fold
+
+" Initial fold regions based on syntax-rules
+set foldmethod=syntax
+
+" Open all folds by default
+set foldlevelstart=99
+
+" Automatically open folds in insert-mode
+set foldopen=all
+
+
 " Conceal
 
 " ',c' will toggle concealed text
@@ -352,18 +381,10 @@ let g:indentLine_bufTypeExclude = ['help', 'terminal', 'nowrite']
 map <leader>ig :IndentLinesToggle<CR>
 
 
-" Linting
+" LINE-WRAPPING
 
-" Set signs for sign column
-let g:ale_sign_warning = '•'
-let g:ale_sign_error = '▶'
-
-" Set highlight groups for signs
-highlight link ALEWarningSign SignColumn
-highlight link ALEErrorSign ErrorMsg
-
-" Always keep sign column open
-let g:ale_sign_column_always = 1
+" Set visual wrap indicator
+set showbreak=⋯ " ↪
 
 
 " Vim Scripting
