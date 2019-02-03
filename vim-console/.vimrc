@@ -403,27 +403,22 @@ set foldtext=MyFoldText()
 map <leader>c :let &conceallevel = &conceallevel ? 0 : 2<CR>
 
 
-" Indent-Guides
-
-" Don't visually indicate indentation by default
-let g:indentLine_enabled = 0
-
-" Customize visual indicator
-let g:indentLine_setColors = 0
-let g:indentLine_char = '·'
-
-" Set file/buffer type exclusions
-let g:indentLine_fileTypeExclude = ['text', 'sh', 'man']
-let g:indentLine_bufTypeExclude = ['help', 'terminal', 'nowrite']
-
-" ',ig' will toggle indent guides
-map <leader>ig :IndentLinesToggle<CR>
-
-
-" LINE-WRAPPING
+" Wrapping
 
 " Set visual wrap indicator
 set showbreak=⋯ " ↪
+
+
+" Cursor Line/Column
+
+" ',-' will toggle cursor line
+noremap <leader>- :set cursorline!<CR>
+
+" ',|' will toggle cursor column
+noremap <leader><bar> :set cursorcolumn!<CR>
+
+" ',+' will toggle both
+noremap <leader>+ :set cursorline! cursorcolumn!<CR>
 
 
 " Vim Scripting
