@@ -125,6 +125,35 @@ function! MyFoldText()
 endfunction
 
 
+" Apply focus-mode customizations
+function! s:Focus()
+	if has('gui_running')
+		set fullscreen
+	elseif exists('$TMUX')
+		silent !tmux set status off
+		silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+	endif
+	set noshowmode
+	set noshowcmd
+	set scrolloff=999
+	Limelight
+endfunction
+
+" Revert focus-mode customizations
+function! s:Blur()
+	if has('gui_running')
+		set nofullscreen
+	elseif exists('$TMUX')
+		silent !tmux set status on
+		silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+	endif
+	set showmode
+	set showcmd
+	set scrolloff=5
+	Limelight!
+endfunction
+
+
 " *** General Configuration ***************************************************
 
 " VIM SETTINGS
@@ -434,6 +463,19 @@ map <leader><bar> :set cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)
 
 " ',+' will toggle both
 map <leader>+ :set cursorline! cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)<CR>
+
+
+" Focus-mode
+
+" Increase width from default 80 characters
+let g:goyo_width = 100
+
+" Trigger custom-handlers when enabling/disabling focus-mode
+autocmd! User GoyoEnter nested call <SID>Focus()
+autocmd! User GoyoLeave nested call <SID>Blur()
+
+" Toggle focus-mode
+map <leader><leader> :Goyo<CR>
 
 
 " Vim Scripting

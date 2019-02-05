@@ -58,6 +58,10 @@ sheerun/vim-polyglot # A collection of language packs for Vim
 # DOCUMENTATION
 rkitover/vimpager # pager using vim and less.vim
 
+# VISUALS
+junegunn/goyo.vim # Distraction-free editing
+junegunn/limelight.vim # Hyperfocused editing
+
 # COLORS
 flazz/vim-colorschemes # one stop shop for vim colorschemes
 noahfrederick/vim-noctu # inherits restricted 16-color terminal scheme
