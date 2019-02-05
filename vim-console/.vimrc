@@ -48,6 +48,21 @@ function s:EditBufferOrReindent(...)
     return ""
 endfunction
 
+" Toggle between conceallevel 0 and 2. Pass optional boolean
+" to disable temporarily (false) or restore last on/off setting (true)
+function s:ToggleConceal(...)
+    let tmpToggle = get(a:000, 0, 0)
+    if !exists('b:save_conceallevel')
+        let b:save_conceallevel = &conceallevel
+    endif
+    if len(a:000)
+        let &conceallevel = tmpToggle ? b:save_conceallevel : 0
+    else
+        let &conceallevel = &conceallevel ? 0 : 2
+        let b:save_conceallevel = &conceallevel
+    endif
+endfunction
+
 " Get full file path for current buffer or # buffer if command-count provided
 function s:BufferFile(...)
     let fnameMods = get(a:000, 0, '')
@@ -55,7 +70,7 @@ function s:BufferFile(...)
 endfunction
 
 " Share yanked text with system clipboard when Vim lacks 'clipboard' support
-" Note: paste should work via Shift-Insert or similar terminal keymap
+" Note: Paste should work via Shift-Insert or similar terminal keymap
 if executable('xclip') | let s:clip = 'xclip' | endif
 if executable('pbcopy') | let s:clip = 'pbcopy' | endif
 function s:CopyToClipboard(text, ...)
@@ -400,7 +415,7 @@ set foldtext=MyFoldText()
 " Conceal
 
 " ',c' will toggle concealed text
-map <leader>c :let &conceallevel = &conceallevel ? 0 : 2<CR>
+map <leader>c :call <SID>ToggleConceal()<CR>
 
 
 " Wrapping
@@ -412,13 +427,13 @@ set showbreak=⋯ " ↪
 " Cursor Line/Column
 
 " ',-' will toggle cursor line
-noremap <leader>- :set cursorline!<CR>
+map <leader>- :set cursorline!<CR>
 
 " ',|' will toggle cursor column
-noremap <leader><bar> :set cursorcolumn!<CR>
+map <leader><bar> :set cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)<CR>
 
 " ',+' will toggle both
-noremap <leader>+ :set cursorline! cursorcolumn!<CR>
+map <leader>+ :set cursorline! cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)<CR>
 
 
 " Vim Scripting
