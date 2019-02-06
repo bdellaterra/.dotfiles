@@ -297,6 +297,43 @@ map <leader>. :Ranger<CR>
 map <leader>f :RangerWorkingDirectory<CR>
 
 
+" WINDOWS
+
+" Open windows towards the bottom/right by default
+set splitbelow
+set splitright
+
+" Ctrl + movement keys to switch windows w/ Tmux awareness
+let g:tmux_navigator_no_mappings = 1
+""nnoremap <silent> <C-Left>  :echo "TmuxNavigateLeft"<CR>
+nnoremap <silent> <C-h>     :echo "TmuxNavigateLeft"<CR>
+""nnoremap <silent> <C-Down>  :echo "TmuxNavigateDown"<CR>
+nnoremap <silent> <C-j>     :echo "TmuxNavigateDown"<CR>
+""nnoremap <silent> <C-Up>    :echo "TmuxNavigateUp"<CR>
+nnoremap <silent> <C-k>     :echo "TmuxNavigateUp"<CR>
+""nnoremap <silent> <C-Right> :echo "TmuxNavigateRight"<CR>
+nnoremap <silent> <C-l>     :echo "TmuxNavigateRight"<CR>
+
+" Ctrl-w + window-movement to open window in that direction
+" Release Ctrl key before movement to open full-width/full-height window
+nnoremap <silent> <C-w><C-Left>  :vertical aboveleft new<CR>
+nnoremap <silent> <C-w><C-h>     :vertical aboveleft new<CR>
+nnoremap <silent> <C-w><C-Down>  :belowright new<CR>
+nnoremap <silent> <C-w><C-j>     :belowright new<CR>
+nnoremap <silent> <C-w><C-Up>    :aboveleft new<CR>
+nnoremap <silent> <C-w><C-k>     :aboveleft new<CR>
+nnoremap <silent> <C-w><C-Right> :vertical belowright new<CR>
+nnoremap <silent> <C-w><C-l>     :vertical belowright new<CR>
+nnoremap <silent> <C-w><Left>    :vertical topleft new<CR>
+nnoremap <silent> <C-w>h         :vertical topleft new<CR>
+nnoremap <silent> <C-w><Down>    :botright new<CR>
+nnoremap <silent> <C-w>j         :botright new<CR>
+nnoremap <silent> <C-w><Up>      :topleft new<CR>
+nnoremap <silent> <C-w>k         :topleft new<CR>
+nnoremap <silent> <C-w><Right>   :vertical botright new<CR>
+nnoremap <silent> <C-w>l         :vertical botright new<CR>
+
+
 " BUFFERS
 
 " Show buffers if two or more are open
@@ -357,7 +394,7 @@ xmap <leader>a <Plug>(EasyAlign)
 nmap <leader>a <Plug>(EasyAlign)"
 
 
-" Completion
+" COMPLETION
 
 " Show completion menu even if it has one item
 set completeopt+=menuone
@@ -373,7 +410,7 @@ set belloff+=ctrlg
 let g:mucomplete#enable_auto_at_startup = 1
 
 
-" Fuzzy-Find
+" FUZZY-FIND
 " (All commands are prefized with <leader>/)
 
 map <leader>/p   :Files 
@@ -409,7 +446,7 @@ if executable('rg') " https://github.com/BurntSushi/ripgrep
 endif
 
 
-" Linting
+" LINTING
 
 " Set signs for sign column
 let g:ale_sign_warning = '•'
@@ -426,7 +463,7 @@ let g:ale_sign_column_always = 1
 map <leader>l :ALEFix && %foldopen!<CR> " unclear why ALEFix closes folds
 
 
-" Fold
+" FOLD
 
 " Initial fold regions based on syntax-rules
 set foldmethod=syntax
@@ -441,19 +478,13 @@ set foldopen=all
 set foldtext=MyFoldText()
 
 
-" Conceal
+" VISUALS
 
 " ',c' will toggle concealed text
 map <leader>c :call <SID>ToggleConceal()<CR>
 
-
-" Wrapping
-
 " Set visual wrap indicator
 set showbreak=⋯ " ↪
-
-
-" Cursor Line/Column
 
 " ',-' will toggle cursor line
 map <leader>- :set cursorline!<CR>
@@ -465,7 +496,7 @@ map <leader><bar> :set cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)
 map <leader>+ :set cursorline! cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)<CR>
 
 
-" Focus-mode
+" FOCUS-MODE
 
 " Increase width from default 80 characters
 let g:goyo_width = 100
@@ -478,7 +509,7 @@ autocmd! User GoyoLeave nested call <SID>Blur()
 map <leader><leader> :Goyo<CR>
 
 
-" Vim Scripting
+" VIM SCRIPTING
 
 " Display syntax information
 map gs :call <SID>SynGroup()<CR>

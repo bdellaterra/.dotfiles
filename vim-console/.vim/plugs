@@ -22,6 +22,7 @@ francoiscabrol/ranger.vim # vim-friendly file manager
 gioele/vim-autoswap # less annoying swap file messages
 
 # WINDOWS
+christoomey/vim-tmux-navigator # seamless navigation between tmux panes and vim splits 
 roxma/vim-window-resize-easy # easier window-resize commands
 
 # SEARCH/REPLACE
