@@ -34,28 +34,26 @@ tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of 
 junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder.
 junegunn/fzf.vim # fzf-based commands and mappings
 
-# DELIMITERS
-tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
-jiangmiao/auto-pairs # insert or delete brackets, parens, quotes in pairs
-
 # ALIGNMENT
 junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easyalign)
 
 # TEXT OBJECTS
 wellle/targets.vim # provides additional text objects
 michaeljsmith/vim-indent-object # defines a new text object based on indentation levels
+tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
 
 # COMMENTS
 tomtom/tcomment_vim # file-type sensible comments
 
 # COMPLETION
 lifepillar/vim-mucomplete # minmalist implementation of chained (fallback) completion
-tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 
 # LANGUAGE SUPPORT
 w0rp/ale # asynchronous linting/fixing for Vim and Language Server Protocol LSP) integration
 ludovicchabant/vim-gutentags # r(e)generate tag files as you work
 sheerun/vim-polyglot # A collection of language packs for Vim
+tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
+rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
 
 # DOCUMENTATION
 rkitover/vimpager # pager using vim and less.vim

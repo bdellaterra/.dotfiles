@@ -474,7 +474,7 @@ highlight link ALEErrorSign ErrorMsg
 let g:ale_sign_column_always = 1
 
 " ',l' will auto-fix linter errors (without saving)
-map <leader>l :ALEFix && %foldopen!<CR> " unclear why ALEFix closes folds
+map <leader><Enter> :ALEFix && %foldopen!<CR> " unclear why ALEFix closes folds
 
 
 " FOLD
@@ -496,6 +496,9 @@ set foldtext=MyFoldText()
 
 " ',c' will toggle concealed text
 map <leader>c :call <SID>ToggleConceal()<CR>
+
+" Temporarily toggle conceal to fix undo behavior
+map u :call <SID>ToggleConceal(0) \| undo \| :call <SID>ToggleConceal(1)<CR>
 
 " Set visual wrap indicator
 set showbreak=⋯ " ↪
