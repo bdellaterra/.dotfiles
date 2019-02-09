@@ -124,7 +124,6 @@ function! MyFoldText()
   return sub . info
 endfunction
 
-
 " Apply focus-mode customizations
 function! s:Focus()
 	if has('gui_running')
@@ -133,9 +132,14 @@ function! s:Focus()
 		silent !tmux set status off
 		silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
 	endif
+    augroup VerticallyCenterCursor
+        autocmd!
+        autocmd VerticallyCenterCursor CursorMoved * normal zz
+    augroup END
+    let s:save_showtabline = &showtabline
+    let &showtabline = 0
 	set noshowmode
 	set noshowcmd
-	set scrolloff=999
 	Limelight
 endfunction
 
@@ -147,9 +151,11 @@ function! s:Blur()
 		silent !tmux set status on
 		silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
 	endif
+    au! VerticallyCenterCursor CursorMoved
+    let &showtabline = s:save_showtabline
+    unlet s:save_showtabline
 	set showmode
 	set showcmd
-	set scrolloff=5
 	Limelight!
 endfunction
 
@@ -299,20 +305,16 @@ map <leader>f :RangerWorkingDirectory<CR>
 
 " WINDOWS
 
-" Open windows towards the bottom/right by default
-set splitbelow
-set splitright
-
 " Ctrl + movement keys to switch windows w/ Tmux awareness
 let g:tmux_navigator_no_mappings = 1
-""nnoremap <silent> <C-Left>  :echo "TmuxNavigateLeft"<CR>
-nnoremap <silent> <C-h>     :echo "TmuxNavigateLeft"<CR>
-""nnoremap <silent> <C-Down>  :echo "TmuxNavigateDown"<CR>
-nnoremap <silent> <C-j>     :echo "TmuxNavigateDown"<CR>
-""nnoremap <silent> <C-Up>    :echo "TmuxNavigateUp"<CR>
-nnoremap <silent> <C-k>     :echo "TmuxNavigateUp"<CR>
-""nnoremap <silent> <C-Right> :echo "TmuxNavigateRight"<CR>
-nnoremap <silent> <C-l>     :echo "TmuxNavigateRight"<CR>
+""nnoremap <silent> <C-Left>  :TmuxNavigateLeft<CR>
+nnoremap <silent> <C-h>       :TmuxNavigateLeft<CR>
+""nnoremap <silent> <C-Down>  :TmuxNavigateDown<CR>
+nnoremap <silent> <C-j>       :TmuxNavigateDown<CR>
+""nnoremap <silent> <C-Up>    :TmuxNavigateUp<CR>
+nnoremap <silent> <C-k>       :TmuxNavigateUp<CR>
+""nnoremap <silent> <C-Right> :TmuxNavigateRight<CR>
+nnoremap <silent> <C-l>       :TmuxNavigateRight<CR>
 
 " Ctrl-w + window-movement to open window in that direction
 " Release Ctrl key before movement to open full-width/full-height window
