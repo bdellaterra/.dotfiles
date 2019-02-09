@@ -177,6 +177,9 @@ set modelines=0
 " Allow backspacing over everything
 set backspace=indent,eol,start
 
+" Set minimum lines of context to display around cursor
+set scrolloff=5
+
 " Display most of a last line that doesn't fit in the window
 set display=lastline
 
@@ -301,6 +304,15 @@ map <leader>. :Ranger<CR>
 
 " ',f' will browse files at working-directory (usually project root)
 map <leader>f :RangerWorkingDirectory<CR>
+
+
+" MOVEMENT
+
+" '}' will jump down to start of next paragraph, not blank line before
+noremap } }}{<Enter>
+
+" '{' will jump up to start of paragraph, not blank line before
+noremap { {{<Enter>
 
 
 " WINDOWS
