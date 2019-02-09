@@ -17,6 +17,3 @@ if ($EDITOR_AUTO_FIX || $EDITOR_AUTO_FIX == '')
     let b:ale_fixers += ['eslint']
 endif
 
-" Auto-fold long imports
-%g#^import#silent! normal zc
-
