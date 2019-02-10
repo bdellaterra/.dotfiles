@@ -318,15 +318,21 @@ noremap { {{<Enter>
 
 " WINDOWS
 
+" Save current buffer when leaving Vim for another Tmux pane
+let g:tmux_navigator_save_on_switch = 1
+ 
+" Don't leave Vim while it's in a zoomed Tmux pane
+let g:tmux_navigator_disable_when_zoomed = 1
+
 " Ctrl + movement keys to switch windows w/ Tmux awareness
 let g:tmux_navigator_no_mappings = 1
-""nnoremap <silent> <C-Left>  :TmuxNavigateLeft<CR>
+nnoremap <silent> <C-Left>  :TmuxNavigateLeft<CR>
 nnoremap <silent> <C-h>       :TmuxNavigateLeft<CR>
-""nnoremap <silent> <C-Down>  :TmuxNavigateDown<CR>
+nnoremap <silent> <C-Down>  :TmuxNavigateDown<CR>
 nnoremap <silent> <C-j>       :TmuxNavigateDown<CR>
-""nnoremap <silent> <C-Up>    :TmuxNavigateUp<CR>
+nnoremap <silent> <C-Up>    :TmuxNavigateUp<CR>
 nnoremap <silent> <C-k>       :TmuxNavigateUp<CR>
-""nnoremap <silent> <C-Right> :TmuxNavigateRight<CR>
+nnoremap <silent> <C-Right> :TmuxNavigateRight<CR>
 nnoremap <silent> <C-l>       :TmuxNavigateRight<CR>
 
 " Ctrl-w + window-movement to open window in that direction
