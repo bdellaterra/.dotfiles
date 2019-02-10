@@ -336,7 +336,6 @@ nnoremap <silent> <C-Right> :TmuxNavigateRight<CR>
 nnoremap <silent> <C-l>       :TmuxNavigateRight<CR>
 
 " Ctrl-w + window-movement to open window in that direction
-" Release Ctrl key before movement to open full-width/full-height window
 nnoremap <silent> <C-w><C-Left>  :vertical aboveleft new<CR>
 nnoremap <silent> <C-w><C-h>     :vertical aboveleft new<CR>
 nnoremap <silent> <C-w><C-Down>  :belowright new<CR>
@@ -345,6 +344,7 @@ nnoremap <silent> <C-w><C-Up>    :aboveleft new<CR>
 nnoremap <silent> <C-w><C-k>     :aboveleft new<CR>
 nnoremap <silent> <C-w><C-Right> :vertical belowright new<CR>
 nnoremap <silent> <C-w><C-l>     :vertical belowright new<CR>
+" Release Ctrl key before movement to open full-width/full-height window
 nnoremap <silent> <C-w><Left>    :vertical topleft new<CR>
 nnoremap <silent> <C-w>h         :vertical topleft new<CR>
 nnoremap <silent> <C-w><Down>    :botright new<CR>
@@ -353,8 +353,13 @@ nnoremap <silent> <C-w><Up>      :topleft new<CR>
 nnoremap <silent> <C-w>k         :topleft new<CR>
 nnoremap <silent> <C-w><Right>   :vertical botright new<CR>
 nnoremap <silent> <C-w>l         :vertical botright new<CR>
+" Use Shift key with movement to move window in that direction
+nnoremap <silent> <C-w><S-Left>  <C-w>H
+nnoremap <silent> <C-w><S-Down>  <C-w>J
+nnoremap <silent> <C-w><S-Up>    <C-w>K
+nnoremap <silent> <C-w><S-Right> <C-w>L
 
-" 'Alt+Enter' will toggle zooming the current window
+" 'Ctrl+w,Enter' will toggle zooming the current window
 map <silent> <C-w><Enter> :silent! call ZoomWin()<CR>
 
 
