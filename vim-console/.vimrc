@@ -273,6 +273,14 @@ else
     let &t_EI = "\e[2 q"
 endif
 
+" enable mouse if supported
+if has('mouse')
+    set mouse=a
+    if &term =~ '^screen' && has('mouse_xterm')
+        set ttymouse=xterm2
+    endif
+endif
+
 " Improve console colors
 if $TERM =~ '256color' || $COLORTERM == 'gnome-terminal'
     set t_Co=256
