@@ -10,7 +10,6 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 
-
 " HELPER FUNCTIONS
 
 " Support loading plugin/options from file w/ empty lines and comments removed
@@ -410,18 +409,6 @@ nnoremap =[ :<C-u>exe (v:count ? v:count : '') . 'bprev'<CR>
 nmap <S-Tab> =[
 
 
-" SESSION MANAGER
-
-" Set temp file location
-let g:pickMeUpSessionDir = s:TmpDir
-
-
-" UNDO
-
-" ',uh' will Toggle interactive undo-history
-map <leader>uh :GundoToggle<CR>
-
-
 " ALIGNMENT
 
 " ',a' wil start interactive EasyAlign in visual mode (e.g. vip,a)
@@ -515,13 +502,29 @@ set foldopen=all
 set foldtext=MyFoldText()
 
 
+" SESSION MANAGER
+
+" Set temp file location
+let g:pickMeUpSessionDir = s:TmpDir
+
+
+" UNDO
+
+" ',uh' will Toggle interactive undo-history
+map <leader>uh :GundoToggle<CR>
+
+" Temporarily toggle conceal to fix undo behavior
+map u :call <SID>ToggleConceal(0) \| undo \| :call <SID>ToggleConceal(1)<CR>
+ 
+" Prevent <Esc>u from accidentally inserting special character 'õ' in insert-mode
+" (Use 'Ctrl-[,u' if you need to achieve the same thing)
+inoremap <Esc>u <Esc>
+
+
 " VISUALS
 
 " ',c' will toggle concealed text
 map <leader>c :call <SID>ToggleConceal()<CR>
-
-" Temporarily toggle conceal to fix undo behavior
-map u :call <SID>ToggleConceal(0) \| undo \| :call <SID>ToggleConceal(1)<CR>
 
 " Set visual wrap indicator
 set showbreak=⋯ " ↪
