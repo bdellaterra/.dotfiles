@@ -519,7 +519,7 @@ map u :call <SID>ToggleConceal(0) \| undo \| :call <SID>ToggleConceal(1)<CR>
  
 " Prevent <Esc>u from accidentally inserting special character 'õ' in insert-mode
 " (Use 'Ctrl-[,u' if you need to achieve the same thing)
-inoremap <Esc>u <Esc>
+inoremap <Esc>u <C-\><C-n>u
 
 
 " VISUALS
