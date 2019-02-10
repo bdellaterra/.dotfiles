@@ -1,6 +1,9 @@
 # STANDARDS
 tpope/vim-sensible # commonly accepted Vim settings
 
+# PERFORMANCE
+vim-scripts/LargeFile # disables features when editing large files to improve speed
+
 # MAPPINGS
 tpope/vim-rsi # support ubiquitous keymaps (see https://en.wikipedia.org/wiki/GNU_Readline)
 tpope/vim-repeat # enable repeating supported plugin maps with "."
