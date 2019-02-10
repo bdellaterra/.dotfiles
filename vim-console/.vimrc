@@ -478,7 +478,8 @@ let g:ale_sign_error = '▶'
 
 " Set highlight groups for signs
 highlight link ALEWarningSign SignColumn
-highlight link ALEErrorSign ErrorMsg
+highlight link ALEErrorSign WarningMsg
+highlight link ALEError WarningMsg
 
 " Always keep sign column open
 let g:ale_sign_column_always = 1
