@@ -1,7 +1,7 @@
 
 syntax match jsAnd "&&" conceal cchar=∧ containedin=jsOperator
 syntax match jsOr "||" conceal cchar=∨ containedin=jsOperator
-syntax match jsNot "!" conceal cchar=￢ containedin=jsOperator " ¬
+syntax match jsNot "!" conceal cchar=￢ containedin=jsOperator " ¬~～
 syntax match jsDivisionSign "/" contained conceal cchar=÷ containedin=jsOperator nextgroup=@jsExpression
 syntax match jsMultiplicationSign "*" conceal cchar=× containedin=jsOperator nextgroup=@jsExpression
 
@@ -31,15 +31,19 @@ syntax match jsArrowFunction /_\ze\s*=>/ skipwhite skipempty nextgroup=jsArrowFu
 syntax keyword jsClassKeyword class conceal cchar=∀
 syntax match jsClassExtension "extends" conceal cchar=⊂
 
-syntax keyword jsStorageClass const conceal cchar=◆ " ◇⋄◆● ∃
+syntax keyword jsStorageClass const conceal cchar=◆ " ▣◉◈◇⋄◆● ∃
 syntax keyword jsStorageClass let conceal cchar=⊙
 syntax keyword jsStorageClass var conceal cchar=◍
+
+syntax keyword jsConditional if conceal cchar=≡ " ⁇⊃※∗*＊
+syntax keyword jsConditional else conceal cchar=⊢ " ∵
+" syntax keyword jsConditional "else if" conceal cchar=⊨
 
 syntax keyword jsBooleanTrue true conceal cchar=⊤
 syntax keyword jsBooleanFalse false conceal cchar=⟂ " ⊥ (bottom) looks too light
 syntax keyword jsNull null conceal cchar=ø
 syntax keyword jsReturn return contained conceal cchar=↲ skipwhite nextgroup=@jsExpression
-syntax keyword jsStatement yield contained conceal cchar=↴ skipwhite nextgroup=@jsExpression
+syntax keyword jsStatement yield contained conceal cchar=↳ skipwhite nextgroup=@jsExpression " ↬⇄↔⟷
 syntax keyword jsUndefined undefined conceal cchar=␣
 syntax keyword jsNan NaN conceal cchar=Ӣ
 syntax keyword jsNumber Infinity conceal cchar=∞
