@@ -9,6 +9,9 @@ tpope/vim-rsi # support ubiquitous keymaps (see https://en.wikipedia.org/wiki/GN
 tpope/vim-repeat # enable repeating supported plugin maps with "."
 drmikehenry/vim-fixkey # fixes key codes for console Vim
 
+# MOUSE
+bdellaterra/vim-speedy # Fast characterwise, linewise, and blockwise mouse selections
+
 # CLIPBOARD
 
 # BUFFERS
