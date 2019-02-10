@@ -28,6 +28,7 @@ gioele/vim-autoswap # less annoying swap file messages
 # WINDOWS
 christoomey/vim-tmux-navigator # seamless navigation between tmux panes and vim splits 
 roxma/vim-window-resize-easy # easier window-resize commands
+regedarek/ZoomWin # Zoom in/out of windows (toggle between one window and multi-window) 
 
 # SEARCH/REPLACE
 timakro/vim-searchant # persistent search-highlighting

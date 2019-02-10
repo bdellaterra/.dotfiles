@@ -10,6 +10,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 
+
 " HELPER FUNCTIONS
 
 " Support loading plugin/options from file w/ empty lines and comments removed
@@ -346,6 +347,9 @@ nnoremap <silent> <C-w><Up>      :topleft new<CR>
 nnoremap <silent> <C-w>k         :topleft new<CR>
 nnoremap <silent> <C-w><Right>   :vertical botright new<CR>
 nnoremap <silent> <C-w>l         :vertical botright new<CR>
+
+" 'Alt+Enter' will toggle zooming the current window
+map <silent> <C-w><Enter> :silent! call ZoomWin()<CR>
 
 
 " BUFFERS
