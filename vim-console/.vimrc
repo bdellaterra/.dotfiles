@@ -176,11 +176,11 @@ function! s:StatusNoHL()
 endfunction
 
 " Generate unicode bar to represent progress through file
+let s:percentBars = ['█', '▇', '▆', '▅', '▄', '▃', '▂', '▁']
 function s:StatusPercentBar()
-  let g:pb = ['█', '▇', '▆', '▅', '▄', '▃', '▂', '▁']
   let percent = (1.0 * line('.')) / line('$')
-  let index = float2nr(round((len(g:pb) - 1) * percent))
-  return g:pb[index]
+  let index = float2nr(round((len(s:percentBars) - 1) * percent))
+  return s:percentBars[index]
 endfunction
 
 " Toggle between more and less verbose variations of statusline
