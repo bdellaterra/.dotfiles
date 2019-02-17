@@ -4,9 +4,9 @@
 
 " Auto-install plug.vim
 if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 
@@ -14,59 +14,59 @@ endif
 
 " Support loading plugin/options from file w/ empty lines and comments removed
 function s:Plugin(plug)
-    let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
-    if len(locator)
-        call call('plug#', len(options) ? [locator, eval(options)] : [locator])
-    end
+  let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
+  if len(locator)
+    call call('plug#', len(options) ? [locator, eval(options)] : [locator])
+  end
 endfunction
 
 " Convert path to forward slashes with a slash at the end
 function s:DirSlashes(path)
-    return substitute(a:path, '[^/\\]\@<=$\|\\', '/', 'g')
+  return substitute(a:path, '[^/\\]\@<=$\|\\', '/', 'g')
 endfunction
 
 " Create directory if necessary and normalize slashes
 function s:MakeDir(path)
-    try
-        if !isdirectory(a:path) && exists('*mkdir')
-            call mkdir(a:path, 'p')
-        endif
-    endtry
-    return s:DirSlashes(a:path)
+  try
+    if !isdirectory(a:path) && exists('*mkdir')
+      call mkdir(a:path, 'p')
+    endif
+  endtry
+  return s:DirSlashes(a:path)
 endfunction
 
 " Overload behavior of the equals key
 function s:EditBufferOrReindent(...)
-    let bufNum = get(a:000, 0, '')
-    if bufNum == ''
-        return "="
-    elseif bufNum == 0
-        return ":\<C-u>confirm buffer #\<CR>"
-    else
-        return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
-    endif
-    return ""
+  let bufNum = get(a:000, 0, '')
+  if bufNum == ''
+    return "="
+  elseif bufNum == 0
+    return ":\<C-u>confirm buffer #\<CR>"
+  else
+    return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
+  endif
+  return ""
 endfunction
 
 " Toggle between conceallevel 0 and 2. Pass optional boolean
 " to disable temporarily (false) or restore last on/off setting (true)
 function s:ToggleConceal(...)
-    let tmpToggle = get(a:000, 0, 0)
-    if !exists('b:save_conceallevel')
-        let b:save_conceallevel = &conceallevel
-    endif
-    if len(a:000)
-        let &conceallevel = tmpToggle ? b:save_conceallevel : 0
-    else
-        let &conceallevel = &conceallevel ? 0 : 2
-        let b:save_conceallevel = &conceallevel
-    endif
+  let tmpToggle = get(a:000, 0, 0)
+  if !exists('b:save_conceallevel')
+    let b:save_conceallevel = &conceallevel
+  endif
+  if len(a:000)
+    let &conceallevel = tmpToggle ? b:save_conceallevel : 0
+  else
+    let &conceallevel = &conceallevel ? 0 : 2
+    let b:save_conceallevel = &conceallevel
+  endif
 endfunction
 
 " Get full file path for current buffer or # buffer if command-count provided
 function s:BufferFile(...)
-    let fnameMods = get(a:000, 0, '')
-    return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
+  let fnameMods = get(a:000, 0, '')
+  return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
 endfunction
 
 " Share yanked text with system clipboard when Vim lacks 'clipboard' support
@@ -74,17 +74,17 @@ endfunction
 if executable('xclip') | let s:clip = 'xclip' | endif
 if executable('pbcopy') | let s:clip = 'pbcopy' | endif
 function s:CopyToClipboard(text, ...)
-    let register = get(a:000, 0, '')
-    if exists('s:clip') && register == ''
-       call system(s:clip, a:text)
-   endif
+  let register = get(a:000, 0, '')
+  if exists('s:clip') && register == ''
+    call system(s:clip, a:text)
+  endif
 endfunction
 
 " Show syntax group and translated syntax group of character under cursor
 " From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
 function! s:SynGroup()
-    let l:s = synID(line('.'), col('.'), 1)
-    echo synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
+  let l:s = synID(line('.'), col('.'), 1)
+  echo synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
 endfunction
 
 " Set a nicer foldtext function
@@ -98,7 +98,7 @@ function! MyFoldText()
       let line = getline( linenum )
       let comment_content = substitute( line, '^\([ \t\/\*]*\)\(.*\)$', '\2', 'g' )
       if comment_content != ''
-        break
+	break
       endif
       let linenum = linenum + 1
     endwhile
@@ -110,7 +110,7 @@ function! MyFoldText()
       let line = getline(v:foldend)
       let endbrace = substitute( line, '^[ \t]*}\(.*\)$', '}', 'g')
       if endbrace == '}'
-        let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
+	let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
       endif
     endif
   endif
@@ -120,43 +120,43 @@ function! MyFoldText()
   let num_w = getwinvar( 0, '&number' ) * getwinvar( 0, '&numberwidth' )
   let fold_w = getwinvar( 0, '&foldcolumn' )
   let sub = strpart( sub, 0, winwidth(0)
-			  \ - strlen( info ) - num_w - fold_w - 1 )
+    \ - strlen( info ) - num_w - fold_w - 1 )
   return sub . info
 endfunction
 
 " Apply focus-mode customizations
 function! s:Focus()
-	if has('gui_running')
-		set fullscreen
-	elseif exists('$TMUX')
-		silent !tmux set status off
-		silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-	endif
-    augroup VerticallyCenterCursor
-        autocmd!
-        autocmd VerticallyCenterCursor CursorMoved * normal zz
-    augroup END
-    let s:save_showtabline = &showtabline
-    let &showtabline = 0
-	set noshowmode
-	set noshowcmd
-	Limelight
+  if has('gui_running')
+    set fullscreen
+  elseif exists('$TMUX')
+    silent !tmux set status off
+    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  endif
+  augroup VerticallyCenterCursor
+    autocmd!
+    autocmd VerticallyCenterCursor CursorMoved * normal zz
+  augroup END
+  let s:save_showtabline = &showtabline
+  let &showtabline = 0
+  set noshowmode
+  set noshowcmd
+  Limelight
 endfunction
 
 " Revert focus-mode customizations
 function! s:Blur()
-	if has('gui_running')
-		set nofullscreen
-	elseif exists('$TMUX')
-		silent !tmux set status on
-		silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-	endif
-    au! VerticallyCenterCursor CursorMoved
-    let &showtabline = s:save_showtabline
-    unlet s:save_showtabline
-	set showmode
-	set showcmd
-	Limelight!
+  if has('gui_running')
+    set nofullscreen
+  elseif exists('$TMUX')
+    silent !tmux set status on
+    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  endif
+  au! VerticallyCenterCursor CursorMoved
+  let &showtabline = s:save_showtabline
+  unlet s:save_showtabline
+  set showmode
+  set showcmd
+  Limelight!
 endfunction
 
 " Set statusline highlight based on current mode
@@ -303,43 +303,43 @@ set guioptions-=T
 
 " Fix arrow keys
 if &term =~ '^screen' || has('Mac')
-	" From Chris Johnsen, 2012, https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly
-    execute "set <xUp>=\e[1;*A"
-    execute "set <xDown>=\e[1;*B"
-    execute "set <xRight>=\e[1;*C"
-	execute "set <xLeft>=\e[1;*D"
-	" From romainl, 2012, https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode
-    nnoremap <Esc>A <up>
-    nnoremap <Esc>B <down>
-    nnoremap <Esc>C <right>
-    nnoremap <Esc>D <left>
-    inoremap <Esc>A <up>
-    inoremap <Esc>B <down>
-    inoremap <Esc>C <right>
-    inoremap <Esc>D <left>
+  " From Chris Johnsen, 2012, https://unix.stackexchange.com/questions/29907/how-to-get-vim-to-work-with-tmux-properly
+  execute "set <xUp>=\e[1;*A"
+  execute "set <xDown>=\e[1;*B"
+  execute "set <xRight>=\e[1;*C"
+  execute "set <xLeft>=\e[1;*D"
+  " From romainl, 2012, https://stackoverflow.com/questions/8813855/in-vim-how-can-i-make-esc-and-arrow-keys-work-in-insert-mode
+  nnoremap <Esc>A <up>
+  nnoremap <Esc>B <down>
+  nnoremap <Esc>C <right>
+  nnoremap <Esc>D <left>
+  inoremap <Esc>A <up>
+  inoremap <Esc>B <down>
+  inoremap <Esc>C <right>
+  inoremap <Esc>D <left>
 endif
 
 " Modal cursor in terminal/tmux
 " From avivr, 2015, https://vi.stackexchange.com/questions/3379/cursor-shape-under-vim-tmux
 if exists('$TMUX')
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
 else
-    let &t_SI = "\e[5 q"
-    let &t_EI = "\e[2 q"
+  let &t_SI = "\e[5 q"
+  let &t_EI = "\e[2 q"
 endif
 
 " enable mouse if supported
 if has('mouse')
-    set mouse=a
-    if &term =~ '^screen' && has('mouse_xterm')
-        set ttymouse=xterm2
-    endif
+  set mouse=a
+  if &term =~ '^screen' && has('mouse_xterm')
+    set ttymouse=xterm2
+  endif
 endif
 
 " Improve console colors
 if $TERM =~ '256color' || $COLORTERM == 'gnome-terminal'
-    set t_Co=256
+  set t_Co=256
 endif
 
 
@@ -384,7 +384,7 @@ noremap { {{<Enter>
 
 " Save current buffer when leaving Vim for another Tmux pane
 let g:tmux_navigator_save_on_switch = 1
- 
+
 " Don't leave Vim while it's in a zoomed Tmux pane
 let g:tmux_navigator_disable_when_zoomed = 1
 
@@ -520,10 +520,10 @@ map <leader>/?   :Helptags<CR>
 map <leader>/gg  :Commits<CR> " Requires Fugitive plugin
 map <leader>/gbg :BCommits<CR>
 if executable('ag') " https://github.com/ggreer/the_silver_searcher
-    map <leader>/r   :Ag<CR>
+  map <leader>/r   :Ag<CR>
 endif
 if executable('rg') " https://github.com/BurntSushi/ripgrep
-    map <leader>/r   :Rg<CR>
+  map <leader>/r   :Rg<CR>
 endif
 
 
@@ -573,7 +573,7 @@ map <leader>uh :GundoToggle<CR>
 
 " Temporarily toggle conceal to fix undo behavior
 map u :call <SID>ToggleConceal(0) \| undo \| :call <SID>ToggleConceal(1)<CR>
- 
+
 " Prevent <Esc>u from accidentally inserting special character 'õ' in insert-mode
 " (Use 'Ctrl-[,u' if you need to achieve the same thing)
 inoremap <Esc>u <C-\><C-n>u
