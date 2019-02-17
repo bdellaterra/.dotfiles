@@ -439,12 +439,12 @@ let g:buftabline_numbers = 1
 let g:buftabline_separators = 0
 
 " If used after a numeric count the equals key switches to that number buffer.
-" Number zero signifies the althernate buffer. (See :help alternate-file)
+" Number zero signifies the alternate buffer. (See :help alternate-file)
 " Otherwise the default re-indent behavior is used.
 noremap <expr>= <SID>EditBufferOrReindent(v:count)
 noremap 0= :<C-u>confirm buffer #<CR>  " Vim won't pass zero-counts to mappings
 
-" '-=' will delete current buffer or # buffer number via command-count
+" '-=' will delete current buffer or # buffer number from command-count
 nnoremap -= :<C-u>exe (v:count ? v:count : '') . 'bdelete'<CR>
 nnoremap 0-= :<C-u>confirm bdelete #<CR>
 " Alias 'Ctrl-w,Ctrl-w'
@@ -452,7 +452,7 @@ nmap <C-w><C-w> -=
 nmap 0<C-w><C-w> 0-=
 
 " '+=' will prompt for editing a file with filename needing to be specified.
-" Path will be same as the current buffer or # buffer via command-count
+" Path will be same as the current buffer or that of # buffer from command-count
 nnoremap += :<C-u>edit <C-r>=<SID>BufferFile(':h') . '/'<CR>
 
 " '=]' will switch to previous buffer, or command-count buffers back
@@ -487,7 +487,7 @@ set completeopt+=noselect
 set shortmess+=c
 set belloff+=ctrlg
 
-" Auto-complete without hitting <Tab>
+" Show auto-complete menu without hitting <Tab>
 let g:mucomplete#enable_auto_at_startup = 1
 
 
