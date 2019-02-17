@@ -159,6 +159,58 @@ function! s:Blur()
 	Limelight!
 endfunction
 
+" Set statusline highlight based on current mode
+function! s:StatusModeHL()
+  let mode = mode()
+  if mode =~ '\vi|R' " '=~#' to match case
+    return &readonly ? '%2*' : '%1*'
+  elseif mode =~ '\vv|s|'
+    return '%3*'
+  endif
+  return !&modifiable ? '%4*' : '%*'
+endfunction
+
+" Set statusline to deemphasized highlighting
+function! s:StatusNoHL()
+  return '%#SignColumn#'
+endfunction
+
+" Generate unicode bar to represent progress through file
+function s:StatusPercentBar()
+  let g:pb = ['█', '▇', '▆', '▅', '▄', '▃', '▂', '▁']
+  let percent = (1.0 * line('.')) / line('$')
+  let index = float2nr(round((len(g:pb) - 1) * percent))
+  return g:pb[index]
+endfunction
+
+" Toggle between more and less verbose variations of statusline
+function s:ToggleVerboseStatus()
+  if !exists('s:verboseStatus') || !s:verboseStatus
+    let s:verboseStatus = 1
+  else
+    let s:verboseStatus = 0
+  endif
+endfunction
+
+" Generate custom statusline
+function MyStatus()
+  let corner = s:StatusModeHL() . '▒▒' . s:StatusNoHL()
+  let line = &number ? '' : printf('%5d', line('.'))
+  let col = printf('%3d', col('.'))
+  let pos = line != '' ? line . ' ' . col : col
+  let mod = &modified ? '…' : ''
+  let ro = &modifiable && &readonly ? '' : ''
+  let ft = &filetype != '' ? &filetype : 'unknown'
+  let ff = &fileformat != '' ? '/' . &fileformat : ''
+  let fe = &fileencoding != '' ? '/' . &fileencoding : ''
+  let bomb = &bomb ? '※' : ''
+  let file = '%f' . (mod != '' ? mod : ' ') . (ro != '' ? ' ' . ro : '')
+  let fileInfo = exists('s:verboseStatus') && s:verboseStatus
+    \ ? '⟦' . ft . ff . fe . bomb . '⟧' : ''
+  let pb = s:StatusPercentBar()
+  return corner . ' ' . file . ' ' . fileInfo . '%=' . ' ' . pos . '  ' . pb
+endfunction
+
 
 " *** General Configuration ***************************************************
 
@@ -228,6 +280,11 @@ set laststatus=2
 
 " Use modern encoding
 set encoding=utf8
+
+" Automatically read file changes
+set autoread
+" Autoread depends on file status being checked. This speeds that up
+autocmd InsertEnter,CursorMoved,CursorMovedI,CursorHold,CursorHoldI * checktime
 
 " Faster updates
 set updatetime=1000
@@ -524,6 +581,9 @@ inoremap <Esc>u <C-\><C-n>u
 
 " VISUALS
 
+" Always show the sign column
+set signcolumn=yes
+
 " ',c' will toggle concealed text
 map <leader>c :call <SID>ToggleConceal()<CR>
 
@@ -538,6 +598,24 @@ map <leader><bar> :set cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)
 
 " ',+' will toggle both
 map <leader>+ :set cursorline! cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)<CR>
+
+" Do not show mode below the statusline
+set noshowmode
+
+
+" STATUSLINE
+
+" Set highlight groups used in statusline
+highlight link User1 ModeMsg
+highlight link User2 ErrorMsg
+highlight link User3 DiffChange
+highlight link User4 BufTabLineActive
+
+" Use custom expression to build statusline
+set statusline=%!MyStatus()
+
+" ',vs' will toggle verbose statusline
+map <silent> <leader>vs :call <SID>ToggleVerboseStatus()<CR>
 
 
 " FOCUS-MODE
