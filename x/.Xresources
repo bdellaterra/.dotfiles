@@ -44,9 +44,9 @@ URxvt*font:         xft:Hack:size=12
 URxvt.keysym.C-1:   command:\033]710;xft:Liberation Mono:size=12\007
 URxvt.keysym.C-2:   command:\033]710;xft:DejaVu Sans Mono:style=Book:size=12\007
 URxvt.keysym.C-3:   command:\033]710;xft:NotoMono-Regular:size=12\007
-URxvt.keysym.C-4:   command:\033]710;xft:Droid Sans Mono:style=Regular:size=12\007
+URxvt.keysym.C-4:   command:\033]710;xft:Free Mono:style=Regular:size=12\007
 URxvt.keysym.C-5:   command:\033]710;xft:Oxygen Mono:style=Regular:size=12\007
-URxvt.keysym.C-6:   command:\033]710;xft:Luxi Mono:style=Regular:size=12\007
+URxvt.keysym.C-6:   command:\033]710;xft:Everson Mono:style=Regular:size=12\007
 URxvt.keysym.C-7:   command:\033]710;xft:InconsolataForPowerline Nerd Font:size=12\007
 URxvt.keysym.C-8:   command:\033]710;xft:SauceCodePro Nerd Font:size=12\007
 URxvt.keysym.C-9:   command:\033]710;xft:SourceCodePro:size=12\007
@@ -70,7 +70,7 @@ URxvt*termName:  screen-256color
 ! Start as login shell (Helpful for Tmux)
 URxvt*loginShell:  true
 
-! Don not use scrollback buffer (Tmux has its own)
+! Do not use scrollback buffer (Tmux has its own)
 URxvt*scrollWithBuffer:  false
 URxvt*saveLines:  0
 
