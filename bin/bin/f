@@ -1,11 +1,11 @@
 #!/bin/bash
-set -x
 
 # This provides a shorthand for finding files using regular expression search.
-# Swaps query and path to be the last parameters so this can serve as a
+# It takes query and path as the last two parameters so this can serve as a
 # fallback for the 'fd' command. (https://github.com/sharkdp/fd)
 
-echo "called as: $(basename $0)"
+# Use current directory as default path if script is invoked with one parameter
+[[ $# -eq 1 ]] && set -- "$@" '.'
 
 # Fail if too few parameters
 if [[ $# -lt 2 ]]; then
@@ -13,12 +13,15 @@ if [[ $# -lt 2 ]]; then
   exit 1
 fi
 
-[[ $# -ge 3 ]] && rest="${@:1:$[$# - 2]}"
+# Capture options, then regex query, then finally the search path
+[[ $# -ge 3 ]] && opts="${@:1:$[$# - 2]}"
 query="${@:$[$# - 1]:1}"
 path="${@:$#:1}"
 
-noHidden=1
-[[ $(basename $0) = 'fh' ]] && unset noHidden
+# Ignore hidden files, unless this script was invoked as 'fh' (find hidden)
+noDots=1
+[[ $(basename $0) = 'fh' ]] && unset noDots
 
-find "$path" ${noHidden:+  -not -path '*/\.*'} -iregex ".*$query.*" ${rest:+ $rest}
+# Call 'find' using reordered/optional parameters
+find "$path" ${noDots:+ -not -path '*/\.*'} -iregex ".*$query.*" ${opts:+ $opts}
 

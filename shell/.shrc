@@ -30,9 +30,9 @@ alias l='ls -lAhF'
 [[ `command -v ack` ]] && alias r="ack --smart-case -r"
 [[ `command -v ag` ]] && alias r="ag -Sr" # -u to search hidden/ignored files
 [[ `command -v rg` ]] && alias r="rg -S" # -u to search hidden/ignored files
-# f: preferred find w/ fallbacks
+# f: regex find w/ fallbacks
 # fh: include hidden files/folders
-# (fallbacks implemented via ~/bin/f to support re-ordering of parameters)
+# (fallbacks implemented via ~/bin/f to support reordering of parameters)
 if [[ `command -v fd` ]] ;then
   alias f=fd
   alias fh="f -HI"
