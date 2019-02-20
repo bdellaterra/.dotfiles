@@ -27,3 +27,13 @@ export PKG_CONFIG_PATH="$HOME/local/lib64/pkgconfig/"
 # Source: https://lists.opensuse.org/opensuse-factory/2017-04/msg00001.html
 export MOZ_USE_XINPUT2=1
 
+# *** FZF (Command-line Fuzzy Finder) ***
+# https://github.com/junegunn/fzf
+
+# Integrate 'fd' command if it's available
+if [[ `command -v fd` ]] ;then
+  export FZF_DEFAULT_COMMAND="fd --type file --color=always"
+  export FZF_DEFAULT_OPTS="--ansi"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
+
