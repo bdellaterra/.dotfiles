@@ -4,5 +4,5 @@ set conceallevel=2
 set concealcursor=n
 
 " Auto-fold long imports
-%g#^import#silent! normal zc
+silent! %g#^import#normal zc
 
