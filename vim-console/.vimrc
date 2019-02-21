@@ -491,6 +491,24 @@ set belloff+=ctrlg
 let g:mucomplete#enable_auto_at_startup = 1
 
 
+" SNIPPETS
+
+" Directory where personal snippets are stored
+let g:UltiSnipsSnippetsDir = '~/.vim-personal/after/UltiSnips'
+
+" Define triggers
+let g:UltiSnipsExpandTrigger = "<M-Enter>"
+let g:UltiSnipsListSnippets = "<M-l>"
+let g:UltiSnipsJumpForwardTrigger  = "<M-Enter>"
+let g:UltiSnipsJumpBackwardTrigger = "<M-l>"
+
+" Automatically activate file type skeletons
+let skeletons#autoRegister = 1
+
+" Set directory where skeletons are stored
+let skeletons#skeletonsDir = '~/.skeletons/vim'
+
+
 " FUZZY-FIND
 " (All commands are prefized with <leader>/)
 

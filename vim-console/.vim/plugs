@@ -63,6 +63,11 @@ sheerun/vim-polyglot # A collection of language packs for Vim
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
 
+# SNIPPETS
+SirVer/ultisnips # snippets files for various programming languagesadvanced snippet engine written in python
+honza/vim-snippets # community-maintained snippets files for various programming languages
+pgilad/vim-skeletons # automatically scaffold file types using UltiSnips templates
+
 # DOCUMENTATION
 rkitover/vimpager # pager using vim and less.vim
 
