@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# The intent of this script is to use Bash as a template engine. It echoes the
+# contents of the specified file(s) with shell parameter expansion. This allows
+# environment variables to be embedded or advanced expansion syntax can be used
+# for greater versatility. (See https://wiki.bash-hackers.org/syntax/pe)
+
+TEMPLATE=$(cat "$@")
+
+bash -c "cat <<EOF
+$TEMPLATE
+EOF"
+
