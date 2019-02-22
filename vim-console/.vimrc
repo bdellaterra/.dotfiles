@@ -250,6 +250,9 @@ set modelines=0
 " Allow backspacing over everything
 set backspace=indent,eol,start
 
+" Set minimum lines of context to display around cursor
+set scrolloff=5
+
 " Display most of a last line that doesn't fit in the window
 set display=lastline
 
