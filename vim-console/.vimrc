@@ -192,23 +192,37 @@ function s:ToggleVerboseStatus()
   endif
 endfunction
 
-" Generate custom statusline
+" Generate custom statusline (Ctrl-S omitted as it halts terminal)
+let s:modeSymbols = {
+  \ 'n':'ƞ', 'v':'ⱱ', 'V':'Ṿ', '':'ṽ', 's':'ș', 'S':'Ṣ',
+  \ 'i':'ί', 'R':'Ɍ', 'c':'ċ', 'r':'ṙ', '!':'⟳', 't':'ẗ'
+  \ }
 function MyStatus()
-  let corner = s:StatusModeHL() . '▒▒' . s:StatusNoHL()
-  let line = &number ? '' : printf('%5d', line('.'))
-  let col = printf('%3d', col('.'))
-  let pos = line != '' ? line . ' ' . col : col
-  let mod = &modified ? '…' : ''
-  let ro = &modifiable && &readonly ? '' : ''
-  let ft = &filetype != '' ? &filetype : 'unknown'
-  let ff = &fileformat != '' ? '/' . &fileformat : ''
-  let fe = &fileencoding != '' ? '/' . &fileencoding : ''
-  let bomb = &bomb ? '※' : ''
-  let file = '%f' . (mod != '' ? mod : ' ') . (ro != '' ? ' ' . ro : '')
-  let fileInfo = exists('s:verboseStatus') && s:verboseStatus
-    \ ? '⟦' . ft . ff . fe . bomb . '⟧' : ''
-  let pb = s:StatusPercentBar()
-  return corner . ' ' . file . ' ' . fileInfo . '%=' . ' ' . pos . '  ' . pb
+  try
+    let verbose = exists('s:verboseStatus') && s:verboseStatus
+    let corner = s:StatusModeHL() . '▒▒' . s:StatusNoHL()
+    let line = &number ? '' : printf('%5d', line('.'))
+    let col = printf('%3d', col('.'))
+    let pos = line != '' ? line . ' ' . col : col
+    let mod = &modified ? '…' : ''
+    let ro = &modifiable && &readonly ? '' : ''
+    let ff = &fileformat != '' ? &fileformat : ''
+    let fe = &fileencoding != '' ? '/' . &fileencoding : ''
+    let ft = &filetype != '' ? '/' . &filetype : 'unknown'
+    let bomb = &bomb ? '※' : ''
+    let file = '%f' . (mod != '' ? mod : ' ') . (ro != '' ? ' ' . ro : '')
+    let fileInfo = verbose ? ff . fe . ft . bomb : ''
+    let mode = verbose ? get(s:modeSymbols, mode(), '') : ''
+    let conceal = verbose && &conceallevel ? '␦' : ''
+    let paste = &paste ? '⎘' : '' " ⎀ϊǐ
+    let modeInfo = mode . conceal . paste
+    let pb = s:StatusPercentBar()
+    let leftSide = corner . ' ' . file . ' '
+    let rightSide =  modeInfo . '  ' . fileInfo . ' ' . pos . '  ' . pb
+    return leftSide . '%= ' . rightSide
+  catch
+    return v:exception
+  endtry
 endfunction
 
 
@@ -271,9 +285,12 @@ set shortmess+=T
 set cmdheight=1
 
 " Set default tabbing behavior
-set shiftwidth=4
+set shiftwidth=2
 set tabstop=4
 set expandtab
+
+" allow cursor over EOL
+set ve=onemore
 
 " Always show status line
 set laststatus=2
@@ -351,6 +368,10 @@ if has('clipboard')
 else
   autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
 endif
+
+" 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
+noremap <F12> :set paste! \| echo &paste ? 'paste' : 'nopaste'<CR>
+imap <expr> <F12> <C-r>=set paste! ? '' : ''<CR>
 
 
 " FILE MANAGER
@@ -669,5 +690,7 @@ call plug#end()
 " POST-PLUGIN CONFIGURATION
 
 " Set colorscheme
+" dark: alduin antares apprentice hybrid_material iceberg PaperColor
+" light: disciple earendel lightning
 colorscheme apprentice
 
