@@ -377,8 +377,8 @@ else
 endif
 
 " 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
-noremap <F12> :set paste! \| echo &paste ? 'paste' : 'nopaste'<CR>
-imap <expr> <F12> <C-r>=set paste! ? '' : ''<CR>
+noremap <F12> :set paste! paste?<CR>
+imap <expr> <F12> set paste! paste? ? '' : ''
 
 
 " FILE MANAGER
@@ -594,8 +594,11 @@ highlight link ALEError WarningMsg
 " Always keep sign column open
 let g:ale_sign_column_always = 1
 
-" ',l' will auto-fix linter errors (without saving)
+" ',Enter' will auto-fix linter errors (without saving)
 map <leader><Enter> :ALEFix && %foldopen!<CR> " unclear why ALEFix closes folds
+
+" ',k' will toggle spell-check highlighting
+map <leader>k :set spell! spell?<CR>
 
 
 " FOLD
