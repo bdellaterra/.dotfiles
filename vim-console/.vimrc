@@ -124,6 +124,11 @@ function! MyFoldText()
   return sub . info
 endfunction
 
+" Calculate ideal position for cursor to settle during scrolling
+function! s:CursorRatio()
+  return float2nr(round(winheight(0) * 0.381966))
+endfunction
+
 " Apply focus-mode customizations
 function! s:Focus()
   if has('gui_running')
@@ -134,7 +139,9 @@ function! s:Focus()
   endif
   augroup VerticallyCenterCursor
     autocmd!
-    autocmd VerticallyCenterCursor CursorMoved * normal zz
+    " Keep cursor/scroll position just north of center
+    autocmd VerticallyCenterCursor CursorMoved * exe 'normal zz'
+      \ . repeat("\<C-e>", (winheight(0) / 2) - <SID>CursorRatio())
   augroup END
   let s:save_showtabline = &showtabline
   let &showtabline = 0
@@ -242,9 +249,6 @@ set modelines=0
 
 " Allow backspacing over everything
 set backspace=indent,eol,start
-
-" Set minimum lines of context to display around cursor
-set scrolloff=5
 
 " Display most of a last line that doesn't fit in the window
 set display=lastline
@@ -399,6 +403,13 @@ noremap } }}{<Enter>
 
 " '{' will jump up to start of paragraph, not blank line before
 noremap { {{<Enter>
+
+
+" SCROLLING
+
+" lock cursor to optimal location while scrolling
+map <expr> <ScrollWheelUp> winline() >= <SID>CursorRatio() ? "\<C-e>gj" : 'gj'
+map <expr> <ScrollWheelDown> winline() <= <SID>CursorRatio() ? "\<C-y>gk" : 'gk'
 
 
 " WINDOWS
