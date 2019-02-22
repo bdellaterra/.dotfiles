@@ -100,7 +100,11 @@ case "$mimetype" in
     text/* | */xml)
         if [ "$(tput colors)" -ge 256 ]; then
             pygmentize_format=terminal256
-            highlight_format=xterm256
+            # highlight_format=xterm256
+
+# Force ansi colorscheme for syntax-highlighting
+highlight_format=ansi
+
         else
             pygmentize_format=terminal
             highlight_format=ansi
