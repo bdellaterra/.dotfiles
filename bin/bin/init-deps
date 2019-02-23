@@ -1,16 +1,24 @@
 #!/bin/bash
 
-# Create a symlink to each dependency in .deps directory
-if [[ -d $PROJECT_DEP_DIR ]]; then
-    mkdir ./.deps
-    IFS=" "
-    for dep in $PROJECT_DEPENDENCIES; do
-        ln -s "$PROJECT_DEP_DIR/$dep" .deps/
-    done
-    unset IFS
-fi
+# Pull in project dependencies if they are defined
+if [[ -n "$PROJECT_DEPENDENCIES" && -d "$PROJECT_DEP_DIR" ]]; then
 
-# Copy files for each dependency in '.deps' (Including nested dependencies)
-# NOTE: "bash -c" is used to enable glob expansion
-find -L .deps -iname '.deps' -exec bash -c "rsync -Lr --ignore-existing --exclude .deps {}\/*/ ." \;
+  # Fail if '.deps' directory already exists
+  if [[ -e .deps ]]; then
+    echo "ERROR: '.deps' directory already exists!" 1>&2
+    exit 1
+  fi
+
+  # Create a symlink to each dependency in .deps directory
+  mkdir ./.deps
+  IFS=" "
+  for dep in $PROJECT_DEPENDENCIES; do
+    ln -s "$PROJECT_DEP_DIR/$dep" .deps/
+  done
+  unset IFS
+
+  # Copy files for each dependency in '.deps' (Including nested dependencies)
+  # NOTE: "bash -c" is used to enable glob expansion
+  find -L .deps -iname '.deps' -exec bash -c "rsync -Lr --ignore-existing --exclude .deps {}\/*/ ." \;
+fi
 

@@ -1,0 +1,16 @@
+{
+  "name": "${PROJECT_NAME:-App}",
+  "short_name": "${PROJECT_PACKAGE:-app}",
+  "start_url": "${PROJECT_START_URL:-.}",
+  "display": "standalone",
+  "background_color": "${PROJECT_COLOR_PRIMARY:-#555555}",
+  "description": "${PROJECT_BRIEF:-app}",
+  "theme_color": "${PROJECT_COLOR_PRIMARY:-#555555}",
+  "icons": [
+    {
+      "src": "./assets/img/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

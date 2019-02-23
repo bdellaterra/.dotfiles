@@ -1,0 +1,8 @@
+{
+  "name": "${PROJECT_PACKAGE:-app}",
+  "version": "${PROJECT_INIT_VERSION:-1.0.0}",
+  "description": "${PROJECT_BRIEF}",
+  "main": "${PROJECT_MAIN:-index.js}",
+  "author": "${PROJECT_AUTHOR}",
+  "license": "${PROJECT_LICENSE_SLUG:-UNLICENSED}"
+}

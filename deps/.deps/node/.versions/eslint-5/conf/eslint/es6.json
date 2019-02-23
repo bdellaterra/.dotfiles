@@ -1,0 +1,37 @@
+{
+
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+
+  "env": {
+    "es6": true
+  },
+
+  "rules": {
+
+    "constructor-super": "error",
+    "no-const-assign": "error",
+    "no-new-symbol": "error",
+    "no-this-before-super": "error",
+    "require-yield": "warn",
+
+    // Legal, but possibly errors or bad style
+    "no-case-declarations": "warn",
+    "no-class-assign": "warn",
+    "no-dupe-class-members": "warn",
+    "no-inner-declarations": ["warn", "both"],
+    "no-template-curly-in-string": "warn",
+    "no-useless-computed-key": "warn",
+    "no-useless-rename": [ "warn", {
+      "ignoreDestructuring": true
+    }]
+
+  }
+
+}

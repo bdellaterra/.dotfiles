@@ -6,18 +6,38 @@ init-deps
 # Setup 'package.json', initializing 'base.package.json' if necessary.
 init-package-json
 
+# Optionally generate manifest using variables auto-loaded from entry.sh
+if [[ -n "$PROJECT_MANIFEST" ]]; then
+
+  # Fail if manifest already exists
+  if [[ -e "$PROJECT_MANIFEST" ]]; then
+    echo "ERROR: file '$PROJECT_MANIFEST' already exists!" 1>&2
+    exit 1
+  fi
+
+  echo-file "$HOME/.skeletons/bash/$PROJECT_MANIFEST" > "$PROJECT_MANIFEST"
+
+  # Fail if manifest does not exist or is empty
+  if [[ ! "$PROJECT_MANIFEST" ]]; then
+    echo "ERROR: file '$PROJECT_MANIFEST' not found or contains no data." 1>&2
+    exit 1
+  fi
+
+fi
+
 # Setup '.babelrc' if babel configuration is present.
 if [[ -d 'conf/babel' ]]; then
     init-babelrc
 fi
 
+# Setup '.babelrc' if babel configuration is present.
 # Install packages, using 'yarn' if it exists in user's path.
 npm=$(which npm)
 if [[ ! -x "$npm" ]]; then
     echo "ERROR: Could not find 'npm' executable in path." 1>&2
-    exit 1
+    exit 3
 fi
-yarn=$(which yarn)
+yarn=$(which yarn 2>/dev/null)
 if [[ -x "$yarn" ]] ; then
     yarn
 else

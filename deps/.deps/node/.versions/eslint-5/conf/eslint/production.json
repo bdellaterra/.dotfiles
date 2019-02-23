@@ -1,0 +1,28 @@
+{
+
+  "rules": {
+
+    // Debug calls should be removed in production
+    "no-alert": "error",
+    "no-console": "error",
+    "no-debugger": "error",
+
+    // Code optimization
+    "no-caller": "error",
+    "no-useless-computed-key": "warn",
+    "no-useless-concat": "warn",
+
+    // Security concerns
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-script-url": "error",
+
+    // Not ready for production
+    "no-warning-comments": "warn",
+
+    // Cross-platform compatibility
+    "no-path-concat": "error"
+
+  }
+
+}

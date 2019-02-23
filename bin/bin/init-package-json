@@ -11,8 +11,8 @@ if [[ ! -s .entry.sh ]]; then
     exit 1
 fi
 
-# Vim is configured to auto-generate 'package.json' from data in '.entry.sh'
-vim +wq "base.package.json"
+# Generate base package info using variables auto-loaded from entry.sh
+echo-file "$HOME/.skeletons/bash/base.package.json" > base.package.json
 
 # Fail if 'base.package.json' does not exist or is empty
 if [[ ! -s base.package.json ]]; then
@@ -27,6 +27,6 @@ if [[ -e package.json ]]; then
 fi
 
 # Create new 'package.json' by merging base with packages from dependencies
-# Attribution: Array-merge jq script courtesy of William Langford, https://github.com/stedolan/jq/issues/502
+# Using jq array-merge solution from William Langford, 2014, https://github.com/stedolan/jq/issues/502
 cat "base.package.json" `find -L "conf/packages" -not -path '*node_modules*' -type f -iname "*.json"` | jq -s '[.[] | to_entries] | flatten | reduce .[] as $dot ({}; .[$dot.key] += $dot.value)' > "package.json"
 

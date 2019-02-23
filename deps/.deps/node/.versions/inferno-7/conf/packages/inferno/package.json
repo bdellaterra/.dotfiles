@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "inferno": "^7.1.9",
+    "inferno-router": "^7.1.9",
+    "inferno-server": "^7.1.9"
+  },
+  "devDependencies": {
+    "babel-plugin-inferno": "^6.0.5"
+  }
+}
