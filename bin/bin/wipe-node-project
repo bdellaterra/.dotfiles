@@ -1,9 +1,0 @@
-#!/bin/bash
-shopt -s extglob
-
-for f in !(.|..|.entry.sh|.deps|.git|.hg|.svn|CVS)
-do
-  printf "\n$f\n"
-  rm -rvI "$f"
-done
-

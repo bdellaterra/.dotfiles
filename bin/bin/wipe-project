@@ -1,0 +1,12 @@
+#!/bin/bash
+shopt -s extglob
+shopt -s dotglob
+
+for f in !(.|..|.entry.sh|.git|.hg|.svn|CVS)
+do
+  if [[ -n "$f" ]]; then
+    printf "\n$f\n"
+    rm -rvI "$f"
+  fi
+done
+
