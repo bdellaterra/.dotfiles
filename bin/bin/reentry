@@ -1,0 +1,11 @@
+#!/usr/bin/zsh
+
+# Edit and (re)source folder scoped variables
+
+. "$HOME/.shrc"
+. "$HOME/.zsh/plugins/zsh-autoenv/lib/varstash"
+
+set -a
+${EDITOR:-vim} .entry.sh && source .entry.sh
+set +a
+
