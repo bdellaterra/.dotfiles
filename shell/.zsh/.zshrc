@@ -48,4 +48,6 @@ AUTOENV_FILE_LEAVE=.exit.sh
 
 source ~/.zsh/plugins/zsh-autoenv/autoenv.zsh
 
+# Edit and (re)source folder scoped variables
+alias reentry="${EDITOR:-vi} .entry.sh && source .entry.sh"
 
