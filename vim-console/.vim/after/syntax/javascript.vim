@@ -14,7 +14,7 @@ syntax match jsEqual "<=" conceal cchar=≤ containedin=jsOperator
 syntax match jsEqual "!==" conceal cchar=≠ containedin=jsOperator
 syntax match jsEqual "=" conceal cchar=≔ containedin=jsOperator " ←
 syntax match jsEqual "==" conceal cchar=≟ containedin=jsOperator " ≒
-syntax match jsEqual "===" conceal cchar=＝ containedin=jsOperator
+syntax match jsEqual "===" conceal cchar=≡ containedin=jsOperator " 〓
 syntax match jsDot "\.\.\." conceal cchar=… containedin=noise
 " syntax match jsComment "//" conceal cchar=〜
 " syntax region  jsComment        start=+//+ end=/$/ contains=jsCommentTodo,@Spell extend keepend
@@ -35,9 +35,13 @@ syntax keyword jsStorageClass const conceal cchar=◆ " ▣◉◈◇⋄◆● �
 syntax keyword jsStorageClass let conceal cchar=⊙
 syntax keyword jsStorageClass var conceal cchar=◍
 
-syntax keyword jsConditional if conceal cchar=≡ " ⁇⊃※∗*＊
-syntax keyword jsConditional else conceal cchar=⊢ " ∵
+syntax keyword jsConditional if conceal cchar=ϕ " Φφϕ⏀ψΨ⋔↔∵∷☰⁇⊃※∗*＊
+syntax keyword jsConditional else conceal cchar=⊢
 " syntax keyword jsConditional "else if" conceal cchar=⊨
+" syntax keyword jsConditional switch conceal cchar=∈
+" syntax keyword jsLabel case conceal cchar=→
+" syntax keyword jsTry try conceal cchar=ψ " ⍕⍦◇◊⟠◻†
+" syntax keyword jsFuncBlock catch conceal cchar=↯
 
 syntax keyword jsBooleanTrue true conceal cchar=⊤
 syntax keyword jsBooleanFalse false conceal cchar=⟂ " ⊥ (bottom) looks too light
