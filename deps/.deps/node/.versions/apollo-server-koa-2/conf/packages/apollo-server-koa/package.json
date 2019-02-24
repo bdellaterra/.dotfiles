@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "apollo-server-koa": "^2.4.6"
+  }
+}

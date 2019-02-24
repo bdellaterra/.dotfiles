@@ -1,14 +1,4 @@
 {
-  "name": "workbox-webpack-plugin-4",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "Brian Dellaterra <bdellaterra@users.noreply.github.com> (https://github.com/bdellaterra)",
-  "license": "UNLICENSED",
-  "description": "",
   "devDependencies": {
     "workbox-webpack-plugin": "^3.6.3"
   }

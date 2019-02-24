@@ -1,5 +1,14 @@
 {
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "npm run type-check -- --watch",
+    "typebuild": "npm run build:types && npm run build:js",
+    "typebuild:types": "tsc --emitDeclarationOnly",
+    "typebuild:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline"
+  },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.3.3"
+    "@babel/preset-typescript": "^7.3.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.2"
   }
 }

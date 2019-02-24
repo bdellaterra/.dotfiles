@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "inferno-redux": "^7.1.9"
+  }
+}
