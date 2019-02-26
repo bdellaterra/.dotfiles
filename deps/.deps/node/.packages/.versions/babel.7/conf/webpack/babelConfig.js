@@ -1,12 +1,13 @@
+import { resolve } from 'path'
 
 export default {
   module: {
     rules: [
       {
         test: /\.(jsx?|tsx?)$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: resolve('node_modules'),
         use: {
-          loader: "babel-loader"
+          loader: "babel-loader",
         }
       }
     ]
