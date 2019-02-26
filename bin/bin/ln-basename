@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Create symlinks to target file(s) in current directory using
+# the original filename minus path/extension. (useful with globbing)
+
+for f in $@
+do
+  base=$(basename "$f")
+  noExt="${base%.*}"
+  ln -s "$f" "$noExt"
+done
+
