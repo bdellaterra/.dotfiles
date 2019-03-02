@@ -224,7 +224,7 @@ function MyStatus()
     let paste = &paste ? '⎘' : '' " ⎀ϊǐ
     let modeInfo = mode . conceal . paste
     let pb = s:StatusPercentBar()
-    let leftSide = corner . ' ' . file . ' '
+    let leftSide = corner . ' %<' . file . ' '
     let rightSide =  modeInfo . '  ' . fileInfo . ' ' . pos . '  ' . pb
     return leftSide . '%= ' . rightSide
   catch
