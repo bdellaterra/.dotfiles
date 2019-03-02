@@ -9,6 +9,7 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.3.3",
     "@babel/plugin-proposal-class-properties": "^7.3.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.3.2"
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
+    "ts-node": "^8.0.2"
   }
 }
