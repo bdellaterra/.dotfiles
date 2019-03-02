@@ -20,5 +20,8 @@ if [[ -n "$PROJECT_DEPENDENCIES" && -d "$PROJECT_DEP_DIR" ]]; then
   # Copy files for each dependency in '.deps' (Including nested dependencies)
   # NOTE: "bash -c" is used to enable glob expansion
   find -L .deps -iname '.deps' -exec bash -c "rsync -Lr --ignore-existing --exclude .deps {}\/*/ ." \;
+
+  # Delete files with a specific marker. (symlink ~/.deps/delete for convenience)
+  find . -exec grep -q '(((INIT-DEPS: DELETE FILE MARKER)))' '{}' \; -delete 2>/dev/null
 fi
 
