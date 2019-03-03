@@ -13,8 +13,6 @@ drmikehenry/vim-fixkey # fixes key codes for console Vim
 # MOUSE
 bdellaterra/vim-speedy # Fast characterwise, linewise, and blockwise mouse selections
 
-# CLIPBOARD
-
 # BUFFERS
 ap/vim-buftabline # Show buffers w/ numbers in top bar
 dbakker/vim-projectroot # utils to find project dir (supplements bdellaterra/vim-pick-me-up)
@@ -59,7 +57,7 @@ lifepillar/vim-mucomplete # minmalist implementation of chained (fallback) compl
 # LANGUAGE SUPPORT
 w0rp/ale # asynchronous linting/fixing for Vim and Language Server Protocol LSP) integration
 ludovicchabant/vim-gutentags # r(e)generate tag files as you work
-sheerun/vim-polyglot # A collection of language packs for Vim
+sheerun/vim-polyglot # a collection of language packs for Vim
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
 
@@ -72,8 +70,9 @@ pgilad/vim-skeletons # automatically scaffold file types using UltiSnips templat
 rkitover/vimpager # pager using vim and less.vim
 
 # VISUALS
-junegunn/goyo.vim # Distraction-free editing
-junegunn/limelight.vim # Hyperfocused editing
+junegunn/goyo.vim # distraction-free editing
+junegunn/limelight.vim # hyperfocused editing
+carpetsmoker/startscreen.vim # customize Vim's start screen
 
 # COLORS
 flazz/vim-colorschemes # one stop shop for vim colorschemes

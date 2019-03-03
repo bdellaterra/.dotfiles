@@ -12,6 +12,37 @@ endif
 
 " HELPER FUNCTIONS
 
+" Show ASCII art + fortune message
+fun! s:StartScreen()
+  let w = winwidth(0) - (&signcolumn ? 2 : 0) - (&number ? len(line('$')) : 0)
+  let h = winheight(0)
+  let margin = 2
+  let art = readfile(expand('$HOME') . '/.vim/art.txt')
+  let toASCII = 'iconv -f utf-8 -t ascii//translit'
+  let trim = "awk '{$1=$1;print}'"
+  let fortune = systemlist('fortune | ' .  toASCII . ' | ' . trim)
+  let artWidth = min(map(copy(art), 'len(v:val)'))
+  let lineWidth = max(map(copy(fortune), 'len(v:val)'))
+  let formatWidth = w - artWidth - margin * 2
+  if lineWidth > formatWidth
+    let fortune = systemlist('fmt --width ' . formatWidth, fortune)
+    let lineWidth = max(map(copy(fortune), 'len(v:val)'))
+  endif
+  exe ':normal' . max([1, h - len(art) - 1]) . 'O'
+  call append(line('.'), art)
+  normal gg
+  let lnum = (margin / 2) " leaving space at top
+  for line in fortune
+    let lnum += 1
+    let cur = getline(lnum)
+    let pad = w - len(cur) - (lineWidth - len(line)) - (margin * 2)
+    call setline(lnum, cur . printf('%' . pad . 'S', line))
+  endfor
+  normal gg
+  redraw!
+  nnoremap <buffer> <silent> <Return> :enew<CR>:call startscreen#start()<CR>
+endfun
+
 " Support loading plugin/options from file w/ empty lines and comments removed
 function s:Plugin(plug)
   let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
@@ -636,6 +667,9 @@ inoremap <Esc>u <C-\><C-n>u
 
 
 " VISUALS
+
+" Customize the start screen
+let g:Startscreen_function = function('<SID>StartScreen')
 
 " Always show the sign column
 set signcolumn=yes
