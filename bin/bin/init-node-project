@@ -30,7 +30,16 @@ if [[ -d 'conf/babel' ]]; then
     init-babelrc
 fi
 
-# Setup '.babelrc' if babel configuration is present.
+# Setup '.eslintrc' if eslint configuration is present.
+if [[ -d 'conf/eslint' ]]; then
+    init-eslintrc
+fi
+
+# Setup 'tsconfig.json' if typescript configuration is present.
+if [[ -d 'conf/tsconfig' ]]; then
+    init-tsconfig
+fi
+
 # Install packages, using 'yarn' if it exists in user's path.
 npm=$(which npm)
 if [[ ! -x "$npm" ]]; then
