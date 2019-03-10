@@ -1,0 +1,51 @@
+{
+  "rules": {
+
+    // Deprecated constructs
+    "no-iterator": "error",
+    "no-octal-escape": "error",
+    "no-octal": "error",
+    "no-proto": "error",
+
+    // Detect probable errors
+    "no-dupe-args": "error",
+    "no-dupe-keys": "error",
+    "no-duplicate-case": "error",
+    "no-empty-character-class": "error",
+    "no-empty": [ "error", { "allowEmptyCatch": true } ],
+    "no-ex-assign": "error",
+    "no-func-assign": "error",
+    "no-inner-declarations": [ "error", "both" ],
+    "no-irregular-whitespace": "error",
+    "no-obj-calls": "error",
+    "use-isnan": "error",
+    "no-global-assign": "error",
+
+    // Detect possible errors
+    "no-unexpected-multiline": "warn",
+    "no-unsafe-finally": "warn",
+    "no-unsafe-negation": "warn",
+    "valid-typeof": "warn",
+    "consistent-return": "warn",
+    "eqeqeq": ["warn", "smart"],
+    "guard-for-in": "warn",
+    "no-empty-pattern": "warn",
+    "no-eq-null": "warn",
+    "no-implicit-globals": "warn",
+    "no-invalid-this": "warn",
+    "no-loop-func": "warn",
+    "no-new": "warn",
+    "no-redeclare": "warn",
+
+    // Legal, but possibly errors or bad style
+    "no-case-declarations": "warn",
+    "no-class-assign": "warn",
+    "no-dupe-class-members": "warn",
+    "no-inner-declarations": ["warn", "both"],
+    "no-template-curly-in-string": "warn",
+    "no-useless-computed-key": "warn",
+    "no-useless-rename": [ "warn", {
+      "ignoreDestructuring": true
+    }]
+  }
+}

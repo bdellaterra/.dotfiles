@@ -1,8 +1,8 @@
 {
-  "scripts": {
-    "format": "prettier --write \"src/**/*.js\""
-  },
   "devDependencies": {
-    "prettier": "1.16.4"
+    "prettier": "~1.12.1",
+    "prettier-loader": "^2.1.1",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1"
   }
 }

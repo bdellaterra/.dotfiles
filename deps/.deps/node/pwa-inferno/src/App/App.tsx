@@ -1,6 +1,6 @@
-import { BrowserRouter } from 'inferno-router'
-import Routes from 'routes/Routes'
-import Layout from 'views/Layout'
+import { BrowserRouter } from "inferno-router"
+import Routes from "routes/Routes"
+import Layout from "views/Layout"
 
 const App = () => (
   <BrowserRouter>

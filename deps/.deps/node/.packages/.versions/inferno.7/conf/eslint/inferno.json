@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "inferno"
+  ],
+  "extends": [
+    "plugin:inferno/recommended"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+}

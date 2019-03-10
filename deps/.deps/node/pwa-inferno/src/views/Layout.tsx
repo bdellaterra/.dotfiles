@@ -1,14 +1,15 @@
-import Inferno from 'inferno'
-import Nav from './Nav';
+import Nav from "./Nav"
 
-export const Layout = ({ children }) => (
+interface LayoutProps {
+  children?: any;
+}
+
+export const Layout = ({ children }: LayoutProps) => (
   <div>
     <header>
       <Nav />
     </header>
-    <main>
-      {children}
-    </main>
+    <main>{children}</main>
   </div>
 )
 

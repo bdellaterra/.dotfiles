@@ -4,12 +4,14 @@ export default {
   module: {
     rules: [
       {
-        enforce: 'post',
+        enforce: 'pre',
         test: /\.(jsx?|tsx?)$/,
         exclude: resolve('node_modules'),
-        loader: "babel-loader"
+        loader: 'eslint-loader',
+        options: {
+          fix: true
+        }
       }
     ]
   }
 }
-

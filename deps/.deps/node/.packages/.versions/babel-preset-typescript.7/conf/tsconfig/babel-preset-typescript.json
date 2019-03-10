@@ -1,0 +1,19 @@
+{
+  "include": [
+    "src"
+  ],
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "baseUrl": "src",
+    "allowJs": true,
+    "declaration": true,
+    "outDir": "lib",
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
+}

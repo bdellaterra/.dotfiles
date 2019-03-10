@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    // these should come last to disable other config's rules
+    "prettier",
+    "prettier/@typescript-eslint",
+    "prettier/babel",
+    "prettier/react"
+  ]
+}

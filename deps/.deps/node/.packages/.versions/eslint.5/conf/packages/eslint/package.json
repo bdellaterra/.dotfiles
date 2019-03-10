@@ -1,5 +1,6 @@
 {
   "devDependencies": {
-    "eslint": "^5.14.1"
+    "eslint": "^5.14.1",
+    "eslint-loader": "^2.1.2"
   }
 }

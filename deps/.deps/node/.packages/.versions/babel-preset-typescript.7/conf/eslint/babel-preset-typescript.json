@@ -1,0 +1,28 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+	"@typescript-eslint/indent": ["warn", 2],
+	"@typescript-eslint/no-unused-vars": "warn",
+	"@typescript-eslint/no-explicit-any": "off",
+	// See https://github.com/scottohara/eslint-config-oharagroup/issues/3
+	"no-unused-vars": "off",
+	"no-useless-constructor": "off",
+	"no-empty-function": "off",
+	// Temporarily disable pending https://github.com/typescript-eslint/typescript-eslint/pull/260
+	"@typescript-eslint/explicit-function-return-type": "off"
+      }
+    }
+  ]
+}

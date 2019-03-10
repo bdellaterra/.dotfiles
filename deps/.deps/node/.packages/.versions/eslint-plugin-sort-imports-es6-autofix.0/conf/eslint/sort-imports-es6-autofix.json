@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "sort-imports-es6-autofix"
+  ],
+  "rules": {
+    "sort-imports-es6-autofix/sort-imports-es6": ["warn", {
+      "ignoreCase": false,
+      "ignoreMemberSort": false,
+      "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+    }]
+  }
+}
