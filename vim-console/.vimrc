@@ -626,7 +626,7 @@ highlight link ALEError WarningMsg
 let g:ale_sign_column_always = 1
 
 " ',Enter' will auto-fix linter errors (without saving)
-map <leader><Enter> :ALEFix && %foldopen!<CR> " unclear why ALEFix closes folds
+map <leader><Enter> :ALEFix \| silent! %foldopen!<CR> " unclear why ALEFix closes folds
 
 " ',k' will toggle spell-check highlighting
 map <leader>k :set spell! spell?<CR>
