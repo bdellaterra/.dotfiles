@@ -3,9 +3,6 @@
 # Copy files from recursive dependencies
 init-deps
 
-# Setup 'package.json', initializing 'base.package.json' if necessary.
-init-package-json
-
 # Optionally generate manifest using variables auto-loaded from entry.sh
 if [[ -n "$PROJECT_MANIFEST" ]]; then
 
@@ -25,20 +22,17 @@ if [[ -n "$PROJECT_MANIFEST" ]]; then
 
 fi
 
+# Setup 'package.json', initializing 'base.package.json' if necessary.
+init-package-json
+
 # Setup '.babelrc' if babel configuration is present.
-if [[ -d 'conf/babel' ]]; then
-    init-babelrc
-fi
+init-json-config .babelrc conf/babel
 
 # Setup '.eslintrc' if eslint configuration is present.
-if [[ -d 'conf/eslint' ]]; then
-    init-eslintrc
-fi
+init-json-config .eslintrc conf/eslint
 
 # Setup 'tsconfig.json' if typescript configuration is present.
-if [[ -d 'conf/tsconfig' ]]; then
-    init-tsconfig
-fi
+init-json-config tsconfig.json conf/tsconfig
 
 # Install packages, using 'yarn' if it exists in user's path.
 npm=$(which npm)

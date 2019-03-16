@@ -1,0 +1,41 @@
+#!/bin/bash
+set -e
+set -o pipefail
+
+# Creates a .json config-file (1st parameter) by merging all
+# .json files from a directory (2nd parameter)
+
+# REQUIREMENTS:
+
+# jq - a lightweight and flexible command-line JSON processor.
+# https://stedolan.github.io/jq/download/
+
+# Fail if too few parameters
+if [[ $# -lt 2 ]]; then
+  echo "USAGE: init-json-config [config-file] [modules-dir]" 1>&2
+  exit 1
+fi
+
+config="$1"
+modulePath="$2"
+
+# If configuration is present...
+if [[ -d "$modulePath" ]]; then
+  if [[ -n "$(find $modulePath -iname '*.json' -not -empty 2>/dev/null)" ]]; then
+
+    # Fail if config-file already exists
+    if [[ -e "$config" ]]; then
+      echo "ERROR: file '$config' already exists!" 1>&2
+      exit 1
+    fi
+
+    # Create json configuration by merging modular json files from the given path
+    # Using jq array-merge solution from William Langford, 2014, https://github.com/stedolan/jq/issues/502
+    cat `find -L "$modulePath" -not -path '*node_modules*' -type f -iname "*.json"` | sed 's://.*::' | jq -s '[.[] | to_entries] | flatten | reduce .[] as $dot ({}; .[$dot.key] += $dot.value)' > "$config"
+
+  fi
+
+  # Prompt user to remove modular configuration now that merging is complete
+  # printf "\nCreated $config - Now deleting modules at $modulePath\n"
+  # rm -rvI "$modulePath"
+fi

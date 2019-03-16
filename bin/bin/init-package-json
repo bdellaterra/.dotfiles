@@ -11,6 +11,12 @@ if [[ ! -s .entry.sh ]]; then
     exit 1
 fi
 
+# Fail if 'base.package.json' already exists
+if [[ -e base.package.json ]]; then
+    echo "ERROR: file 'base.package.json' already exists!" 1>&2
+    exit 1
+fi
+
 # Generate base package info using variables auto-loaded from entry.sh
 echo-file "$HOME/.skeletons/bash/base.package.json" > base.package.json
 
@@ -26,7 +32,9 @@ if [[ -e package.json ]]; then
     exit 1
 fi
 
+
 # Create new 'package.json' by merging base with packages from dependencies
-# Using jq array-merge solution from William Langford, 2014, https://github.com/stedolan/jq/issues/502
-cat "base.package.json" `find -L "conf/packages" -not -path '*node_modules*' -type f -iname "*.json"` | sed 's://.*::' | jq -s '[.[] | to_entries] | flatten | reduce .[] as $dot ({}; .[$dot.key] += $dot.value)' > "package.json"
+mkdir -p conf/packages
+mv base.package.json conf/packages/__base__.json
+init-json-config package.json conf/packages
 
