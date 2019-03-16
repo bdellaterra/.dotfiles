@@ -1,7 +1,7 @@
 
 syntax match jsAnd "&&" conceal cchar=∧ containedin=jsOperator
 syntax match jsOr "||" conceal cchar=∨ containedin=jsOperator
-syntax match jsNot "!" conceal cchar=￢ containedin=jsOperator " ¬~～
+" syntax match jsNot "!" conceal cchar=￢ containedin=jsOperator " ¬~～
 syntax match jsDivisionSign "/" contained conceal cchar=÷ containedin=jsOperator nextgroup=@jsExpression
 syntax match jsMultiplicationSign "*" conceal cchar=× containedin=jsOperator nextgroup=@jsExpression
 
@@ -12,7 +12,7 @@ syntax match jsMultiplicationSign "*" conceal cchar=× containedin=jsOperator ne
 syntax match jsEqual ">=" conceal cchar=≥ containedin=jsOperator
 syntax match jsEqual "<=" conceal cchar=≤ containedin=jsOperator
 syntax match jsEqual "!==" conceal cchar=≠ containedin=jsOperator
-syntax match jsEqual "=" conceal cchar=≔ containedin=jsOperator " ←
+syntax match jsEqual "=" conceal cchar=≔ containedin=jsOperator,jsObject " ←
 syntax match jsEqual "==" conceal cchar=≟ containedin=jsOperator " ≒
 syntax match jsEqual "===" conceal cchar=≡ containedin=jsOperator " 〓
 syntax match jsDot "\.\.\." conceal cchar=… containedin=noise
@@ -21,7 +21,8 @@ syntax match jsDot "\.\.\." conceal cchar=… containedin=noise
 " syntax region  jsComment        start=+/\*+  end=+\*/+ contains=jsCommentTodo,@Spell fold extend keepend
 
 syntax match jsFunction /\<function\>/ skipwhite skipempty nextgroup=jsGenerator,jsFuncName,jsFuncArgs,jsFlowFunctionGroup skipwhite conceal cchar=ƒ
-syntax match jsArrowFunction /=>/ skipwhite skipempty nextgroup=jsFuncBlock,jsCommentFunction conceal cchar=⇒
+syntax match jsFuncArgOperator "=>" conceal cchar=⇒ containedin=jsObject,jsFuncArgs
+syntax match jsArrowFunction /=>/ skipwhite skipempty nextgroup=jsFuncBlock,jsObject,jsFuncArgs,jsCommentFunction conceal cchar=⇒
 syntax match jsArrowFunction /()\ze\s*=>/ skipwhite skipempty nextgroup=jsArrowFunction conceal cchar=○
 syntax match jsArrowFunction /_\ze\s*=>/ skipwhite skipempty nextgroup=jsArrowFunction conceal cchar=○
 
@@ -48,6 +49,9 @@ syntax keyword jsBooleanFalse false conceal cchar=⟂ " ⊥ (bottom) looks too l
 syntax keyword jsNull null conceal cchar=ø
 syntax keyword jsReturn return contained conceal cchar=↲ skipwhite nextgroup=@jsExpression
 syntax keyword jsStatement yield contained conceal cchar=↳ skipwhite nextgroup=@jsExpression " ↬⇄↔⟷
+syntax keyword jsAsyncKeyword async contained conceal cchar=☾ skipwhite nextgroup=@jsFuncCall
+syntax keyword jsAsyncKeyword await contained conceal cchar=☽ skipwhite
+
 syntax keyword jsUndefined undefined conceal cchar=␣
 syntax keyword jsNan NaN conceal cchar=Ӣ
 syntax keyword jsNumber Infinity conceal cchar=∞
