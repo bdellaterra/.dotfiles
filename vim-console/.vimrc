@@ -101,14 +101,20 @@ function s:BufferFile(...)
 endfunction
 
 " Share yanked text with system clipboard when Vim lacks 'clipboard' support
-" Note: Paste should work via Shift-Insert or similar terminal keymap
-if executable('xclip') | let s:clip = 'xclip' | endif
-if executable('pbcopy') | let s:clip = 'pbcopy' | endif
+if executable('xclip') | let s:clipCopy = 'xclip' | endif
+if executable('pbcopy') | let s:clipCopy = 'pbcopy' | endif
 function s:CopyToClipboard(text, ...)
   let register = get(a:000, 0, '')
-  if exists('s:clip') && register == ''
-    call system(s:clip, a:text)
+  if exists('s:clipCopy') && register == ''
+    call system(s:clipCopy, a:text)
   endif
+endfunction
+
+" Share clipboard text with paste buffer when Vim lacks 'clipboard' support
+if executable('xclip') | let s:clipPaste = 'xclip -o' | endif
+if executable('pbcopy') | let s:clipPaste = 'pbpaste' | endif
+function s:PasteFromClipboard()
+  let @" = system(s:clipPaste)
 endfunction
 
 " Show syntax group and translated syntax group of character under cursor
@@ -405,11 +411,16 @@ if has('clipboard')
   set clipboard=unnamed,unnamedplus
 else
   autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
+  autocmd FocusGained * :call <SID>PasteFromClipboard()
 endif
 
 " 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
 noremap <F12> :set paste! paste?<CR>
 imap <expr> <F12> set paste! paste? ? '' : ''
+
+" ',;' will past from clipboard
+noremap <silent> <leader>; :call <SID>PasteFromClipboard() \| normal P<CR>
+inoremap <silent> <leader>; <C-o>:call <SID>PasteFromClipboard() \| normal P<CR><Right>
 
 
 " FILE MANAGER
@@ -457,13 +468,13 @@ let g:tmux_navigator_disable_when_zoomed = 1
 " Ctrl + movement keys to switch windows w/ Tmux awareness
 let g:tmux_navigator_no_mappings = 1
 nnoremap <silent> <C-Left>  :TmuxNavigateLeft<CR>
-nnoremap <silent> <C-h>       :TmuxNavigateLeft<CR>
+nnoremap <silent> <C-h>     :TmuxNavigateLeft<CR>
 nnoremap <silent> <C-Down>  :TmuxNavigateDown<CR>
-nnoremap <silent> <C-j>       :TmuxNavigateDown<CR>
+nnoremap <silent> <C-j>     :TmuxNavigateDown<CR>
 nnoremap <silent> <C-Up>    :TmuxNavigateUp<CR>
-nnoremap <silent> <C-k>       :TmuxNavigateUp<CR>
+nnoremap <silent> <C-k>     :TmuxNavigateUp<CR>
 nnoremap <silent> <C-Right> :TmuxNavigateRight<CR>
-nnoremap <silent> <C-l>       :TmuxNavigateRight<CR>
+nnoremap <silent> <C-l>     :TmuxNavigateRight<CR>
 
 " Ctrl-w + window-movement to open window in that direction
 nnoremap <silent> <C-w><C-Left>  :vertical aboveleft new<CR>

@@ -11,7 +11,10 @@ tpope/vim-repeat # enable repeating supported plugin maps with "."
 drmikehenry/vim-fixkey # fixes key codes for console Vim
 
 # MOUSE
-bdellaterra/vim-speedy # Fast characterwise, linewise, and blockwise mouse selections
+bdellaterra/vim-speedy # fast characterwise, linewise, and blockwise mouse selections
+
+# TERMINAL
+tmux-plugins/vim-tmux-focus-events # fixes FocusGained and FocusLost autocommands
 
 # BUFFERS
 ap/vim-buftabline # Show buffers w/ numbers in top bar
