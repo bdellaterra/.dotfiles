@@ -646,7 +646,6 @@ set foldopen=all
 " Customize how folded lines are displayed
 set foldtext=MyFoldText()
 
-
 " SESSION MANAGER
 
 " Set temp file location
@@ -662,8 +661,8 @@ map <leader>uh :GundoToggle<CR>
 map u :call <SID>ToggleConceal(0) \| undo \| :call <SID>ToggleConceal(1)<CR>
 
 " Prevent <Esc>u from accidentally inserting special character 'õ' in insert-mode
-" (Use 'Ctrl-[,u' if you need to achieve the same thing)
-inoremap <Esc>u <C-\><C-n>u
+" (Use 'Ctrl-v,245' to insert 'õ' intentionally)
+inoremap õ <C-\><C-n>u
 
 
 " VISUALS
