@@ -421,6 +421,7 @@ imap <expr> <F12> set paste! paste? ? '' : ''
 " ',;' will past from clipboard
 noremap <silent> <leader>; :call <SID>PasteFromClipboard() \| normal P<CR>
 inoremap <silent> <leader>; <C-o>:call <SID>PasteFromClipboard() \| normal P<CR><Right>
+vnoremap <silent> <leader>; :call <SID>PasteFromClipboard() \| normal gvP<CR>
 
 
 " FILE MANAGER
