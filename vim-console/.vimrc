@@ -513,7 +513,7 @@ let g:buftabline_show = 2
 " Show buffer numbers
 let g:buftabline_numbers = 1
 
-" Show separators between buffer names
+" Don't show separators between buffer names
 let g:buftabline_separators = 0
 
 " If used after a numeric count the equals key switches to that number buffer.

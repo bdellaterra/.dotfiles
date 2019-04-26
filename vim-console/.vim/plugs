@@ -59,7 +59,7 @@ lifepillar/vim-mucomplete # minmalist implementation of chained (fallback) compl
 
 # LANGUAGE SUPPORT
 w0rp/ale # asynchronous linting/fixing for Vim and Language Server Protocol LSP) integration
-ludovicchabant/vim-gutentags # r(e)generate tag files as you work
+ludovicchabant/vim-gutentags # (re)generate tag files as you work
 sheerun/vim-polyglot # a collection of language packs for Vim
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
@@ -78,6 +78,6 @@ junegunn/limelight.vim # hyperfocused editing
 carpetsmoker/startscreen.vim # customize Vim's start screen
 
 # COLORS
-flazz/vim-colorschemes # one stop shop for vim colorschemes
+flazz/vim-colorschemes # one stop shop for Vim colorschemes
 noahfrederick/vim-noctu # inherits restricted 16-color terminal scheme
 
