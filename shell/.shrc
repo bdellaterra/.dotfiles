@@ -163,6 +163,13 @@ export NVM_DIR="$(realpath $HOME/.nvm)"
 
 # *** Options ***
 
+# Make Ctrl-s and Ctrl-q available for mappings
+# Prevents default behavior where they suspend and resume terminal client
+stty -ixon
+# Alternately, remap to different keys as below
+# stty stop ''
+# stty start ''
+
 # Change paths without using 'cd' command
 [[ `type shopt` == *'builtin'* ]] && shopt -s autocd # bash
 [[ `type setopt 2>/dev/null` == *'builtin'* ]] && setopt autocd  # zsh
