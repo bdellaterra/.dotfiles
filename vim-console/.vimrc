@@ -357,7 +357,7 @@ set shiftwidth=2
 set tabstop=4
 set expandtab
 
-" allow cursor over EOL
+" Allow cursor over EOL
 set ve=onemore
 
 " Always show status line
@@ -414,7 +414,7 @@ else
   let &t_EI = "\e[2 q"
 endif
 
-" enable mouse if supported
+" Enable mouse if supported
 if has('mouse')
   set mouse=a
   if &term =~ '^screen' && has('mouse_xterm')
@@ -441,11 +441,6 @@ endif
 " 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
 noremap <F12> :set paste! paste?<CR>
 imap <expr> <F12> set paste! paste? ? '' : ''
-
-" ',;' will past from clipboard
-noremap <silent> <leader>; :call <SID>PasteFromClipboard() \| normal P<CR>
-inoremap <silent> <leader>; <C-o>:call <SID>PasteFromClipboard() \| normal P<CR><Right>
-vnoremap <silent> <leader>; :call <SID>PasteFromClipboard() \| normal gvP<CR>
 
 
 " FILE MANAGER
