@@ -449,7 +449,7 @@ imap <expr> <F12> set paste! paste? ? '' : ''
 let g:ranger_replace_netrw = 1
 
 " Set temp file location
-let g:ranger_choice_file = s:TmpDir . '/RangerChosenFile'
+let g:ranger_choice_file = s:TmpDir . 'RangerChosenFile'
 
 " Don't use plugin mappings
 let g:ranger_map_keys = 0
