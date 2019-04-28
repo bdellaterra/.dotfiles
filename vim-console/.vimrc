@@ -682,6 +682,7 @@ set foldopen=all
 " Customize how folded lines are displayed
 set foldtext=MyFoldText()
 
+
 " SESSION MANAGER
 
 " Set temp file location
