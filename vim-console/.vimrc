@@ -70,8 +70,21 @@ function s:BufferFile(...)
 endfunction
 
 " Share yanked text with system clipboard when Vim lacks 'clipboard' support
-if executable('xclip') | let s:clipCopy = 'xclip' | endif
-if executable('pbcopy') | let s:clipCopy = 'pbcopy' | endif
+if executable('xclip')
+  let s:clipCopy = 'xclip' " nix
+endif
+if executable('pbcopy')
+  let s:clipCopy = 'pbcopy' " mac
+endif
+" Symlink windows executables to ~/bin path under Windows Subsystem for Linux
+if executable('clip')
+ " Default (with no paste support) at /mnt/c/Windows/System32/clip.exe
+  let s:clipCopy = 'clip'
+endif
+if executable('win32yank') && executable('unix2dos')
+  " Install from https://github.com/equalsraf/win32yank/releases
+  let s:clipCopy = 'unix2dos | win32yank -i'
+endif
 function s:CopyToClipboard(text, ...)
   let register = get(a:000, 0, '')
   if exists('s:clipCopy') && register == ''
@@ -80,10 +93,21 @@ function s:CopyToClipboard(text, ...)
 endfunction
 
 " Share clipboard text with paste buffer when Vim lacks 'clipboard' support
-if executable('xclip') | let s:clipPaste = 'xclip -o' | endif
-if executable('pbcopy') | let s:clipPaste = 'pbpaste' | endif
+if executable('xclip')
+  let s:clipPaste = 'xclip -o' " nix
+endif
+if executable('pbcopy')
+  let s:clipPaste = 'pbpaste' " mac
+endif
+" Symlink windows executables to ~/bin path under Windows Subsystem for Linux
+if executable('win32yank') && executable('unix2dos')
+  " Install from https://github.com/equalsraf/win32yank/releases
+  let s:clipPaste = 'win32yank -o | dos2unix'
+endif
 function s:PasteFromClipboard()
-  let @" = system(s:clipPaste)
+  if exists('s:clipPaste')
+    let @" = system(s:clipPaste)
+  endif
 endfunction
 
 " Show syntax group and translated syntax group of character under cursor
