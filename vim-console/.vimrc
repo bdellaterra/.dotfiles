@@ -562,6 +562,9 @@ nnoremap =[ :<C-u>exe (v:count ? v:count : '') . 'bprev'<CR>
 " Alias 'Shift-Tab'
 nmap <S-Tab> =[
 
+" No editing directories (buggy integration with ranger plugin)
+autocmd BufEnter * if isdirectory(expand("%")) | silent! bwipeout! | endif
+
 
 " ALIGNMENT
 
