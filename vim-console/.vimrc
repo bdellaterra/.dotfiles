@@ -110,6 +110,25 @@ function s:PasteFromClipboard()
   endif
 endfunction
 
+" Surround text with delimiter
+function! s:Surround(...)
+  let num_words = get(a:000, 0, 0)
+  let char = nr2char(getchar())
+  if char =~ '[[:print:]]'
+    let save_cursor = getpos(".")
+    let mode = mode()
+    if mode =~ '\vv|s|'
+      return 'S' . char
+    endif
+    let move_count = max([num_words, 1]) - 1
+    exe 'normal wbviw' . repeat('e', move_count) . 'S' . char
+    call setpos('.', save_cursor)
+  endif
+endfunction
+
+map <C-s> :<C-u>call <SID>Surround(v:count)<CR>
+vmap <expr><C-s> <SID>Surround()
+
 " Show syntax group and translated syntax group of character under cursor
 " From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
 function! s:SynGroup()
