@@ -114,35 +114,38 @@ endfunction
 " selection or a command-count for number of words to surround w/ delimiter
 function! s:Surround(...)
   let mode = get(a:000, 0, 0)
-  let save_cursor = getpos(".")
   let char = nr2char(getchar())
   let nextChar = ''
-  " Single Ctrl-s will insert new delimiter
-  let action = string(mode) =~ 'visual' ? 'visual' : 'insert'
-  " Double Ctrl-s will alter existing delimiter
-  if char == "\<C-s>"
+  " Determine action
+  if char == "\<C-s>" " Double Ctrl-s will swap existing delimiter
     let char = nr2char(getchar())
     let nextChar = nr2char(getchar())
     let action = nextChar =~ '[[:print:]]' ? 'change' : 'delete'
+  elseif type(mode) == type(0)
+    let action = 'surround'
+  else
+    let action = mode " 'visual' or 'insert'
   endif
   if char =~ '[[:print:]]'
+    let iNormal = "\<C-\>\<C-N>"
+    let iSaveCursor = 'ms'
+    let iRestoreCursor = '`s'
+    let iRestoreInsert = [mode] == ['insert'] ? ([action] == ['delete'] ? 'i' : 'a') : ''
     let cmd = {
-	  \ 'insert': 'wbviw' . repeat('e', max([0, mode - 1])) . 'S' . char,
-	  \ 'change': 'cs' . char . nextChar,
-	  \ 'delete': 'ds' . char,
-	  \ 'visual': 'gvS' . char,
-	  \ }
-    echo "---" . mode . ' ' . action . ' ' . max([0, mode - 1]) . ' --- ' . cmd[action]
-    exe 'normal ' . cmd[action]
-    call setpos('.', save_cursor)
-    if action == 'delete'
-      exe "normal \<Left>"
-    endif
+      \ 'insert': "\<Plug>Isurround" . char,
+      \ 'surround': iNormal . iSaveCursor . 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char . iRestoreCursor,
+      \ 'change': iNormal . iSaveCursor . 'cs' . char . nextChar . iRestoreCursor . iRestoreInsert,
+      \ 'delete': iNormal . iSaveCursor . 'ds' . char . iRestoreCursor . iRestoreInsert,
+      \ 'visual': iNormal . 'gvS' . char . iNormal . 'gv',
+      \ }
+    echo "---" . mode . ' ' . action . ' ' . ' --- ' . cmd[action]
+    return cmd[action]
   endif
 endfunction
 
-map <C-s> :<C-u>call <SID>Surround(v:count)<CR>
-vmap <C-s> :<C-u>call <SID>Surround('visual')<CR>
+map <expr> <C-s> <SID>Surround(v:count)
+imap <expr> <C-s> <SID>Surround('insert')
+vmap <expr> <C-s> <SID>Surround('visual')
 
 " Show syntax group and translated syntax group of character under cursor
 " From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
