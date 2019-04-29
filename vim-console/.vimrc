@@ -134,7 +134,6 @@ function! s:Surround(...)
     let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
     let iRestoreSelection = [action] == ['delete'] ? "gv\<Left>o\<Left>o" : 'gv'
     let iRestoreMode = [mode] == ['visual'] ? iRestoreSelection : ([mode] == ['insert'] ? iRestoreInsert : '')
-    echon "---" . mode . ' ' . action
     let cmd = {
       \ 'insert': "\<Plug>Isurround" . char,
       \ 'surround': iNormal . iSaveCursor . 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char . iRestoreCursor,
@@ -142,7 +141,6 @@ function! s:Surround(...)
       \ 'delete': iNormal . iSaveCursor . 'ds' . char . iRestoreCursor . iRestoreMode,
       \ 'visual': iNormal . 'gvS' . char . iRestoreMode,
       \ }
-    echon ' --- ' . cmd[action]
     return cmd[action]
   endif
 endfunction
