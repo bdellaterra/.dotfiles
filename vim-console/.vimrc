@@ -129,14 +129,16 @@ function! s:Surround(...)
   if char =~ '[[:print:]]'
     let iNormal = "\<C-\>\<C-N>"
     let iSaveCursor = 'ms'
-    let iRestoreCursor = '`s'
-    let iRestoreInsert = [mode] == ['insert'] ? ([action] == ['delete'] ? 'i' : 'a') : ''
+    let iRestoreCursor = '`s'. ([action] == ['delete'] ? "\<Left>" : '')
+    let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
+    let iRestoreSelection = [action] == ['delete'] ? "gv\<Left>o\<Left>o" : 'gv'
+    let iRestoreMode = [mode] == ['visual'] ? iRestoreSelection : ([mode] == ['insert'] ? iRestoreInsert : '')
     let cmd = {
       \ 'insert': "\<Plug>Isurround" . char,
       \ 'surround': iNormal . iSaveCursor . 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char . iRestoreCursor,
-      \ 'change': iNormal . iSaveCursor . 'cs' . char . nextChar . iRestoreCursor . iRestoreInsert,
-      \ 'delete': iNormal . iSaveCursor . 'ds' . char . iRestoreCursor . iRestoreInsert,
-      \ 'visual': iNormal . 'gvS' . char . iNormal . 'gv',
+      \ 'change': iNormal . iSaveCursor . 'cs' . char . nextChar . iRestoreCursor . iRestoreMode,
+      \ 'delete': iNormal . iSaveCursor . 'ds' . char . iRestoreCursor . iRestoreMode,
+      \ 'visual': iNormal . 'gvS' . char . iRestoreMode,
       \ }
     echo "---" . mode . ' ' . action . ' ' . ' --- ' . cmd[action]
     return cmd[action]
