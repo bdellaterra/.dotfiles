@@ -129,10 +129,12 @@ function! s:Surround(...)
   if char =~ '[[:print:]]'
     let iNormal = "\<C-\>\<C-N>"
     let iSaveCursor = 'ms'
-    let iRestoreCursor = '`s'. ([action] == ['delete'] ? "\<Left>" : '')
+    let iRestoreCursor = "\<C-r>=max(getpos('`m')) ? '`s' : ''\<CR>"
+      \ . ([action] == ['delete'] ? "\<Left>" : '')
     let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
     let iRestoreSelection = [action] == ['delete'] ? "gv\<Left>o\<Left>o" : 'gv'
     let iRestoreMode = [mode] == ['visual'] ? iRestoreSelection : ([mode] == ['insert'] ? iRestoreInsert : '')
+    echon "---" . mode . ' ' . action
     let cmd = {
       \ 'insert': "\<Plug>Isurround" . char,
       \ 'surround': iNormal . iSaveCursor . 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char . iRestoreCursor,
@@ -140,7 +142,7 @@ function! s:Surround(...)
       \ 'delete': iNormal . iSaveCursor . 'ds' . char . iRestoreCursor . iRestoreMode,
       \ 'visual': iNormal . 'gvS' . char . iRestoreMode,
       \ }
-    echo "---" . mode . ' ' . action . ' ' . ' --- ' . cmd[action]
+    echon ' --- ' . cmd[action]
     return cmd[action]
   endif
 endfunction
