@@ -110,40 +110,34 @@ function s:PasteFromClipboard()
   endif
 endfunction
 
-" Surround text with delimiter
+" Surround text with delimiter. Optional "mode" param indicates 'visual'
+" selection or a command-count for number of words to surround w/ delimiter
 function! s:Surround(...)
-  let num_words = get(a:000, 0, 0)
-  let char = nr2char(getchar())
+  let mode = get(a:000, 0, 0)
   let save_cursor = getpos(".")
+  let char = nr2char(getchar())
+  let nextChar = ''
+  " Single Ctrl-s will insert new delimiter
+  let action = string(mode) =~ 'visual' ? 'visual' : 'insert'
   " Double Ctrl-s will alter existing delimiter
   if char == "\<C-s>"
     let char = nr2char(getchar())
     let nextChar = nr2char(getchar())
-    if nextChar =~ '[[:print:]]'
-      echo 'Changing ' . char . ' to ' . nextChar
-      exe 'normal cs' . char . nextChar
-      call setpos('.', save_cursor)
-      return 
-    else
-      echo 'Deleting ' . char
-      exe 'normal ds' . char
-      call setpos('.', save_cursor)
-      exe "normal \<Left>"
-      return 
-    endif
+    let action = nextChar =~ '[[:print:]]' ? 'change' : 'delete'
   endif
-  " Single Ctrl-s will insert new delimiter
   if char =~ '[[:print:]]'
-    let save_cursor = getpos(".")
-    if num_words =~ 'visual'
-      echo 'Visual Insert ' . char
-      exe 'normal gvS' . char
-      return
-    endif
-    let move_count = max([num_words, 1]) - 1
-    echo 'Insert ' . char
-    exe 'normal wbviw' . repeat('e', move_count) . 'S' . char
+    let cmd = {
+	  \ 'insert': 'wbviw' . repeat('e', max([0, mode - 1])) . 'S' . char,
+	  \ 'change': 'cs' . char . nextChar,
+	  \ 'delete': 'ds' . char,
+	  \ 'visual': 'gvS' . char,
+	  \ }
+    echo "---" . mode . ' ' . action . ' ' . max([0, mode - 1]) . ' --- ' . cmd[action]
+    exe 'normal ' . cmd[action]
     call setpos('.', save_cursor)
+    if action == 'delete'
+      exe "normal \<Left>"
+    endif
   endif
 endfunction
 
