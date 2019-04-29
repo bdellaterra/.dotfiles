@@ -114,20 +114,41 @@ endfunction
 function! s:Surround(...)
   let num_words = get(a:000, 0, 0)
   let char = nr2char(getchar())
+  let save_cursor = getpos(".")
+  " Double Ctrl-s will alter existing delimiter
+  if char == "\<C-s>"
+    let char = nr2char(getchar())
+    let nextChar = nr2char(getchar())
+    if nextChar =~ '[[:print:]]'
+      echo 'Changing ' . char . ' to ' . nextChar
+      exe 'normal cs' . char . nextChar
+      call setpos('.', save_cursor)
+      return 
+    else
+      echo 'Deleting ' . char
+      exe 'normal ds' . char
+      call setpos('.', save_cursor)
+      exe "normal \<Left>"
+      return 
+    endif
+  endif
+  " Single Ctrl-s will insert new delimiter
   if char =~ '[[:print:]]'
     let save_cursor = getpos(".")
-    let mode = mode()
-    if mode =~ '\vv|s|'
-      return 'S' . char
+    if num_words =~ 'visual'
+      echo 'Visual Insert ' . char
+      exe 'normal gvS' . char
+      return
     endif
     let move_count = max([num_words, 1]) - 1
+    echo 'Insert ' . char
     exe 'normal wbviw' . repeat('e', move_count) . 'S' . char
     call setpos('.', save_cursor)
   endif
 endfunction
 
 map <C-s> :<C-u>call <SID>Surround(v:count)<CR>
-vmap <expr><C-s> <SID>Surround()
+vmap <C-s> :<C-u>call <SID>Surround('visual')<CR>
 
 " Show syntax group and translated syntax group of character under cursor
 " From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
