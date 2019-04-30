@@ -110,8 +110,34 @@ function s:PasteFromClipboard()
   endif
 endfunction
 
+
+" function! s:GetCharOrString(...)
+"   let prompt = get(a:000, 0, 'Enter string:')
+"   let input = nr2char(getchar())
+"   if input == "\<C-e>" " Prompt for string input
+"     let input = input(prompt)
+"   endif
+"   return input
+" endfunction
+
+function! SurroundOpenSubs(match)
+  let string = a:match
+  return string
+endfunction
+
+function! SurroundCloseSubs(match)
+  let string = a:match
+  let string = substitute(string, '\V{{{\w\+', '}}}', 'g') " code snippet
+  let string = substitute(string, '\V(', ')', 'g')
+  let string = substitute(string, '\V[', ']', 'g')
+  let string = substitute(string, '\V{', '}', 'g')
+  return string
+endfunction
+
 " Surround text with delimiter. Optional "mode" param indicates 'visual'
 " selection or a command-count for number of words to surround w/ delimiter
+let g:surround_prompt_trigger = "\<C-e>"
+let g:surround_{char2nr(g:surround_prompt_trigger)} = "\1Enter string: \r.*\r\\=SurroundOpenSubs(submatch(0))\1\r\1\r.*\r\\=SurroundCloseSubs(submatch(0))\1"
 function! s:Surround(...)
   let mode = get(a:000, 0, 0)
   let char = nr2char(getchar())
@@ -120,7 +146,7 @@ function! s:Surround(...)
   if char == "\<C-s>" " Double Ctrl-s will swap existing delimiter
     let char = nr2char(getchar())
     let nextChar = nr2char(getchar())
-    let action = nextChar =~ '[[:print:]]' ? 'change' : 'delete'
+    let action = nextChar == g:surround_prompt_trigger || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
   elseif type(mode) == type(0)
     let action = 'surround'
   else
@@ -129,10 +155,10 @@ function! s:Surround(...)
   if char =~ '[[:print:]]'
     let iNormal = "\<C-\>\<C-N>"
     let iSaveCursor = 'ms'
-    let iRestoreCursor = "\<C-r>=max(getpos('`m')) ? '`s' : ''\<CR>"
+    let iRestoreCursor = iNormal . "\<C-r>=max(getpos('`m')) ? '`s' : ''\<CR>"
       \ . ([action] == ['delete'] ? "\<Left>" : '')
     let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
-    let iRestoreSelection = [action] == ['delete'] ? "gv\<Left>o\<Left>o" : 'gv'
+    let iRestoreSelection = [action] == ['delete'] ? iNormal . "gv\<Left>o\<Left>o" : 'gv'
     let iRestoreMode = [mode] == ['visual'] ? iRestoreSelection : ([mode] == ['insert'] ? iRestoreInsert : '')
     let cmd = {
       \ 'insert': "\<Plug>Isurround" . char,
@@ -809,7 +835,6 @@ let s:plugins = readfile($HOME . '/.vim/plugs')
 call plug#begin('~/.vim/bundle')
 call map(s:plugins, {_, p -> s:Plugin(p)})
 call plug#end()
-
 
 " POST-PLUGIN CONFIGURATION
 
