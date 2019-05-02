@@ -111,20 +111,21 @@ function s:PasteFromClipboard()
 endfunction
 
 
-" function! s:GetCharOrString(...)
-"   let prompt = get(a:000, 0, 'Enter string:')
-"   let input = nr2char(getchar())
-"   if input == "\<C-e>" " Prompt for string input
-"     let input = input(prompt)
-"   endif
-"   return input
-" endfunction
-
+let g:surround_open_subs = []
 function! SurroundOpenSubs(match)
   let string = a:match
+  for [search, replace, flags] in g:surround_open_subs
+    let string = substitute(string, search, replace, flags)
+  endfor
   return string
 endfunction
 
+let g:surround_close_subs = [
+  \ [ '\V{{{\w\+', '}}}', 'g' ], 
+  \ [ '\V(', ')', 'g' ], 
+  \ [ '\V[', ']', 'g' ], 
+  \ [ '\V{', '}', 'g' ], 
+  \ ]
 function! SurroundCloseSubs(match)
   let string = a:match
   let string = substitute(string, '\V{{{\w\+', '}}}', 'g') " code snippet
@@ -142,30 +143,42 @@ function! s:Surround(...)
   let mode = get(a:000, 0, 0)
   let char = nr2char(getchar())
   let nextChar = ''
+  let hasPrompt = char == g:surround_prompt_trigger
   " Determine action
   if char == "\<C-s>" " Double Ctrl-s will swap existing delimiter
     let char = nr2char(getchar())
     let nextChar = nr2char(getchar())
+    let hasPrompt = nextChar == g:surround_prompt_trigger
     let action = nextChar == g:surround_prompt_trigger || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
   elseif type(mode) == type(0)
     let action = 'surround'
   else
     let action = mode " 'visual' or 'insert'
   endif
-  if char =~ '[[:print:]]'
-    let iNormal = "\<C-\>\<C-N>"
-    let iSaveCursor = 'ms'
-    let iRestoreCursor = iNormal . "\<C-r>=max(getpos('`m')) ? '`s' : ''\<CR>"
+  if hasPrompt || char =~ '[[:print:]]'
+    let iNormal = "\<C-\>\<C-n>"
+    let iCommand = "\<C-o>"
+    let iSaveCursor = iNormal . 'ms'
+    let iRestoreCursor = iNormal . ":normal \<C-r>=max(getpos(\"'s\")) ? '`s' : ''\<CR>\<CR>"
+      \ . ([action] == ['surround'] ? "\<Right>" : '')
       \ . ([action] == ['delete'] ? "\<Left>" : '')
     let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
     let iRestoreSelection = [action] == ['delete'] ? iNormal . "gv\<Left>o\<Left>o" : 'gv'
     let iRestoreMode = [mode] == ['visual'] ? iRestoreSelection : ([mode] == ['insert'] ? iRestoreInsert : '')
+    let iSurround = 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char
+    let iChange = 'cs' . char
+    let iDelete = 'ds' . char
+    let iVisual = 'gvS' . char
+    if hasPrompt
+      let iSaveCursor = ''
+      let iRestoreCursor = ''
+    endif
     let cmd = {
       \ 'insert': "\<Plug>Isurround" . char,
-      \ 'surround': iNormal . iSaveCursor . 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char . iRestoreCursor,
-      \ 'change': iNormal . iSaveCursor . 'cs' . char . nextChar . iRestoreCursor . iRestoreMode,
-      \ 'delete': iNormal . iSaveCursor . 'ds' . char . iRestoreCursor . iRestoreMode,
-      \ 'visual': iNormal . 'gvS' . char . iRestoreMode,
+      \ 'surround': iSaveCursor . iNormal . iSurround . iRestoreCursor . iRestoreMode,
+      \ 'change': iSaveCursor . iNormal . iChange . nextChar . iRestoreCursor . iRestoreMode,
+      \ 'delete': iSaveCursor . iNormal . iDelete . iRestoreCursor . iRestoreMode,
+      \ 'visual': iNormal . iVisual . iRestoreMode,
       \ }
     return cmd[action]
   endif
