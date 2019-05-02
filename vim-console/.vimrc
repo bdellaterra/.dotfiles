@@ -128,7 +128,9 @@ let g:surround_close_subs = [
   \ ]
 function! SurroundCloseSubs(match)
   let string = a:match
-  let string = substitute(string, '\V{{{\w\+', '}}}', 'g') " code snippet
+  let string = substitute(string, '\V{{{\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
+  let string = substitute(string, '\V~~~\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
+  let string = substitute(string, '\V```\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
   let string = substitute(string, '\V(', ')', 'g')
   let string = substitute(string, '\V[', ']', 'g')
   let string = substitute(string, '\V{', '}', 'g')
