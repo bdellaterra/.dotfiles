@@ -137,19 +137,20 @@ endfunction
 
 " Surround text with delimiter. Optional "mode" param indicates 'visual'
 " selection or a command-count for number of words to surround w/ delimiter
+let g:surround_leader = "\<C-s>"
 let g:surround_prompt_trigger = "\<C-e>"
 let g:surround_{char2nr(g:surround_prompt_trigger)} = "\1Enter string: \r.*\r\\=SurroundOpenSubs(submatch(0))\1\r\1\r.*\r\\=SurroundCloseSubs(submatch(0))\1"
 function! s:Surround(...)
   let mode = get(a:000, 0, 0)
   let char = nr2char(getchar())
   let nextChar = ''
-  let hasPrompt = char == g:surround_prompt_trigger
+  let hasPrompt = [char] == [g:surround_prompt_trigger] || [char] == ['<']
   " Determine action
-  if char == "\<C-s>" " Double Ctrl-s will swap existing delimiter
+  if char == g:surround_leader " Double Ctrl-s will swap existing delimiter
     let char = nr2char(getchar())
     let nextChar = nr2char(getchar())
-    let hasPrompt = nextChar == g:surround_prompt_trigger
-    let action = nextChar == g:surround_prompt_trigger || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
+    let hasPrompt = [nextChar] == [g:surround_prompt_trigger]
+    let action = [nextChar] == [g:surround_prompt_trigger] || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
   elseif type(mode) == type(0)
     let action = 'surround'
   else
@@ -157,36 +158,37 @@ function! s:Surround(...)
   endif
   if hasPrompt || char =~ '[[:print:]]'
     let iNormal = "\<C-\>\<C-n>"
-    let iCommand = "\<C-o>"
-    let iSaveCursor = iNormal . 'ms'
-    let iRestoreCursor = iNormal . ":normal \<C-r>=max(getpos(\"'s\")) ? '`s' : ''\<CR>\<CR>"
+    let iSaveCursor = iNormal . ":let save_cursor = getcurpos()\<CR>"
+    let iRestoreCursor = iNormal . ":call setpos('.', save_cursor)\<CR>"
       \ . ([action] == ['surround'] ? "\<Right>" : '')
       \ . ([action] == ['delete'] ? "\<Left>" : '')
     let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
     let iRestoreSelection = [action] == ['delete'] ? iNormal . "gv\<Left>o\<Left>o" : 'gv'
     let iRestoreMode = [mode] == ['visual'] ? iRestoreSelection : ([mode] == ['insert'] ? iRestoreInsert : '')
     let iSurround = 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char
-    let iChange = 'cs' . char
+    let iChange = 'cs' . char . nextChar
     let iDelete = 'ds' . char
-    let iVisual = 'gvS' . char
+    let iVisual = 'S' . char
     if hasPrompt
       let iSaveCursor = ''
       let iRestoreCursor = ''
+      let iRestoreSelection = ''
+      let iRestoreMode = ''
     endif
     let cmd = {
       \ 'insert': "\<Plug>Isurround" . char,
       \ 'surround': iSaveCursor . iNormal . iSurround . iRestoreCursor . iRestoreMode,
-      \ 'change': iSaveCursor . iNormal . iChange . nextChar . iRestoreCursor . iRestoreMode,
+      \ 'change': iSaveCursor . iNormal . iChange . iRestoreCursor . iRestoreMode,
       \ 'delete': iSaveCursor . iNormal . iDelete . iRestoreCursor . iRestoreMode,
-      \ 'visual': iNormal . iVisual . iRestoreMode,
+      \ 'visual': iVisual . iRestoreMode,
       \ }
     return cmd[action]
   endif
 endfunction
 
-map <expr> <C-s> <SID>Surround(v:count)
-imap <expr> <C-s> <SID>Surround('insert')
-vmap <expr> <C-s> <SID>Surround('visual')
+exe 'map <expr>  ' . g:surround_leader . ' <SID>Surround(v:count)'
+exe 'imap <expr> ' . g:surround_leader . ' <SID>Surround("insert")'
+exe 'vmap <expr> ' . g:surround_leader . ' <SID>Surround("visual")'
 
 " Show syntax group and translated syntax group of character under cursor
 " From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
