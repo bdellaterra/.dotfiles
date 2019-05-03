@@ -510,21 +510,6 @@ if $TERM =~ '256color' || $COLORTERM == 'gnome-terminal'
 endif
 
 
-" CLIPBOARD
-
-" Share system clipboard with unnamed register for copy/paste
-if has('clipboard')
-  set clipboard=unnamed,unnamedplus
-else
-  autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
-  autocmd FocusGained * :call <SID>PasteFromClipboard()
-endif
-
-" 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
-noremap <F12> :set paste! paste?<CR>
-imap <expr> <F12> set paste! paste? ? '' : ''
-
-
 " FILE MANAGER
 
 " Replace default file manager when viewing directories
@@ -541,6 +526,34 @@ map <leader>. :Ranger<CR>
 
 " ',f' will browse files at working-directory (usually project root)
 map <leader>f :RangerWorkingDirectory<CR>
+
+
+" CLIPBOARD
+
+" Share system clipboard with unnamed register for copy/paste
+if has('clipboard')
+  set clipboard=unnamed,unnamedplus
+else
+  autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
+  autocmd FocusGained * :call <SID>PasteFromClipboard()
+endif
+
+" 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
+noremap <F12> :set paste! paste?<CR>
+imap <expr> <F12> set paste! paste? ? '' : ''
+
+
+" SELCTION
+
+" In input mode, Ctrl + movement keys initiate visual selection
+inoremap <C-Left>  <C-\><C-n>v
+inoremap <C-h>     <C-\><C-n>v
+inoremap <expr> <C-Down>   "\<C-o>v\<Down>\<Left>"
+inoremap <expr> <C-j>   "\<C-o>v\<Down>\<Left>"
+inoremap <expr> <C-Up>   "\<C-\>\<C-n>v\<Up>" . (col('.')>1?"\<Right>":"")
+inoremap <expr> <C-k>   "\<C-\>\<C-n>v\<Up>" . (col('.')>1?"\<Right>":"")
+inoremap <C-Right> <C-o>v
+inoremap <C-l>     <C-o>v
 
 
 " MOVEMENT
@@ -567,7 +580,7 @@ let g:tmux_navigator_save_on_switch = 1
 " Don't leave Vim while it's in a zoomed Tmux pane
 let g:tmux_navigator_disable_when_zoomed = 1
 
-" Ctrl + movement keys to switch windows w/ Tmux awareness
+" In normal mode, Ctrl + movement keys to switch windows w/ Tmux awareness
 let g:tmux_navigator_no_mappings = 1
 nnoremap <silent> <C-Left>  :TmuxNavigateLeft<CR>
 nnoremap <silent> <C-h>     :TmuxNavigateLeft<CR>
@@ -578,7 +591,7 @@ nnoremap <silent> <C-k>     :TmuxNavigateUp<CR>
 nnoremap <silent> <C-Right> :TmuxNavigateRight<CR>
 nnoremap <silent> <C-l>     :TmuxNavigateRight<CR>
 
-" Ctrl-w + window-movement to open window in that direction
+" In normal mode, Ctrl-w + window-movement to open window in that direction
 nnoremap <silent> <C-w><C-Left>  :vertical aboveleft new<CR>
 nnoremap <silent> <C-w><C-h>     :vertical aboveleft new<CR>
 nnoremap <silent> <C-w><C-Down>  :belowright new<CR>
