@@ -1,41 +1,42 @@
 ! COLORSCHEME
 
-! special
-URxvt.foreground:   #94a7ab
-URxvt.background:   #171f1f
-URxvt.cursorColor:  #94a7ab
+*cursorColor: #f0eff0
+
+*background:   #00151c
+
+*foreground: #f3e8d5 
 
 ! black
-URxvt.color0:       #022f38
-URxvt.color8:       #01837c
+*color0:       #070910
+*color8:       #757877
 
 ! red
-URxvt.color1:       #f61c25
-URxvt.color9:       #f81c25
+*color1:       #99202e
+*color9:       #aa3930
 
 ! green
-URxvt.color2:       #f15f35
-URxvt.color10:      #f15f35
+*color2:       #107265
+*color10:      #55b39c
 
 ! yellow
-URxvt.color3:       #fec415
-URxvt.color11:      #fec415
+*color3:       #d1b280
+*color11:      #f1f3ce
 
 ! blue
-URxvt.color4:       #3b9fe1
-URxvt.color12:      #3b9fe1
+*color4:       #306c95
+*color12:      #93acc9
 
 ! magenta
-URxvt.color5:       #58538b
-URxvt.color13:      #58538b
+*color5:       #103355
+*color13:      #4d648d
 
 ! cyan
-URxvt.color6:       #2aa198
-URxvt.color14:      #2aa198
+*color6:       #1087bc
+*color14:      #6ad4ff
 
 ! white
-URxvt.color7:       #94a7ab
-URxvt.color15:      #f7f6e2
+*color7:       #acbebe
+*color15:      #f0eff0
 
 
 ! FONTS

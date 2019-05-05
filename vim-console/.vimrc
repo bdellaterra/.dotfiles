@@ -291,7 +291,7 @@ endfunction
 
 " Set statusline to deemphasized highlighting
 function! s:StatusNoHL()
-  return '%#SignColumn#'
+  return '%#StatusLine'
 endfunction
 
 " Generate unicode bar to represent progress through file
@@ -831,7 +831,7 @@ highlight link User3 DiffChange
 highlight link User4 BufTabLineActive
 
 " Use custom expression to build statusline
-set statusline=%!MyStatus()
+" set statusline=%!MyStatus()
 
 " ',vs' will toggle verbose statusline
 map <silent> <leader>vs :call <SID>ToggleVerboseStatus()<CR>
@@ -871,5 +871,6 @@ call plug#end()
 " Set colorscheme
 " dark: alduin antares apprentice hybrid_material iceberg PaperColor
 " light: disciple earendel lightning
-colorscheme apprentice
+" colorscheme apprentice
+colorscheme noctu
 
