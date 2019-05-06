@@ -47,7 +47,7 @@ syntax keyword jsConditional else conceal cchar=⊢ containedin=jsOperator,jsObj
 syntax keyword jsBooleanTrue true conceal cchar=⊤
 syntax keyword jsBooleanFalse false conceal cchar=⟂ " ⊥ (bottom) looks too light
 syntax keyword jsNull null conceal cchar=ø
-syntax keyword jsReturn return contained conceal cchar=↲ skipwhite containedin=jsOperator,jsObject nextgroup=@jsExpression
+syntax keyword jsReturn retur contained conceal cchar=↲ skipwhite containedin=jsOperator,jsObject nextgroup=@jsExpression
 syntax keyword jsStatement yield contained conceal cchar=↳ skipwhite nextgroup=@jsExpression " ↬⇄↔⟷
 syntax keyword jsAsyncKeyword async conceal cchar=☾ skipwhite
 syntax keyword jsAsyncKeyword await conceal cchar=☽ skipwhite

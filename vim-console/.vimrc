@@ -291,7 +291,7 @@ endfunction
 
 " Set statusline to deemphasized highlighting
 function! s:StatusNoHL()
-  return '%#StatusLine'
+  return '%#StatusLine#'
 endfunction
 
 " Generate unicode bar to represent progress through file
@@ -824,14 +824,8 @@ set noshowmode
 
 " STATUSLINE
 
-" Set highlight groups used in statusline
-highlight link User1 ModeMsg
-highlight link User2 ErrorMsg
-highlight link User3 DiffChange
-highlight link User4 BufTabLineActive
-
 " Use custom expression to build statusline
-" set statusline=%!MyStatus()
+set statusline=%!MyStatus()
 
 " ',vs' will toggle verbose statusline
 map <silent> <leader>vs :call <SID>ToggleVerboseStatus()<CR>
@@ -871,6 +865,12 @@ call plug#end()
 " Set colorscheme
 " dark: alduin antares apprentice hybrid_material iceberg PaperColor
 " light: disciple earendel lightning
-" colorscheme apprentice
-colorscheme noctu
+colorscheme apprentice
+" colorscheme noctu
 
+
+" Set highlight groups used in statusline
+highlight User1 ctermfg=231 ctermbg=231
+highlight User2 ctermfg=1  ctermbg=1
+highlight User3 ctermfg=11 ctermbg=11
+highlight User4 ctermfg=15 ctermbg=15

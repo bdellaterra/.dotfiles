@@ -1,10 +1,10 @@
 ! COLORSCHEME
 
-*cursorColor: #f0eff0
+*cursorColor: #ffffff
 
 *background:   #00151c
 
-*foreground: #f3e8d5 
+*foreground: #dcd8d4 
 
 ! black
 *color0:       #070910
@@ -19,7 +19,7 @@
 *color10:      #55b39c
 
 ! yellow
-*color3:       #d1b280
+*color3:       #be9360
 *color11:      #f1f3ce
 
 ! blue
@@ -36,7 +36,7 @@
 
 ! white
 *color7:       #acbebe
-*color15:      #f0eff0
+*color15:      #f5f4f9
 
 
 ! FONTS
