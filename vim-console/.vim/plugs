@@ -53,6 +53,7 @@ junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easya
 wellle/targets.vim # provides additional text objects
 michaeljsmith/vim-indent-object # defines a new text object based on indentation levels
 tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
+terryma/vim-expand-region # visually select increasingly larger regions of text
 
 # COMMENTS
 tomtom/tcomment_vim # file-type sensible comments
