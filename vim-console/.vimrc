@@ -426,8 +426,14 @@ set ignorecase smartcase
 " Keep a long command history
 set history=100
 
+" Initial fold regions based on syntax-rules
+set foldmethod=syntax
+
 " Have all folds open when a new file is loaded
 set foldlevelstart=999
+
+" Automatically open folds in insert-mode
+set foldopen=all
 
 " Prevent "Hit enter to continue" message
 set shortmess+=T
@@ -761,21 +767,6 @@ map <leader><Enter> :ALEFix \| silent! %foldopen!<CR> " unclear why ALEFix close
 map <leader>k :set spell! spell?<CR>
 
 
-" FOLD
-
-" Initial fold regions based on syntax-rules
-set foldmethod=syntax
-
-" Open all folds by default
-set foldlevelstart=99
-
-" Automatically open folds in insert-mode
-set foldopen=all
-
-" Customize how folded lines are displayed
-set foldtext=MyFoldText()
-
-
 " SESSION MANAGER
 
 " Set temp file location
@@ -799,6 +790,9 @@ inoremap õ <C-\><C-n>u
 
 " Customize the start screen
 let g:Startscreen_function = function('<SID>StartScreen')
+
+" Customize how folded lines are displayed
+set foldtext=MyFoldText()
 
 " Always show the sign column
 set signcolumn=yes
