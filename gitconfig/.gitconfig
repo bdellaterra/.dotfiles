@@ -91,6 +91,9 @@
     # checkout files
     cof = "!f() { git checkout -- $@; }; f"
 
+    # Resolve merge conflicts with Vim
+    con = "!vim +Conflicted"
+
     # diff
     d = diff --word-diff
 

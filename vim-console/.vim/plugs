@@ -68,6 +68,14 @@ sheerun/vim-polyglot # a collection of language packs for Vim
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
 
+# VERSION CONTROL
+tpope/vim-fugitive # A complement to command line git
+airblade/vim-gitgutter # shows a git diff in the gutter (sign column) and stages/undoes hunks
+junegunn/gv.vim # A git commit browser in Vim
+sodapopcan/vim-twiggy # Git branch management for Vim
+christoomey/vim-conflicted # Easy git merge conflict resolution in Vim
+tpope/vim-rhubarb # GitHub extension for fugitive.vim 
+
 # SNIPPETS
 SirVer/ultisnips # snippets files for various programming languagesadvanced snippet engine written in python
 honza/vim-snippets # community-maintained snippets files for various programming languages
