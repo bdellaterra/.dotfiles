@@ -74,7 +74,6 @@ airblade/vim-gitgutter # shows a git diff in the gutter (sign column) and stages
 junegunn/gv.vim # A git commit browser in Vim
 sodapopcan/vim-twiggy # Git branch management for Vim
 christoomey/vim-conflicted # Easy git merge conflict resolution in Vim
-tpope/vim-rhubarb # GitHub extension for fugitive.vim 
 
 # SNIPPETS
 SirVer/ultisnips # snippets files for various programming languagesadvanced snippet engine written in python
