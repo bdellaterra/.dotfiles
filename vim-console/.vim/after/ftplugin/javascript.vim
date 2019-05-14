@@ -1,7 +1,11 @@
 
 hi! link Conceal Statement
-set conceallevel=2
 set concealcursor=n
+if !exists('b:save_conceallevel') || b:save_conceallevel
+  if !&conceallevel
+    call ToggleConceal()
+  endif
+endif
 
 " Auto-fold long imports
 silent! %g#^import#normal zc

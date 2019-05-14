@@ -50,16 +50,28 @@ endfunction
 
 " Toggle between conceallevel 0 and 2. Pass optional boolean
 " to disable temporarily (false) or restore last on/off setting (true)
-function s:ToggleConceal(...)
-  let tmpToggle = get(a:000, 0, 0)
-  if !exists('b:save_conceallevel')
-    let b:save_conceallevel = &conceallevel
+augroup ToggleConceal
+  autocmd!
+  autocmd FileType * call <SID>ReinforceConcealSyntax()
+augroup END
+function s:ReinforceConcealSyntax()
+  if &conceallevel
+    silent! exe 'source ~/.dotfiles/vim-console/.vim/after/syntax/' . &filetype . '.vim'
   endif
-  if len(a:000)
-    let &conceallevel = tmpToggle ? b:save_conceallevel : 0
-  else
-    let &conceallevel = &conceallevel ? 0 : 2
-    let b:save_conceallevel = &conceallevel
+endfunction
+function ToggleConceal(...)
+  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+    let tmpToggle = get(a:000, 0, 0)
+    if !exists('b:save_conceallevel')
+      let b:save_conceallevel = &conceallevel
+    endif
+    if len(a:000)
+      let &conceallevel = tmpToggle ? b:save_conceallevel : 0
+    else
+      let &conceallevel = &conceallevel ? 0 : 2
+      let b:save_conceallevel = &conceallevel
+    endif
+    call <SID>ReinforceConcealSyntax()
   endif
 endfunction
 
@@ -847,7 +859,7 @@ let g:pickMeUpSessionDir = s:TmpDir
 map <leader>uh :GundoToggle<CR>
 
 " Temporarily toggle conceal to fix undo behavior
-map u :call <SID>ToggleConceal(0) \| undo \| :call <SID>ToggleConceal(1)<CR>
+map u :call ToggleConceal(0) \| undo \| :call ToggleConceal(1)<CR>
 
 " Prevent <Esc>u from accidentally inserting special character 'õ' in insert-mode
 " (Use 'Ctrl-v,245' to insert 'õ' intentionally)
@@ -866,7 +878,7 @@ set foldtext=MyFoldText()
 set signcolumn=yes
 
 " ',c' will toggle concealed text
-map <leader>c :call <SID>ToggleConceal()<CR>
+map <leader>c :call ToggleConceal()<CR>
 
 " Set visual wrap indicator
 set showbreak=⋯ " ↪
@@ -875,10 +887,10 @@ set showbreak=⋯ " ↪
 map <leader>- :set cursorline!<CR>
 
 " ',|' will toggle cursor column
-map <leader><bar> :set cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)<CR>
+map <leader><bar> :set cursorcolumn!<CR>:call ToggleConceal(!&cursorcolumn)<CR>
 
 " ',+' will toggle both
-map <leader>+ :set cursorline! cursorcolumn!<CR>:call <SID>ToggleConceal(!&cursorcolumn)<CR>
+map <leader>+ :set cursorline! cursorcolumn!<CR>:call ToggleConceal(!&cursorcolumn)<CR>
 
 " Do not show mode below the statusline
 set noshowmode
