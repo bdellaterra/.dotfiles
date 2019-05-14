@@ -711,38 +711,77 @@ let skeletons#skeletonsDir = '~/.skeletons/vim'
 
 
 " FUZZY-FIND
-" (All commands are prefized with <leader>/)
 
-map <leader>/p   :Files 
+" Helper commands taken directly from fzf-vim documentation
+command! -bang -nargs=* GGrep
+      \ call fzf#vim#grep(
+      \   'git grep --line-number '.shellescape(<q-args>), 0,
+      \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
+
+command! -bang Colors
+      \ call fzf#vim#colors({'left': '15%', 'options': '--reverse --margin 30%,0'}, <bang>0)
+
+command! -bang -nargs=* Ag
+      \ call fzf#vim#ag(<q-args>,
+      \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+      \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+      \                 <bang>0)
+
+command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+      \   <bang>0 ? fzf#vim#with_preview('up:60%')
+      \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+      \   <bang>0)
+
+command! -bang -nargs=? -complete=dir Files
+      \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+" All mappings are prefized with ',/'
+map <leader>/<space>   :Files 
 map <leader>/~   :Files ~<CR>
 map <leader>/.   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
-map <leader>/f   :exe 'Files ' . ProjectRootGuess()<CR> " requires ProjectRoot plugin
-map <leader>/gf  :GFiles<CR>
-map <leader>/gs  :GFiles?<CR>
-map <leader>/b   :Buffers<CR>
-map <leader>/cs  :Colors<CR>
-map <leader>/l   :Lines<CR>
-map <leader>/bl  :BLines<CR>
-map <leader>/tg  :Tags<CR>
-map <leader>/tb  :BTags<CR>
+map <leader>/=   :Buffers<CR>
+map <leader>/3   :Colors<CR>
+map <leader>/o   :Lines<CR> 'o' for "open" buffer lines
+map <leader>/b   :BLines<CR> 'b' for "buffer" lines
+map <leader>/t   :Tags<CR>
+map <leader>/5   :BTags<CR> " '%' for current file
 map <leader>/'   :Marks<CR>
 map <leader>/`   :Marks<CR>
 map <leader>/w   :Windows<CR>
-map <leader>/ml  :Locate<CR>
+map <leader>/L   :Locate
 map <leader>/h   :History<CR>
 map <leader>/:   :History:<CR>
 map <leader>//   :History/<CR>
 map <leader>/s   :Snippets<CR>
-map <leader>/cm  :Commands<CR>
-map <leader>/mp  :Maps<CR>
+map <leader>/C   :Commands<CR>
+map <leader>/m   :Maps<CR>
 map <leader>/?   :Helptags<CR>
-map <leader>/gg  :Commits<CR> " Requires Fugitive plugin
-map <leader>/gbg :BCommits<CR>
-if executable('ag') " https://github.com/ggreer/the_silver_searcher
-  map <leader>/r   :Ag<CR>
+map <leader>/f   :GFiles<CR>
+map <leader>/d   :GFiles?<CR> " 'd' for "diff"
+" Requires ProjectRoot plugin
+map <leader>/p   :exe 'Files ' . ProjectRootGuess()<CR>
+" Requires Fugitive plugin
+map <leader>/c   :Commits!<CR>
+map <leader>/l   :BCommits!<CR> 'l' for 'local' commits
+" Requires git
+if executable('git')
+  map <leader>/g   :GGrep<CR>
+  map <leader>/G   :GGrep!<CR>
+  map <leader>/<leader> :GGrep<CR> " convenience mapping
 endif
-if executable('rg') " https://github.com/BurntSushi/ripgrep
+" Requires https://github.com/ggreer/the_silver_searcher
+if executable('ag')
+  map <leader>/a   :Ag<CR>
+  map <leader>/A   :Ag!<CR>
+  map <leader>/<leader> :Ag!<CR> " convenience mapping
+endif
+" Requires https://github.com/BurntSushi/ripgrep
+if executable('rg')
   map <leader>/r   :Rg<CR>
+  map <leader>/R   :Rg!<CR>
+  map <leader>/<leader> :Rg!<CR> " convenience mapping
 endif
 
 
