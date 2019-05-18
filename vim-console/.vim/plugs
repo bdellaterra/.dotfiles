@@ -67,6 +67,9 @@ sheerun/vim-polyglot # a collection of language packs for Vim
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
 
+# ENCODINGS
+tpope/vim-characterize # pressing ga on a character reveals additional info
+
 # VERSION CONTROL
 tpope/vim-fugitive # A complement to command line git
 airblade/vim-gitgutter # shows a git diff in the gutter (sign column) and stages/undoes hunks
