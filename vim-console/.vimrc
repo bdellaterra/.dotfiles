@@ -288,22 +288,39 @@ function! s:Blur()
   set showmode
   set showcmd
   Limelight!
+  " Restore User Highlight groups that are being cleared for some reason
+  call SetDefaultStatusModeHLGroups()
+endfunction
+
+" Determine maximum line width accounting for left-side gutters
+function s:MaxLineWidth()
+  let w = winwidth(0) - (&signcolumn ? 2 : 0) - (&number ? len(line('$')) : 0)
+  return w
+endfunction
+
+" Set highlight groups used in statusline
+function SetDefaultStatusModeHLGroups()
+  highlight User1 ctermfg=233 ctermbg=145
+  highlight User2 ctermfg=233 ctermbg=11
+  highlight User3 ctermfg=233 ctermbg=231
+  highlight User4 ctermfg=233 ctermbg=88
+  highlight User5 ctermfg=233 ctermbg=123
 endfunction
 
 " Set statusline highlight based on current mode
 function! s:StatusModeHL()
   let mode = mode()
+  " User4 highlight for Insert/Replace mode
+  " User3 Highlight when changing a readonly file
   if mode =~ '\vi|R' " '=~#' to match case
-    return &readonly ? '%2*' : '%1*'
+    return &readonly ? '%4*' : '%3*'
+  " User2 highlight when in Visual mode
   elseif mode =~ '\vv|s|'
-    return '%3*'
+    return '%2*'
   endif
-  return !&modifiable ? '%4*' : '%*'
-endfunction
-
-" Set statusline to deemphasized highlighting
-function! s:StatusNoHL()
-  return '%#StatusLine#'
+  " User1 highlight for Normal mode
+  " User5 for non-modifiable bufffers
+  return !&modifiable ? '%5*' : '%1*'
 endfunction
 
 " Generate unicode bar to represent progress through file
@@ -324,14 +341,18 @@ function s:ToggleVerboseStatus()
 endfunction
 
 " Generate custom statusline (Ctrl-S omitted as it halts terminal)
-let s:modeSymbols = {
+let s:statusWidth = 82
+let s:statusModeSymbols = {
   \ 'n':'ƞ', 'v':'ⱱ', 'V':'Ṿ', '':'ṽ', 's':'ș', 'S':'Ṣ',
   \ 'i':'ί', 'R':'Ɍ', 'c':'ċ', 'r':'ṙ', '!':'⟳', 't':'ẗ'
   \ }
 function MyStatus()
   try
     let verbose = exists('s:verboseStatus') && s:verboseStatus
-    let corner = s:StatusModeHL() . '▒▒' . s:StatusNoHL()
+    let bufnum = '%2.n'
+    let corner = s:StatusModeHL()
+      \ . (verbose ? bufnum : '  ')
+      \ . '%#StatusLine#'
     let line = &number ? '' : printf('%5d', line('.'))
     let col = printf('%3d', col('.'))
     let pos = line != '' ? line . ' ' . col : col
@@ -343,14 +364,15 @@ function MyStatus()
     let bomb = &bomb ? '※' : ''
     let file = '%f' . (mod != '' ? mod : ' ') . (ro != '' ? ' ' . ro : '')
     let fileInfo = verbose ? ff . fe . ft . bomb : ''
-    let mode = verbose ? get(s:modeSymbols, mode(), '') : ''
+    let mode = verbose ? get(s:statusModeSymbols, mode(), '') : ''
     let conceal = verbose && &conceallevel ? '␦' : ''
     let paste = &paste ? '⎘' : '' " ⎀ϊǐ
     let modeInfo = mode . conceal . paste
     let pb = s:StatusPercentBar()
-    let leftSide = corner . ' %<' . file . ' '
-    let rightSide =  modeInfo . '  ' . fileInfo . ' ' . pos . '  ' . pb
-    return leftSide . '%= ' . rightSide
+    let leftSide = ' %<' . ' ' . file
+    let rightMinWidth = string(s:MaxLineWidth() - s:statusWidth)
+    let rightSide = modeInfo . '  ' . fileInfo . ' ' . pos . '  ' . pb
+    return corner . leftSide . ' %= %#TabLine#%' . rightMinWidth  . '(' . rightSide . '%)'
   catch
     return v:exception
   endtry
@@ -358,7 +380,7 @@ endfunction
 
 " Show ASCII art + fortune message
 function! s:StartScreen()
-  let w = winwidth(0) - (&signcolumn ? 2 : 0) - (&number ? len(line('$')) : 0)
+  let w = s:MaxLineWidth()
   let h = winheight(0)
   let margin = 2
   let art = readfile(expand('$HOME') . '/.vim/art.txt')
@@ -915,7 +937,7 @@ autocmd! User GoyoEnter nested call <SID>Focus()
 autocmd! User GoyoLeave nested call <SID>Blur()
 
 " Toggle focus-mode
-map <leader><leader> :Goyo<CR>
+map <silent> <leader><leader> :Goyo<CR>
 
 
 " VIM SCRIPTING
@@ -939,12 +961,8 @@ call plug#end()
 " Set colorscheme
 " dark: alduin antares apprentice hybrid_material iceberg PaperColor
 " light: disciple earendel lightning
-colorscheme apprentice
+" colorscheme apprentice
 " colorscheme noctu
+colorscheme alduin
+call SetDefaultStatusModeHLGroups()
 
-
-" Set highlight groups used in statusline
-highlight User1 ctermfg=231 ctermbg=231
-highlight User2 ctermfg=1  ctermbg=1
-highlight User3 ctermfg=11 ctermbg=11
-highlight User4 ctermfg=15 ctermbg=15
