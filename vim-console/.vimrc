@@ -762,14 +762,14 @@ command! -bang -nargs=* Rg
 command! -bang -nargs=? -complete=dir Files
       \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-" All mappings are prefized with ',/'
+" FZF mappings are all prefixed with ',/'
 map <leader>/<space>   :Files 
 map <leader>/~   :Files ~<CR>
 map <leader>/.   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
 map <leader>/=   :Buffers<CR>
-map <leader>/3   :Colors<CR>
-map <leader>/o   :Lines<CR> 'o' for "open" buffer lines
-map <leader>/b   :BLines<CR> 'b' for "buffer" lines
+map <leader>/3   :Colors<CR> " '#' for color-code
+map <leader>/o   :Lines<CR> " 'o' for "open" buffer lines
+map <leader>/b   :BLines<CR> " 'b' for "buffer" lines
 map <leader>/t   :Tags<CR>
 map <leader>/5   :BTags<CR> " '%' for current file
 map <leader>/'   :Marks<CR>
@@ -789,7 +789,7 @@ map <leader>/d   :GFiles?<CR> " 'd' for "diff"
 map <leader>/p   :exe 'Files ' . ProjectRootGuess()<CR>
 " Requires Fugitive plugin
 map <leader>/c   :Commits!<CR>
-map <leader>/l   :BCommits!<CR> 'l' for 'local' commits
+map <leader>/l   :BCommits!<CR> " 'l' for 'local' commits
 " Requires git
 if executable('git')
   map <leader>/g   :GGrep<CR>
