@@ -692,6 +692,12 @@ nmap <S-Tab> =[
 autocmd BufEnter * if isdirectory(expand("%")) | silent! bwipeout! | endif
 
 
+" INDENTATION
+
+" for efficiency, don't auto-detect indentation settings
+let g:sleuth_automatic = 0
+
+
 " ALIGNMENT
 
 " ',a' wil start interactive EasyAlign in visual mode (e.g. vip,a)
