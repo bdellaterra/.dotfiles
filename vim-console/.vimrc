@@ -862,7 +862,16 @@ let g:diffget_upstream_map = 'gu'
 " SESSION MANAGER
 
 " Set temp file location
-let g:pickMeUpSessionDir = s:TmpDir
+let g:pickMeUpSessionDir = s:MakeDir(s:TmpDir . 'sessions')
+
+" ',ss' will prompt to save a named session
+exe "map \<leader>ss :\<C-u>SaveSession " . g:pickMeUpSessionDir
+
+" ',sr' will prompt to restore a named session
+exe "map \<leader>sr :\<C-u>RestoreSession " . g:pickMeUpSessionDir
+
+" ',sd' will prompt to delete a named session
+exe "map \<leader>sd :\<C-u>DeleteSession " . g:pickMeUpSessionDir
 
 
 " UNDO
