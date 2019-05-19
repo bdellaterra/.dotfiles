@@ -41,6 +41,9 @@ junegunn/vim-peekaboo # extends ", @ and <CTRL-R> so you can see the contents of
 timakro/vim-searchant # persistent search-highlighting
 tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of a word
 
+# SELECTION
+romainl/vim-qf # tame the quickfix window (possible conflicts with w0rp/ale)
+
 # FUZZY-FIND
 junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder
 junegunn/fzf.vim # fzf-based commands and mappings
@@ -72,7 +75,6 @@ tpope/vim-characterize # pressing ga on a character reveals additional info
 
 # VERSION CONTROL
 tpope/vim-fugitive # A complement to command line git
-airblade/vim-gitgutter # shows a git diff in the gutter (sign column) and stages/undoes hunks
 junegunn/gv.vim # A git commit browser in Vim
 sodapopcan/vim-twiggy # Git branch management for Vim
 christoomey/vim-conflicted # Easy git merge conflict resolution in Vim
