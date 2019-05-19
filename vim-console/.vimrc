@@ -661,15 +661,6 @@ map <silent> <C-w><Enter> :silent! call ZoomWin()<CR>
 
 " BUFFERS
 
-" Show buffers if two or more are open
-let g:buftabline_show = 2
-
-" Show buffer numbers
-let g:buftabline_numbers = 1
-
-" Don't show separators between buffer names
-let g:buftabline_separators = 0
-
 " If used after a numeric count the equals key switches to that number buffer.
 " Number zero signifies the alternate buffer. (See :help alternate-file)
 " Otherwise the default re-indent behavior is used.
