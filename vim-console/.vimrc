@@ -833,27 +833,26 @@ map <leader>k :set spell! spell?<CR>
 
 " VERSION CONTROL
 
-map <leader>g :Git<Space>
-map <leader>gd :Gcd<Space>
-map <leader>grd :Gread<CR>
-map <leader>gw :Gwrite!<CR>
-map <leader>gg :Gwrite! \| Gcommit<CR>
-map <leader>gs :Gstatus<CR>
-map <leader>gc :Gcommit<CR>
-map <leader>ga :Gcommit --amend<CR>
-map <leader>gf :Ggrep<Space>
-map <leader>gl :Glog --graph --decorate --date=short<CR>
-map <leader>ge :Gedit<Space>
-map <leader>gsp :Gsplit<Space>
-map <leader>gvs :Gvsplit<Space>
-map <leader>gdf :Gdiff<CR>
-map <leader>gvd :Gvdiff<CR>
-map <leader>gsd :Gsdiff<CR>
-map <leader>grm :Gremove<CR>
-map <leader>gbb :Twiggy<CR>
-map <leader>gbl :Gblame<CR>
-map <leader>gbr :Gbrowse<CR>
-map <leader>gq :Gwq<CR>
+map <leader>g<Space> :Git<Space>
+map <leader>gwd :Gcd<Space>
+map <leader>gr  :Gread<CR>
+map <leader>gw  :Gwrite!<CR>
+map <leader>gg  :Gwrite! \| Gcommit<CR>
+map <leader>gs  :Gstatus<CR>
+map <leader>gc  :Gcommit<CR>
+map <leader>ga  :Gcommit --amend<CR>
+map <leader>g/  :Ggrep<Space>
+map <leader>gl  :Glog --graph --decorate --date=short<CR>
+map <leader>ge  :Gedit<Space>
+map <leader>gh  :Gsplit<Space>
+map <leader>gv  :Gvsplit<Space>
+map <leader>gd  :Gvdiff<CR>
+map <leader>gx  :Gdelete<CR>
+map <leader>gX  :Gdelete!<CR>
+map <leader>gt  :Twiggy<CR>
+map <leader>gb  :Gblame<CR>
+map <leader>gq  :Gwq<CR>
+map <leader>g<Enter> :Gbrowse<CR>
 
 " Use `gl` and `gu` rather than the default conflicted diffget mappings
 let g:diffget_local_map = 'gl'
