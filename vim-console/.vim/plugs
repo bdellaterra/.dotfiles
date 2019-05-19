@@ -93,7 +93,6 @@ junegunn/limelight.vim # hyperfocused editing
 carpetsmoker/startscreen.vim # customize Vim's start screen
 
 # COLORS
-ap/vim-css-color # Preview colours in source code while editing
 flazz/vim-colorschemes # one stop shop for Vim colorschemes
 noahfrederick/vim-noctu # inherits restricted 16-color terminal scheme
 
