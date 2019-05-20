@@ -22,8 +22,8 @@ dbakker/vim-projectroot # utils to find project dir (supplements bdellaterra/vim
 # SESSIONS
 bdellaterra/vim-pick-me-up # automatically save/restore per-project sessions
 
-# UNDO
-sjl/gundo.vim # visualize the undo tree
+# LISTS
+romainl/vim-qf # tame the quickfix window (possible conflicts with w0rp/ale)
 
 # FILES
 francoiscabrol/ranger.vim # vim-friendly file manager
@@ -41,9 +41,6 @@ junegunn/vim-peekaboo # extends ", @ and <CTRL-R> so you can see the contents of
 timakro/vim-searchant # persistent search-highlighting
 tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of a word
 
-# SELECTION
-romainl/vim-qf # tame the quickfix window (possible conflicts with w0rp/ale)
-
 # FUZZY-FIND
 junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder
 junegunn/fzf.vim # fzf-based commands and mappings
@@ -57,9 +54,13 @@ wellle/targets.vim # provides additional text objects
 michaeljsmith/vim-indent-object # defines a new text object based on indentation levels
 tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
 terryma/vim-expand-region # visually select increasingly larger regions of text
+tommcdo/vim-exchange # provides an operator that swaps two regions of text
 
 # COMMENTS
 tomtom/tcomment_vim # file-type sensible comments
+
+# UNDO
+sjl/gundo.vim # visualize the undo tree
 
 # COMPLETION
 lifepillar/vim-mucomplete # minmalist implementation of chained (fallback) completion
