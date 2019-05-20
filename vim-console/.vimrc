@@ -812,6 +812,15 @@ command! -bang -nargs=* Rg
 command! -bang -nargs=? -complete=dir Files
       \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
+" Temporarily switch FZFMru to search relative to current directory
+function s:FZFRelativeMru()
+  let save_rel = g:fzf_mru_relative
+  let g:fzf_mru_relative = 1
+  FZFMru
+  let g:fzf_mru_relative = save_rel
+endfunction
+command! -bang -nargs=* FZFRelativeMru call <SID>FZFRelativeMru()
+
 " FZF mappings are all prefixed with ',/'
 map <leader>/<space>   :Files 
 map <leader>/~   :Files ~<CR>
@@ -831,15 +840,18 @@ map <leader>/:   :History:<CR>
 map <leader>//   :History/<CR>
 map <leader>/s   :Snippets<CR>
 map <leader>/C   :Commands<CR>
-map <leader>/m   :Maps<CR>
+map <leader>/M   :Maps<CR>
 map <leader>/?   :Helptags<CR>
 map <leader>/f   :GFiles<CR>
 map <leader>/d   :GFiles?<CR> " 'd' for "diff"
+map <leader>/m   :FZFMru<CR> " 'm' for "most recent"
 " Requires ProjectRoot plugin
 map <leader>/p   :exe 'Files ' . ProjectRootGuess()<CR>
+map <leader>/l   :FZFRelativeMru<CR> " 'l' for "latest"
+  \ :let g:fzf_mru_relative
 " Requires Fugitive plugin
 map <leader>/c   :Commits!<CR>
-map <leader>/l   :BCommits!<CR> " 'l' for 'local' commits
+map <leader>/v   :BCommits!<CR> " 'v' for 'versions'
 " Requires git
 if executable('git')
   map <leader>/g   :GGrep<CR>

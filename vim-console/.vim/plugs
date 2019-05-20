@@ -47,6 +47,7 @@ romainl/vim-qf # tame the quickfix window (possible conflicts with w0rp/ale)
 # FUZZY-FIND
 junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder
 junegunn/fzf.vim # fzf-based commands and mappings
+pbogut/fzf-mru.vim # fzf extension for "most recently used" files
 
 # ALIGNMENT
 junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easyalign)
