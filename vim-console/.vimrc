@@ -766,6 +766,28 @@ let g:fzf_colors = {
   \ }
 
 " Helper commands taken directly from fzf-vim documentation
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+
+let g:fzf_colors = {
+  \ 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment']
+  \ }
+
 command! -bang -nargs=* GGrep
       \ call fzf#vim#grep(
       \   'git grep --line-number '.shellescape(<q-args>), 0,
@@ -868,6 +890,7 @@ map <leader>k :set spell! spell?<CR>
 
 " VERSION CONTROL
 
+" Git mappings are all prefixed with ',g'
 map <leader>g<Space> :Git<Space>
 map <leader>gwd :Gcd<Space>
 map <leader>gr  :Gread<CR>
@@ -892,6 +915,9 @@ map <leader>g<Enter> :Gbrowse<CR>
 " Use `gl` and `gu` rather than the default conflicted diffget mappings
 let g:diffget_local_map = 'gl'
 let g:diffget_upstream_map = 'gu'
+
+" sign-column flags only check for git status by default
+let g:signify_vcs_list = ['git']
 
 
 " SESSION MANAGER
