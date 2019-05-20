@@ -69,6 +69,7 @@ w0rp/ale # asynchronous linting/fixing for Vim and Language Server Protocol LSP)
 ludovicchabant/vim-gutentags # (re)generate tag files as you work
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
+mxw/vim-jsx # React JSX syntax highlighting and indenting for vim
 
 # ENCODINGS
 tpope/vim-characterize # pressing ga on a character reveals additional info
