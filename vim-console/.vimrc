@@ -748,6 +748,23 @@ let skeletons#skeletonsDir = '~/.skeletons/vim'
 
 " FUZZY-FIND
 
+" match FZF colors to the current color scheme
+let g:fzf_colors = {
+  \ 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment']
+  \ }
+
 " Helper commands taken directly from fzf-vim documentation
 command! -bang -nargs=* GGrep
       \ call fzf#vim#grep(
@@ -819,6 +836,13 @@ if executable('rg')
   map <leader>/R   :Rg!<CR>
   map <leader>/<leader> :Rg!<CR> " convenience mapping
 endif
+
+" 'Ctrl-a' prefix will setup the following custom mappings in FZF window
+" (Hit 'Ctrl-a' twice if using Tmux and Tmux prefix is also 'Ctrl-a')
+let g:fzf_action = {
+  \ 'Ctrl-t': 'tab split',
+  \ 'Ctrl-x': 'split',
+  \ 'Ctrl-v': 'vsplit' }
 
 
 " LINTING
