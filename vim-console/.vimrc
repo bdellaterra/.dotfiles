@@ -1033,8 +1033,8 @@ call plug#end()
 " Set colorscheme
 " dark: alduin antares apprentice hybrid_material iceberg PaperColor
 " light: disciple earendel lightning
-" colorscheme apprentice
-" colorscheme noctu
+" base16: noctu
+colorscheme apprentice " loading this first can improve other colorschemes
 colorscheme alduin
 call SetDefaultStatusModeHLGroups()
 
