@@ -830,10 +830,10 @@ map <leader>/3   :Colors<CR> " '#' for color-code
 map <leader>/o   :Lines<CR> " 'o' for "open" buffer lines
 map <leader>/b   :BLines<CR> " 'b' for "buffer" lines
 map <leader>/t   :Tags<CR>
-map <leader>/5   :BTags<CR> " '%' for current file
+map <leader>/f   :BTags<CR> " 'f' for current "file"
 map <leader>/'   :Marks<CR>
 map <leader>/`   :Marks<CR>
-map <leader>/w   :Windows<CR>
+map <leader>/W   :Windows<CR>
 map <leader>/L   :Locate
 map <leader>/h   :History<CR>
 map <leader>/:   :History:<CR>
@@ -842,7 +842,7 @@ map <leader>/s   :Snippets<CR>
 map <leader>/C   :Commands<CR>
 map <leader>/M   :Maps<CR>
 map <leader>/?   :Helptags<CR>
-map <leader>/f   :GFiles<CR>
+map <leader>/w   :GFiles<CR> " 'w' for "watched" files
 map <leader>/d   :GFiles?<CR> " 'd' for "diff"
 map <leader>/m   :FZFMru<CR> " 'm' for "most recent"
 " Requires ProjectRoot plugin
