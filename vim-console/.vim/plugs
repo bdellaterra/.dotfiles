@@ -40,7 +40,8 @@ junegunn/vim-peekaboo # extends ", @ and <CTRL-R> so you can see the contents of
 # SEARCH/REPLACE
 timakro/vim-searchant # persistent search-highlighting
 tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of a word
-
+bronson/vim-visual-star-search # Start a * or # search from a visual block
+ 
 # FUZZY-FIND
 junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder
 junegunn/fzf.vim # fzf-based commands and mappings
