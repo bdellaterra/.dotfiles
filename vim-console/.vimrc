@@ -292,10 +292,17 @@ function! s:Blur()
   call SetDefaultStatusModeHLGroups()
 endfunction
 
+" Check whether the sign column is active
+function s:IsSignColumnActive()
+  return &signcolumn == 'yes'
+    \ || &signcolumn == 'auto' && len(sign_getplaced())
+endfunction
+
 " Determine maximum line width accounting for left-side gutters
 function s:MaxLineWidth()
-  let w = winwidth(0) - (&signcolumn ? 2 : 0) - (&number ? len(line('$')) : 0)
-  return w
+  return winwidth(0)
+    \ - (s:IsSignColumnActive() ? 2 : 0)
+    \ - (&number ? len(line('$')) + 1 : 0)
 endfunction
 
 " Set highlight groups used in statusline
@@ -341,7 +348,7 @@ function s:ToggleVerboseStatus()
 endfunction
 
 " Generate custom statusline (Ctrl-S omitted as it halts terminal)
-let s:statusWidth = 82
+let s:statusWidth = 80
 let s:statusModeSymbols = {
   \ 'n':'ƞ', 'v':'ⱱ', 'V':'Ṿ', '':'ṽ', 's':'ș', 'S':'Ṣ',
   \ 'i':'ί', 'R':'Ɍ', 'c':'ċ', 'r':'ṙ', '!':'⟳', 't':'ẗ'
@@ -353,7 +360,7 @@ function MyStatus()
     let corner = s:StatusModeHL()
       \ . (verbose ? bufnum : '  ')
       \ . '%#StatusLine#'
-    let line = &number ? '' : printf('%5d', line('.'))
+    let line = &number && !verbose ? '' : printf('%5d', line('.'))
     let col = printf('%3d', col('.'))
     let pos = line != '' ? line . ' ' . col : col
     let mod = &modified ? '…' : ''
