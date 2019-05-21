@@ -1,4 +1,7 @@
 
+setlocal iskeyword+=$
+setlocal suffixesadd=.js,.jsx,.ts,.tsx
+
 hi! link Conceal Statement
 set concealcursor=n
 if !exists('b:save_conceallevel') || b:save_conceallevel
