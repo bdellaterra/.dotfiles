@@ -356,8 +356,8 @@ endfunction
 " Generate custom statusline (Ctrl-S omitted as it halts terminal)
 let s:statusWidth = 80
 let s:statusModeSymbols = {
-  \ 'n':'ƞ', 'v':'ⱱ', 'V':'Ṿ', '':'ṽ', 's':'ș', 'S':'Ṣ',
-  \ 'i':'ί', 'R':'Ɍ', 'c':'ċ', 'r':'ṙ', '!':'⟳', 't':'ẗ'
+  \ 'n':'ƞ', 'v':'ⱱ', 'V':'Ⅴ', '':'⋎', 's':'ș', 'S':'Ṣ',
+  \ 'i':'∣', 'R':'Ɍ', 'c':'ċ', 'r':'ṙ', '!':'⟳', 't':'ẗ'
   \ }
 function MyStatus()
   try
@@ -375,21 +375,22 @@ function MyStatus()
     let fe = &fileencoding != '' ? '/' . &fileencoding : ''
     let ft = &filetype != '' ? '/' . &filetype : 'unknown'
     let bomb = &bomb ? '※' : ''
-    let file = (verbose ? '%F' : '%t')
+    let file = (verbose ? '%f' : '%t')
       \ . (mod != '' ? mod : ' ')
       \ . (ro != '' ? ' ' . ro : '')
-    let datetime = strftime('%e %b %Y %l:%M%P')
+    let branch = verbose ? ' ｢' . FugitiveHead() . '｣ ' : ''
     let mode = verbose ? get(s:statusModeSymbols, mode(), '') : ''
     let conceal = verbose && &conceallevel ? '␦' : ''
     let paste = &paste ? '⎘' : '' " ⎀ϊǐ
     let modeInfo = mode . conceal . paste
-    let fileInfo = verbose ? ff . fe . ft . bomb : ''
+    let fileInfo = verbose ? ff . fe . ft . bomb . '  ⋰⋰' : ''
     let pb = s:StatusPercentBar()
-    let leftSide = ' %<' . ' ' . file
+    let datetime = verbose ? ' ' . strftime('%d/%b %H:%M') . ' ' : ''
+    let leftSide = ' %<' . ' ' . file . branch 
     let rightMinWidth = string(s:MaxLineWidth() - s:statusWidth)
-    let rightSide = modeInfo . '  ' . fileInfo . ' ' . pos . '  ' . pb
+    let rightSide = modeInfo . '  ' . fileInfo . pos . '  ' . pb
     return corner . leftSide . ' %= '
-      \ . '%#TabLine#%' . rightMinWidth  . '(' . rightSide . '%)'
+      \ . '%#TabLine# ' . datetime . ' ' . rightSide
   catch
     return v:exception
   endtry
