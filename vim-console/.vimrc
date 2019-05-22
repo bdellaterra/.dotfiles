@@ -505,6 +505,9 @@ set laststatus=2
 " Use modern encoding
 set encoding=utf8
 
+" show file diffs using vertical splits
+set diffopt+=vertical
+
 " Automatically read file changes
 set autoread
 " Autoread depends on file status being checked. This speeds that up
