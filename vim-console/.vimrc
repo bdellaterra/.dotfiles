@@ -153,7 +153,8 @@ endfunction
 " selection or a command-count for number of words to surround w/ delimiter
 let g:surround_leader = "\<C-s>"
 let g:surround_prompt_trigger = "\<C-e>"
-let g:surround_{char2nr(g:surround_prompt_trigger)} = "\1Enter string: \r.*\r\\=SurroundOpenSubs(submatch(0))\1\r\1\r.*\r\\=SurroundCloseSubs(submatch(0))\1"
+let g:surround_{char2nr(g:surround_prompt_trigger)} = "\1Enter string: "
+  \ . "\r.*\r\\=SurroundOpenSubs(submatch(0))\1\r\1\r.*\r\\=SurroundCloseSubs(submatch(0))\1"
 function! s:Surround(...)
   let mode = get(a:000, 0, 0)
   let char = nr2char(getchar())
@@ -164,7 +165,8 @@ function! s:Surround(...)
     let char = nr2char(getchar())
     let nextChar = nr2char(getchar())
     let hasPrompt = [nextChar] == [g:surround_prompt_trigger]
-    let action = [nextChar] == [g:surround_prompt_trigger] || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
+    let action = [nextChar] == [g:surround_prompt_trigger]
+      \ || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
   elseif type(mode) == type(0)
     let action = 'surround'
   else
@@ -172,13 +174,17 @@ function! s:Surround(...)
   endif
   if hasPrompt || char =~ '[[:print:]]'
     let iNormal = "\<C-\>\<C-n>"
-    let iSaveCursor = iNormal . ":let save_cursor = getcurpos()\<CR>"
+     let iSaveCursor = iNormal . ":let save_cursor = getcurpos()\<CR>"
     let iRestoreCursor = iNormal . ":call setpos('.', save_cursor)\<CR>"
       \ . ([action] == ['surround'] ? "\<Right>" : '')
       \ . ([action] == ['delete'] ? "\<Left>" : '')
     let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
-    let iRestoreSelection = [action] == ['delete'] ? iNormal . "gv\<Left>o\<Left>o" : 'gv'
-    let iRestoreMode = [mode] == ['visual'] ? iRestoreSelection : ([mode] == ['insert'] ? iRestoreInsert : '')
+    let iRestoreSelection = [action] == ['delete']
+      \ ? iNormal . "gv\<Left>o\<Left>o"
+      \ : 'gv'
+    let iRestoreMode = [mode] == ['visual']
+      \ ? iRestoreSelection : ([mode] == ['insert']
+      \ ? iRestoreInsert : '')
     let iSurround = 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char
     let iChange = 'cs' . char . nextChar
     let iDelete = 'ds' . char
@@ -320,7 +326,7 @@ function! s:StatusModeHL()
   " User4 highlight for Insert/Replace mode
   " User3 Highlight when changing a readonly file
   if mode =~ '\vi|R' " '=~#' to match case
-    return &readonly ? '%4*' : '%3*'
+     return &readonly ? '%4*' : '%3*'
   " User2 highlight when in Visual mode
   elseif mode =~ '\vv|s|'
     return '%2*'
@@ -369,17 +375,21 @@ function MyStatus()
     let fe = &fileencoding != '' ? '/' . &fileencoding : ''
     let ft = &filetype != '' ? '/' . &filetype : 'unknown'
     let bomb = &bomb ? '※' : ''
-    let file = '%f' . (mod != '' ? mod : ' ') . (ro != '' ? ' ' . ro : '')
-    let fileInfo = verbose ? ff . fe . ft . bomb : ''
+    let file = (verbose ? '%F' : '%t')
+      \ . (mod != '' ? mod : ' ')
+      \ . (ro != '' ? ' ' . ro : '')
+    let datetime = strftime('%e %b %Y %l:%M%P')
     let mode = verbose ? get(s:statusModeSymbols, mode(), '') : ''
     let conceal = verbose && &conceallevel ? '␦' : ''
     let paste = &paste ? '⎘' : '' " ⎀ϊǐ
     let modeInfo = mode . conceal . paste
+    let fileInfo = verbose ? ff . fe . ft . bomb : ''
     let pb = s:StatusPercentBar()
     let leftSide = ' %<' . ' ' . file
     let rightMinWidth = string(s:MaxLineWidth() - s:statusWidth)
     let rightSide = modeInfo . '  ' . fileInfo . ' ' . pos . '  ' . pb
-    return corner . leftSide . ' %= %#TabLine#%' . rightMinWidth  . '(' . rightSide . '%)'
+    return corner . leftSide . ' %= '
+      \ . '%#TabLine#%' . rightMinWidth  . '(' . rightSide . '%)'
   catch
     return v:exception
   endtry
