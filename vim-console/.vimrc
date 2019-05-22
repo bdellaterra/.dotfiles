@@ -326,7 +326,7 @@ function! s:StatusModeHL()
   " User4 highlight for Insert/Replace mode
   " User3 Highlight when changing a readonly file
   if mode =~ '\vi|R' " '=~#' to match case
-     return &readonly ? '%4*' : '%3*'
+    return &readonly ? '%4*' : '%3*'
   " User2 highlight when in Visual mode
   elseif mode =~ '\vv|s|'
     return '%2*'
@@ -743,6 +743,16 @@ set belloff+=ctrlg
 
 " Show auto-complete menu without hitting <Tab>
 let g:mucomplete#enable_auto_at_startup = 1
+
+" Complete filenames relative to open buffer if './' is used to begin the path
+" <Tab> must be used to trigger this. Not applied for automatic-completion
+function! s:CompleteWithRelativeFilePaths()
+  let g:mucomplete#buffer_relative_paths = 0
+  .g:'\.[/\\]\([^/\\]*[/\\]\?\)*\%#:let g:mucomplete#buffer_relative_paths = 1
+  return "\<plug>(MyFwd)"
+endfunction
+imap <plug>(MyFwd) <plug>(MUcompleteFwd)
+imap <expr> <silent> <tab> <SID>CompleteWithRelativeFilePaths()
 
 
 " SNIPPETS
