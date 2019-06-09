@@ -81,7 +81,7 @@ function s:BufferFile(...)
   return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
 endfunction
 
-" Share yanked text with system clipboard when Vim lacks 'clipboard' support
+" Share yanked text with system clipboard, even when Vim lacks 'clipboard' support
 if executable('xclip')
   let s:clipCopy = 'xclip' " nix
 endif
@@ -99,9 +99,14 @@ if executable('win32yank') && executable('unix2dos')
 endif
 function s:CopyToClipboard(text, ...)
   let register = get(a:000, 0, '')
-  if exists('s:clipCopy') && register == ''
-    call system(s:clipCopy, a:text)
+  if !has('clipboard')
+    if exists('s:clipCopy') && register == ''
+      call system(s:clipCopy, a:text)
+    endif
+  else
+    call setreg('+', a:text)
   endif
+  call setreg('"', a:text)
 endfunction
 
 " Share clipboard text with paste buffer when Vim lacks 'clipboard' support
@@ -571,24 +576,6 @@ if $TERM =~ '256color' || $COLORTERM == 'gnome-terminal'
 endif
 
 
-" FILE MANAGER
-
-" Replace default file manager when viewing directories
-let g:ranger_replace_netrw = 1
-
-" Set temp file location
-let g:ranger_choice_file = s:TmpDir . 'RangerChosenFile'
-
-" Don't use plugin mappings
-let g:ranger_map_keys = 0
-
-" ',.' will browse files at current buffer's directory
-map <leader>. :Ranger<CR>
-
-" ',f' will browse files at working-directory (usually project root)
-map <leader>f :RangerWorkingDirectory<CR>
-
-
 " CLIPBOARD
 
 " Share system clipboard with unnamed register for copy/paste
@@ -602,6 +589,33 @@ endif
 " 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
 noremap <F12> :set paste! paste?<CR>
 imap <expr> <F12> set paste! paste? ? '' : ''
+
+
+" FILES
+
+" Replace default file manager when viewing directories
+let g:ranger_replace_netrw = 1
+
+" Set temp file location
+let g:ranger_choice_file = s:TmpDir . 'RangerChosenFile'
+
+" Don't use plugin mappings
+let g:ranger_map_keys = 0
+
+" ',.' will browse files at current buffer's directory
+map <leader>. :Ranger<CR>
+
+" ',p' will browse files at working-directory (usually project root)
+map <leader>p :RangerWorkingDirectory<CR>
+
+" ',wd' will copy working directory to the clipboard
+map <silent> <leader>wd :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:h'))<CR>
+
+" ',wf' will copy working file (full-path) to the clipboard
+map <silent> <leader>wf :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p'))<CR>
+
+" ',wt' will copy "tail" of working path to the clipboard (just the filename)
+map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t'))<CR>
 
 
 " SELCTION
