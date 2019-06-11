@@ -10,15 +10,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 
-" HELPER FUNCTIONS
-
-" Support loading plugin/options from file w/ empty lines and comments removed
-function s:Plugin(plug)
-  let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
-  if len(locator)
-    call call('plug#', len(options) ? [locator, eval(options)] : [locator])
-  end
-endfunction
+" SHARED FUNCTIONS
 
 " Convert path to forward slashes with a slash at the end
 function s:DirSlashes(path)
@@ -35,17 +27,28 @@ function s:MakeDir(path)
   return s:DirSlashes(a:path)
 endfunction
 
-" Overload behavior of the equals key
-function s:EditBufferOrReindent(...)
-  let bufNum = get(a:000, 0, '')
-  if bufNum == ''
-    return "="
-  elseif bufNum == 0
-    return ":\<C-u>confirm buffer #\<CR>"
-  else
-    return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
-  endif
-  return ""
+" Get full file path for current buffer or # buffer if command-count provided
+function s:BufferFile(...)
+  let fnameMods = get(a:000, 0, '')
+  return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
+endfunction
+
+" Calculate ideal position for cursor to settle during scrolling
+function! s:CursorRatio()
+  return float2nr(round(winheight(0) * 0.381966))
+endfunction
+
+" Check whether the sign column is active
+function s:IsSignColumnActive()
+  return &signcolumn == 'yes'
+    \ || &signcolumn == 'auto' && len(sign_getplaced())
+endfunction
+
+" Determine maximum line width accounting for left-side gutters
+function s:MaxLineWidth()
+  return winwidth(0)
+    \ - (s:IsSignColumnActive() ? 2 : 0)
+    \ - (&number ? len(line('$')) + 1 : 0)
 endfunction
 
 " Toggle between conceallevel 0 and 2. Pass optional boolean
@@ -73,363 +76,6 @@ function ToggleConceal(...)
     endif
     call <SID>ReinforceConcealSyntax()
   endif
-endfunction
-
-" Get full file path for current buffer or # buffer if command-count provided
-function s:BufferFile(...)
-  let fnameMods = get(a:000, 0, '')
-  return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
-endfunction
-
-" Share yanked text with system clipboard, even when Vim lacks 'clipboard' support
-if executable('xclip')
-  let s:clipCopy = 'xclip' " nix
-endif
-if executable('pbcopy')
-  let s:clipCopy = 'pbcopy' " mac
-endif
-" NOTE: Symlink executables to ~/bin path under Windows Subsystem for Linux
-if executable('clip')
- " Default (with no paste support) at /mnt/c/Windows/System32/clip.exe
-  let s:clipCopy = 'clip'
-endif
-if executable('win32yank') && executable('unix2dos')
-  " Install from https://github.com/equalsraf/win32yank/releases
-  let s:clipCopy = 'unix2dos | win32yank -i'
-endif
-function s:CopyToClipboard(text, ...)
-  let register = get(a:000, 0, '')
-  if !has('clipboard')
-    if exists('s:clipCopy') && register == ''
-      call system(s:clipCopy, a:text)
-    endif
-  else
-    call setreg('+', a:text)
-  endif
-  call setreg('"', a:text)
-endfunction
-
-" Share clipboard text with paste buffer when Vim lacks 'clipboard' support
-if executable('xclip')
-  let s:clipPaste = 'xclip -o' " nix
-endif
-if executable('pbcopy')
-  let s:clipPaste = 'pbpaste' " mac
-endif
-" NOTE: Symlink executables to ~/bin path under Windows Subsystem for Linux
-if executable('win32yank') && executable('unix2dos')
-  " Install from https://github.com/equalsraf/win32yank/releases
-  let s:clipPaste = 'win32yank -o | dos2unix'
-endif
-function s:PasteFromClipboard()
-  if exists('s:clipPaste')
-    let @" = system(s:clipPaste)
-  endif
-endfunction
-
-
-let g:surround_open_subs = []
-function! SurroundOpenSubs(match)
-  let string = a:match
-  for [search, replace, flags] in g:surround_open_subs
-    let string = substitute(string, search, replace, flags)
-  endfor
-  return string
-endfunction
-
-let g:surround_close_subs = [
-  \ [ '\V{{{\w\+', '}}}', 'g' ], 
-  \ [ '\V(', ')', 'g' ], 
-  \ [ '\V[', ']', 'g' ], 
-  \ [ '\V{', '}', 'g' ], 
-  \ ]
-function! SurroundCloseSubs(match)
-  let string = a:match
-  let string = substitute(string, '\V{{{\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
-  let string = substitute(string, '\V~~~\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
-  let string = substitute(string, '\V```\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
-  let string = substitute(string, '\V(', ')', 'g')
-  let string = substitute(string, '\V[', ']', 'g')
-  let string = substitute(string, '\V{', '}', 'g')
-  return string
-endfunction
-
-" Surround text with delimiter. Optional "mode" param indicates 'visual'
-" selection or a command-count for number of words to surround w/ delimiter
-let g:surround_leader = "\<C-s>"
-let g:surround_prompt_trigger = "\<C-e>"
-let g:surround_{char2nr(g:surround_prompt_trigger)} = "\1Enter string: "
-  \ . "\r.*\r\\=SurroundOpenSubs(submatch(0))\1\r\1\r.*\r\\=SurroundCloseSubs(submatch(0))\1"
-function! s:Surround(...)
-  let mode = get(a:000, 0, 0)
-  let char = nr2char(getchar())
-  let nextChar = ''
-  let hasPrompt = [char] == [g:surround_prompt_trigger] || [char] == ['<']
-  " Determine action
-  if char == g:surround_leader " Double Ctrl-s will swap existing delimiter
-    let char = nr2char(getchar())
-    let nextChar = nr2char(getchar())
-    let hasPrompt = [nextChar] == [g:surround_prompt_trigger]
-    let action = [nextChar] == [g:surround_prompt_trigger]
-      \ || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
-  elseif type(mode) == type(0)
-    let action = 'surround'
-  else
-    let action = mode " 'visual' or 'insert'
-  endif
-  if hasPrompt || char =~ '[[:print:]]'
-    let iNormal = "\<C-\>\<C-n>"
-     let iSaveCursor = iNormal . ":let save_cursor = getcurpos()\<CR>"
-    let iRestoreCursor = iNormal . ":call setpos('.', save_cursor)\<CR>"
-      \ . ([action] == ['surround'] ? "\<Right>" : '')
-      \ . ([action] == ['delete'] ? "\<Left>" : '')
-    let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
-    let iRestoreSelection = [action] == ['delete']
-      \ ? iNormal . "gv\<Left>o\<Left>o"
-      \ : 'gv'
-    let iRestoreMode = [mode] == ['visual']
-      \ ? iRestoreSelection : ([mode] == ['insert']
-      \ ? iRestoreInsert : '')
-    let iSurround = 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char
-    let iChange = 'cs' . char . nextChar
-    let iDelete = 'ds' . char
-    let iVisual = 'S' . char
-    if hasPrompt
-      let iSaveCursor = ''
-      let iRestoreCursor = ''
-      let iRestoreSelection = ''
-      let iRestoreMode = ''
-    endif
-    let cmd = {
-      \ 'insert': "\<Plug>Isurround" . char,
-      \ 'surround': iSaveCursor . iNormal . iSurround . iRestoreCursor . iRestoreMode,
-      \ 'change': iSaveCursor . iNormal . iChange . iRestoreCursor . iRestoreMode,
-      \ 'delete': iSaveCursor . iNormal . iDelete . iRestoreCursor . iRestoreMode,
-      \ 'visual': iVisual . iRestoreMode,
-      \ }
-    return cmd[action]
-  endif
-endfunction
-
-exe 'map <expr>  ' . g:surround_leader . ' <SID>Surround(v:count)'
-exe 'imap <expr> ' . g:surround_leader . ' <SID>Surround("insert")'
-exe 'vmap <expr> ' . g:surround_leader . ' <SID>Surround("visual")'
-
-" Show syntax group and translated syntax group of character under cursor
-" From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
-function! s:SynGroup()
-  let l:s = synID(line('.'), col('.'), 1)
-  echo synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
-endfunction
-
-" Set a nicer foldtext function
-" (Modified) From Edouard, 2008, http://vim.wikia.com/wiki/Customize_text_for_closed_folds
-function! MyFoldText()
-  let line = getline(v:foldstart)
-  if match( line, '^[ \t]*\(\/\*\|\/\/\)[*/\\]*[ \t]*$' ) == 0
-    let initial = substitute( line, '^\([ \t]\)*\(\/\*\|\/\/\)\(.*\)', '\1\2', '' )
-    let linenum = v:foldstart + 1
-    while linenum < v:foldend
-      let line = getline( linenum )
-      let comment_content = substitute( line, '^\([ \t\/\*]*\)\(.*\)$', '\2', 'g' )
-      if comment_content != ''
-	break
-      endif
-      let linenum = linenum + 1
-    endwhile
-    let sub = initial . ' ' . comment_content
-  else
-    let sub = line
-    let startbrace = substitute( line, '^.*{[ \t]*$', '{', 'g')
-    if startbrace == '{'
-      let line = getline(v:foldend)
-      let endbrace = substitute( line, '^[ \t]*}\(.*\)$', '}', 'g')
-      if endbrace == '}'
-	let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
-      endif
-    endif
-  endif
-  let n = v:foldend - v:foldstart + 1
-  let info = " " . n . " lines   "
-  let sub = sub . "                                                                                                                  "
-  let num_w = getwinvar( 0, '&number' ) * getwinvar( 0, '&numberwidth' )
-  let fold_w = getwinvar( 0, '&foldcolumn' )
-  let sub = strpart( sub, 0, winwidth(0)
-    \ - strlen( info ) - num_w - fold_w - 1 )
-  return sub . info
-endfunction
-
-" Calculate ideal position for cursor to settle during scrolling
-function! s:CursorRatio()
-  return float2nr(round(winheight(0) * 0.381966))
-endfunction
-
-" Apply focus-mode customizations
-function! s:Focus()
-  if has('gui_running')
-    set fullscreen
-  elseif exists('$TMUX')
-    silent !tmux set status off
-    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-  endif
-  augroup VerticallyCenterCursor
-    autocmd!
-    " Keep cursor/scroll position just north of center
-    autocmd VerticallyCenterCursor CursorMoved * exe 'normal zz'
-      \ . repeat("\<C-e>", (winheight(0) / 2) - <SID>CursorRatio())
-  augroup END
-  let s:save_showtabline = &showtabline
-  let &showtabline = 0
-  set noshowmode
-  set noshowcmd
-  Limelight
-endfunction
-
-" Revert focus-mode customizations
-function! s:Blur()
-  if has('gui_running')
-    set nofullscreen
-  elseif exists('$TMUX')
-    silent !tmux set status on
-    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-  endif
-  au! VerticallyCenterCursor CursorMoved
-  let &showtabline = s:save_showtabline
-  unlet s:save_showtabline
-  set showmode
-  set showcmd
-  Limelight!
-  " Restore User Highlight groups that are being cleared for some reason
-  call SetDefaultStatusModeHLGroups()
-endfunction
-
-" Check whether the sign column is active
-function s:IsSignColumnActive()
-  return &signcolumn == 'yes'
-    \ || &signcolumn == 'auto' && len(sign_getplaced())
-endfunction
-
-" Determine maximum line width accounting for left-side gutters
-function s:MaxLineWidth()
-  return winwidth(0)
-    \ - (s:IsSignColumnActive() ? 2 : 0)
-    \ - (&number ? len(line('$')) + 1 : 0)
-endfunction
-
-" Set highlight groups used in statusline
-function SetDefaultStatusModeHLGroups()
-  highlight User1 ctermfg=233 ctermbg=145
-  highlight User2 ctermfg=233 ctermbg=11
-  highlight User3 ctermfg=233 ctermbg=231
-  highlight User4 ctermfg=233 ctermbg=88
-  highlight User5 ctermfg=233 ctermbg=123
-endfunction
-
-" Set statusline highlight based on current mode
-function! s:StatusModeHL()
-  let mode = mode()
-  " User4 highlight for Insert/Replace mode
-  " User3 Highlight when changing a readonly file
-  if mode =~ '\vi|R' " '=~#' to match case
-    return &readonly ? '%4*' : '%3*'
-  " User2 highlight when in Visual mode
-  elseif mode =~ '\vv|s|'
-    return '%2*'
-  endif
-  " User1 highlight for Normal mode
-  " User5 for non-modifiable bufffers
-  return !&modifiable ? '%5*' : '%1*'
-endfunction
-
-" Generate unicode bar to represent progress through file
-let s:percentBars = ['█', '▇', '▆', '▅', '▄', '▃', '▂', '▁']
-function s:StatusPercentBar()
-  let percent = (1.0 * line('.')) / line('$')
-  let index = float2nr(round((len(s:percentBars) - 1) * percent))
-  return s:percentBars[index]
-endfunction
-
-" Toggle between more and less verbose variations of statusline
-function s:ToggleVerboseStatus()
-  if !exists('s:verboseStatus') || !s:verboseStatus
-    let s:verboseStatus = 1
-  else
-    let s:verboseStatus = 0
-  endif
-endfunction
-
-" Generate custom statusline (Ctrl-S omitted as it halts terminal)
-let s:statusWidth = 80
-let s:statusModeSymbols = {
-  \ 'n':'ƞ', 'v':'ⱱ', 'V':'Ⅴ', '':'⋎', 's':'ș', 'S':'Ṣ',
-  \ 'i':'∣', 'R':'Ɍ', 'c':'ċ', 'r':'ṙ', '!':'⟳', 't':'ẗ'
-  \ }
-function MyStatus()
-  try
-    let verbose = exists('s:verboseStatus') && s:verboseStatus
-    let bufnum = '%2.n'
-    let corner = s:StatusModeHL()
-      \ . (verbose ? bufnum : '  ')
-      \ . '%#StatusLine#'
-    let line = &number && !verbose ? '' : printf('%5d', line('.'))
-    let col = printf('%3d', col('.'))
-    let pos = line != '' ? line . ' ' . col : col
-    let mod = &modified ? '…' : ''
-    let ro = &modifiable && &readonly ? '' : ''
-    let ff = &fileformat != '' ? &fileformat : ''
-    let fe = &fileencoding != '' ? '/' . &fileencoding : ''
-    let ft = &filetype != '' ? '/' . &filetype : 'unknown'
-    let bomb = &bomb ? '※' : ''
-    let file = (verbose ? '%f' : '%t')
-      \ . (mod != '' ? mod : ' ')
-      \ . (ro != '' ? ' ' . ro : '')
-    let branch = verbose ? ' ｢' . FugitiveHead() . '｣ ' : ''
-    let mode = verbose ? get(s:statusModeSymbols, mode(), '') : ''
-    let conceal = verbose && &conceallevel ? '␦' : ''
-    let paste = &paste ? '⎘' : '' " ⎀ϊǐ
-    let modeInfo = mode . conceal . paste
-    let fileInfo = verbose ? ff . fe . ft . bomb . '  ⋰⋰' : ''
-    let pb = s:StatusPercentBar()
-    let datetime = verbose ? ' ' . strftime('%d/%b %H:%M') . ' ' : ''
-    let leftSide = ' %<' . ' ' . file . branch 
-    let rightMinWidth = string(s:MaxLineWidth() - s:statusWidth)
-    let rightSide = modeInfo . '  ' . fileInfo . pos . '  ' . pb
-    return corner . leftSide . ' %= '
-      \ . '%#TabLine# ' . datetime . ' ' . rightSide
-  catch
-    return v:exception
-  endtry
-endfunction
-
-" Show ASCII art + fortune message
-function! s:StartScreen()
-  let w = s:MaxLineWidth()
-  let h = winheight(0)
-  let margin = 2
-  let art = readfile(expand('$HOME') . '/.vim/art.txt')
-  let toASCII = 'iconv -f utf-8 -t ascii//translit'
-  let trim = "awk '{$1=$1;print}'"
-  let fortune = systemlist('fortune | ' .  toASCII . ' | ' . trim)
-  let artWidth = min(map(copy(art), 'len(v:val)'))
-  let lineWidth = max(map(copy(fortune), 'len(v:val)'))
-  let formatWidth = w - artWidth - margin * 2
-  if lineWidth > formatWidth
-    let fortune = systemlist('fmt --width ' . formatWidth, fortune)
-    let lineWidth = max(map(copy(fortune), 'len(v:val)'))
-  endif
-  exe ':normal' . max([1, h - len(art) - 1]) . 'O'
-  call append(line('.'), art)
-  normal gg
-  let lnum = (margin / 2) " leaving space at top
-  for line in fortune
-    let lnum += 1
-    let cur = getline(lnum)
-    let pad = w - len(cur) - (lineWidth - len(line)) - (margin * 2)
-    call setline(lnum, cur . printf('%' . pad . 'S', line))
-  endfor
-  normal gg
-  redraw!
-  nnoremap <buffer> <silent> <Return> :enew<CR>:call startscreen#start()<CR>
 endfunction
 
 
@@ -578,7 +224,55 @@ endif
 
 " CLIPBOARD
 
-" Share system clipboard with unnamed register for copy/paste
+" Detect system clipboard utilities:
+
+" nix
+if executable('xclip')
+  let s:clipCopy = 'xclip'
+  let s:clipPaste = 'xclip -o'
+endif
+
+" mac
+if executable('pbcopy')
+  let s:clipCopy = 'pbcopy'
+  let s:clipPaste = 'pbpaste' " mac
+endif
+
+" win
+" (Symlink executables to ~/bin path under Windows Subsystem for Linux)
+
+" Default (with no paste support) at /mnt/c/Windows/System32/clip.exe
+if executable('clip')
+  let s:clipCopy = 'clip'
+endif
+
+" Install from https://github.com/equalsraf/win32yank/releases
+if executable('win32yank') && executable('unix2dos')
+  let s:clipCopy = 'unix2dos | win32yank -i'
+  let s:clipPaste = 'win32yank -o | dos2unix'
+endif
+
+" Share yanked text with system clipboard, even when Vim lacks 'clipboard' support
+function s:CopyToClipboard(text, ...)
+  let register = get(a:000, 0, '')
+  if !has('clipboard')
+    if exists('s:clipCopy') && register == ''
+      call system(s:clipCopy, a:text)
+    endif
+  else
+    call setreg('+', a:text)
+  endif
+  call setreg('"', a:text)
+endfunction
+
+" Sync system clipboard with Vim for paste-support
+function s:PasteFromClipboard()
+  if exists('s:clipPaste')
+    let @" = system(s:clipPaste)
+  endif
+endfunction
+
+" Share system clipboard for copy/paste events
 if has('clipboard')
   set clipboard=unnamed,unnamedplus
 else
@@ -696,6 +390,19 @@ map <silent> <C-w><Enter> :silent! call ZoomWin()<CR>
 
 " BUFFERS
 
+" Overload behavior of the equals key
+function s:EditBufferOrReindent(...)
+  let bufNum = get(a:000, 0, '')
+  if bufNum == ''
+    return "="
+  elseif bufNum == 0
+    return ":\<C-u>confirm buffer #\<CR>"
+  else
+    return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
+  endif
+  return ""
+endfunction
+
 " If used after a numeric count the equals key switches to that number buffer.
 " Number zero signifies the alternate buffer. (See :help alternate-file)
 " Otherwise the default re-indent behavior is used.
@@ -771,6 +478,96 @@ function! s:CompleteWithRelativeFilePaths()
 endfunction
 imap <plug>(MyFwd) <plug>(MUcompleteFwd)
 imap <expr> <silent> <tab> <SID>CompleteWithRelativeFilePaths()
+
+
+" DELIMITERS
+
+let g:surround_open_subs = []
+function! SurroundOpenSubs(match)
+  let string = a:match
+  for [search, replace, flags] in g:surround_open_subs
+    let string = substitute(string, search, replace, flags)
+  endfor
+  return string
+endfunction
+
+let g:surround_close_subs = [
+  \ [ '\V{{{\w\+', '}}}', 'g' ], 
+  \ [ '\V(', ')', 'g' ], 
+  \ [ '\V[', ']', 'g' ], 
+  \ [ '\V{', '}', 'g' ], 
+  \ ]
+function! SurroundCloseSubs(match)
+  let string = a:match
+  let string = substitute(string, '\V{{{\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
+  let string = substitute(string, '\V~~~\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
+  let string = substitute(string, '\V```\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
+  let string = substitute(string, '\V(', ')', 'g')
+  let string = substitute(string, '\V[', ']', 'g')
+  let string = substitute(string, '\V{', '}', 'g')
+  return string
+endfunction
+
+" Surround text with delimiter. Optional "mode" param indicates 'visual'
+" selection or a command-count for number of words to surround w/ delimiter
+let g:surround_leader = "\<C-s>"
+let g:surround_prompt_trigger = "\<C-e>"
+let g:surround_{char2nr(g:surround_prompt_trigger)} = "\1Enter string: "
+  \ . "\r.*\r\\=SurroundOpenSubs(submatch(0))\1\r\1\r.*\r\\=SurroundCloseSubs(submatch(0))\1"
+function! s:Surround(...)
+  let mode = get(a:000, 0, 0)
+  let char = nr2char(getchar())
+  let nextChar = ''
+  let hasPrompt = [char] == [g:surround_prompt_trigger] || [char] == ['<']
+  " Determine action
+  if char == g:surround_leader " Double Ctrl-s will swap existing delimiter
+    let char = nr2char(getchar())
+    let nextChar = nr2char(getchar())
+    let hasPrompt = [nextChar] == [g:surround_prompt_trigger]
+    let action = [nextChar] == [g:surround_prompt_trigger]
+      \ || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
+  elseif type(mode) == type(0)
+    let action = 'surround'
+  else
+    let action = mode " 'visual' or 'insert'
+  endif
+  if hasPrompt || char =~ '[[:print:]]'
+    let iNormal = "\<C-\>\<C-n>"
+     let iSaveCursor = iNormal . ":let save_cursor = getcurpos()\<CR>"
+    let iRestoreCursor = iNormal . ":call setpos('.', save_cursor)\<CR>"
+      \ . ([action] == ['surround'] ? "\<Right>" : '')
+      \ . ([action] == ['delete'] ? "\<Left>" : '')
+    let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
+    let iRestoreSelection = [action] == ['delete']
+      \ ? iNormal . "gv\<Left>o\<Left>o"
+      \ : 'gv'
+    let iRestoreMode = [mode] == ['visual']
+      \ ? iRestoreSelection : ([mode] == ['insert']
+      \ ? iRestoreInsert : '')
+    let iSurround = 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char
+    let iChange = 'cs' . char . nextChar
+    let iDelete = 'ds' . char
+    let iVisual = 'S' . char
+    if hasPrompt
+      let iSaveCursor = ''
+      let iRestoreCursor = ''
+      let iRestoreSelection = ''
+      let iRestoreMode = ''
+    endif
+    let cmd = {
+      \ 'insert': "\<Plug>Isurround" . char,
+      \ 'surround': iSaveCursor . iNormal . iSurround . iRestoreCursor . iRestoreMode,
+      \ 'change': iSaveCursor . iNormal . iChange . iRestoreCursor . iRestoreMode,
+      \ 'delete': iSaveCursor . iNormal . iDelete . iRestoreCursor . iRestoreMode,
+      \ 'visual': iVisual . iRestoreMode,
+      \ }
+    return cmd[action]
+  endif
+endfunction
+
+exe 'map <expr>  ' . g:surround_leader . ' <SID>Surround(v:count)'
+exe 'imap <expr> ' . g:surround_leader . ' <SID>Surround("insert")'
+exe 'vmap <expr> ' . g:surround_leader . ' <SID>Surround("visual")'
 
 
 " SNIPPETS
@@ -1007,12 +804,6 @@ inoremap õ <C-\><C-n>u
 
 " VISUALS
 
-" Customize the start screen
-let g:Startscreen_function = function('<SID>StartScreen')
-
-" Customize how folded lines are displayed
-set foldtext=MyFoldText()
-
 " Always show the sign column
 set signcolumn=yes
 
@@ -1035,7 +826,135 @@ map <leader>+ :set cursorline! cursorcolumn!<CR>:call ToggleConceal(!&cursorcolu
 set noshowmode
 
 
+" FOLDING
+
+" Set a nicer foldtext function
+" (Modified) From Edouard, 2008, http://vim.wikia.com/wiki/Customize_text_for_closed_folds
+function! MyFoldText()
+  let line = getline(v:foldstart)
+  if match( line, '^[ \t]*\(\/\*\|\/\/\)[*/\\]*[ \t]*$' ) == 0
+    let initial = substitute( line, '^\([ \t]\)*\(\/\*\|\/\/\)\(.*\)', '\1\2', '' )
+    let linenum = v:foldstart + 1
+    while linenum < v:foldend
+      let line = getline( linenum )
+      let comment_content = substitute( line, '^\([ \t\/\*]*\)\(.*\)$', '\2', 'g' )
+      if comment_content != ''
+	break
+      endif
+      let linenum = linenum + 1
+    endwhile
+    let sub = initial . ' ' . comment_content
+  else
+    let sub = line
+    let startbrace = substitute( line, '^.*{[ \t]*$', '{', 'g')
+    if startbrace == '{'
+      let line = getline(v:foldend)
+      let endbrace = substitute( line, '^[ \t]*}\(.*\)$', '}', 'g')
+      if endbrace == '}'
+	let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
+      endif
+    endif
+  endif
+  let n = v:foldend - v:foldstart + 1
+  let info = " " . n . " lines   "
+  let sub = sub . "                                                                                                                  "
+  let num_w = getwinvar( 0, '&number' ) * getwinvar( 0, '&numberwidth' )
+  let fold_w = getwinvar( 0, '&foldcolumn' )
+  let sub = strpart( sub, 0, winwidth(0)
+    \ - strlen( info ) - num_w - fold_w - 1 )
+  return sub . info
+endfunction
+
+" Customize how folded lines are displayed
+set foldtext=MyFoldText()
+
+
 " STATUSLINE
+
+" Set highlight groups used in statusline
+function SetDefaultStatusModeHLGroups()
+  highlight User1 ctermfg=233 ctermbg=145
+  highlight User2 ctermfg=233 ctermbg=11
+  highlight User3 ctermfg=233 ctermbg=231
+  highlight User4 ctermfg=233 ctermbg=88
+  highlight User5 ctermfg=233 ctermbg=123
+endfunction
+
+" Set statusline highlight based on current mode
+function! s:StatusModeHL()
+  let mode = mode()
+  " User4 highlight for Insert/Replace mode
+  " User3 Highlight when changing a readonly file
+  if mode =~ '\vi|R' " '=~#' to match case
+    return &readonly ? '%4*' : '%3*'
+  " User2 highlight when in Visual mode
+  elseif mode =~ '\vv|s|'
+    return '%2*'
+  endif
+  " User1 highlight for Normal mode
+  " User5 for non-modifiable bufffers
+  return !&modifiable ? '%5*' : '%1*'
+endfunction
+
+" Generate unicode bar to represent progress through file
+let s:percentBars = ['█', '▇', '▆', '▅', '▄', '▃', '▂', '▁']
+function s:StatusPercentBar()
+  let percent = (1.0 * line('.')) / line('$')
+  let index = float2nr(round((len(s:percentBars) - 1) * percent))
+  return s:percentBars[index]
+endfunction
+
+" Toggle between more and less verbose variations of statusline
+function s:ToggleVerboseStatus()
+  if !exists('s:verboseStatus') || !s:verboseStatus
+    let s:verboseStatus = 1
+  else
+    let s:verboseStatus = 0
+  endif
+endfunction
+
+" Generate custom statusline (Ctrl-S omitted as it halts terminal)
+let s:statusWidth = 80
+let s:statusModeSymbols = {
+  \ 'n':'ƞ', 'v':'ⱱ', 'V':'Ⅴ', '':'⋎', 's':'ș', 'S':'Ṣ',
+  \ 'i':'∣', 'R':'Ɍ', 'c':'ċ', 'r':'ṙ', '!':'⟳', 't':'ẗ'
+  \ }
+function MyStatus()
+  try
+    let verbose = exists('s:verboseStatus') && s:verboseStatus
+    let bufnum = '%2.n'
+    let corner = s:StatusModeHL()
+      \ . (verbose ? bufnum : '  ')
+      \ . '%#StatusLine#'
+    let line = &number && !verbose ? '' : printf('%5d', line('.'))
+    let col = printf('%3d', col('.'))
+    let pos = line != '' ? line . ' ' . col : col
+    let mod = &modified ? '…' : ''
+    let ro = &modifiable && &readonly ? '' : ''
+    let ff = &fileformat != '' ? &fileformat : ''
+    let fe = &fileencoding != '' ? '/' . &fileencoding : ''
+    let ft = &filetype != '' ? '/' . &filetype : 'unknown'
+    let bomb = &bomb ? '※' : ''
+    let file = (verbose ? '%f' : '%t')
+      \ . (mod != '' ? mod : ' ')
+      \ . (ro != '' ? ' ' . ro : '')
+    let branch = verbose ? ' ｢' . FugitiveHead() . '｣ ' : ''
+    let mode = verbose ? get(s:statusModeSymbols, mode(), '') : ''
+    let conceal = verbose && &conceallevel ? '␦' : ''
+    let paste = &paste ? '⎘' : '' " ⎀ϊǐ
+    let modeInfo = mode . conceal . paste
+    let fileInfo = verbose ? ff . fe . ft . bomb . '  ⋰⋰' : ''
+    let pb = s:StatusPercentBar()
+    let datetime = verbose ? ' ' . strftime('%d/%b %H:%M') . ' ' : ''
+    let leftSide = ' %<' . ' ' . file . branch 
+    let rightMinWidth = string(s:MaxLineWidth() - s:statusWidth)
+    let rightSide = modeInfo . '  ' . fileInfo . pos . '  ' . pb
+    return corner . leftSide . ' %= '
+      \ . '%#TabLine# ' . datetime . ' ' . rightSide
+  catch
+    return v:exception
+  endtry
+endfunction
 
 " Use custom expression to build statusline
 set statusline=%!MyStatus()
@@ -1045,6 +964,45 @@ map <silent> <leader>vs :call <SID>ToggleVerboseStatus()<CR>
 
 
 " FOCUS-MODE
+
+" Apply focus-mode customizations
+function! s:Focus()
+  if has('gui_running')
+    set fullscreen
+  elseif exists('$TMUX')
+    silent !tmux set status off
+    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  endif
+  augroup VerticallyCenterCursor
+    autocmd!
+    " Keep cursor/scroll position just north of center
+    autocmd VerticallyCenterCursor CursorMoved * exe 'normal zz'
+      \ . repeat("\<C-e>", (winheight(0) / 2) - <SID>CursorRatio())
+  augroup END
+  let s:save_showtabline = &showtabline
+  let &showtabline = 0
+  set noshowmode
+  set noshowcmd
+  Limelight
+endfunction
+
+" Revert focus-mode customizations
+function! s:Blur()
+  if has('gui_running')
+    set nofullscreen
+  elseif exists('$TMUX')
+    silent !tmux set status on
+    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  endif
+  au! VerticallyCenterCursor CursorMoved
+  let &showtabline = s:save_showtabline
+  unlet s:save_showtabline
+  set showmode
+  set showcmd
+  Limelight!
+  " Restore User Highlight groups that are being cleared for some reason
+  call SetDefaultStatusModeHLGroups()
+endfunction
 
 " Increase width from default 80 characters
 let g:goyo_width = 100
@@ -1057,15 +1015,68 @@ autocmd! User GoyoLeave nested call <SID>Blur()
 map <silent> <leader><leader> :Goyo<CR>
 
 
+" STARTSCREEN
+
+" Show ASCII art + fortune message
+function! s:StartScreen()
+  let w = s:MaxLineWidth()
+  let h = winheight(0)
+  let margin = 2
+  let art = readfile(expand('$HOME') . '/.vim/art.txt')
+  let toASCII = 'iconv -f utf-8 -t ascii//translit'
+  let trim = "awk '{$1=$1;print}'"
+  let fortune = systemlist('fortune | ' .  toASCII . ' | ' . trim)
+  let artWidth = min(map(copy(art), 'len(v:val)'))
+  let lineWidth = max(map(copy(fortune), 'len(v:val)'))
+  let formatWidth = w - artWidth - margin * 2
+  if lineWidth > formatWidth
+    let fortune = systemlist('fmt --width ' . formatWidth, fortune)
+    let lineWidth = max(map(copy(fortune), 'len(v:val)'))
+  endif
+  exe ':normal' . max([1, h - len(art) - 1]) . 'O'
+  call append(line('.'), art)
+  normal gg
+  let lnum = (margin / 2) " leaving space at top
+  for line in fortune
+    let lnum += 1
+    let cur = getline(lnum)
+    let pad = w - len(cur) - (lineWidth - len(line)) - (margin * 2)
+    call setline(lnum, cur . printf('%' . pad . 'S', line))
+  endfor
+  normal gg
+  redraw!
+  nnoremap <buffer> <silent> <Return> :enew<CR>:call startscreen#start()<CR>
+endfunction
+
+" Customize the start screen
+let g:Startscreen_function = function('<SID>StartScreen')
+
+
 " VIM SCRIPTING
 
-" Display syntax information
+" Show syntax group and translated syntax group of character under cursor
+" From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
+function! s:SynGroup()
+  let l:s = synID(line('.'), col('.'), 1)
+  echo synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
+endfunction
+
+" 
+" 'gs' will display syntax information
 map gs :call <SID>SynGroup()<CR>
 
 
 " *** Delayed Configuration **************************************************
 
 " PLUGINS
+
+" Support loading plugin/options from file w/ empty lines and comments removed
+function s:Plugin(plug)
+  let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*(\{[^}#]*\})?')[1:2]
+  if len(locator)
+    call call('plug#', len(options) ? [locator, eval(options)] : [locator])
+  end
+endfunction
 
 " Load plugins listed in /.vim/plugs
 let s:plugins = readfile($HOME . '/.vim/plugs')
