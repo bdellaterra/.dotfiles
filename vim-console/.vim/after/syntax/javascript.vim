@@ -1,4 +1,17 @@
 
+" From Pangloss/vim-javascript, 2019, https://github.com/pangloss/vim-javascript/blob/master/syntax/javascript.vim
+syntax keyword jsImport                       import skipwhite skipempty nextgroup=jsModuleAsterisk,jsModuleKeyword,jsModuleGroup,jsFlowImportType
+syntax keyword jsExport                       export skipwhite skipempty nextgroup=@jsAll,jsModuleGroup,jsExportDefault,jsModuleAsterisk,jsModuleKeyword,jsFlowTypeStatement
+syntax match   jsModuleKeyword      contained /\<\K\k*/ skipwhite skipempty nextgroup=jsModuleAs,jsFrom,jsModuleComma
+syntax keyword jsExportDefault      contained default skipwhite skipempty nextgroup=@jsExpression
+syntax keyword jsExportDefaultGroup contained default skipwhite skipempty nextgroup=jsModuleAs,jsFrom,jsModuleComma
+syntax match   jsModuleAsterisk     contained /\*/ skipwhite skipempty nextgroup=jsModuleKeyword,jsModuleAs,jsFrom
+syntax keyword jsModuleAs           contained as skipwhite skipempty nextgroup=jsModuleKeyword,jsExportDefaultGroup
+syntax keyword jsFrom               contained from skipwhite skipempty nextgroup=jsString
+syntax match jsModuleComma contained /,/ skipwhite skipempty nextgroup=jsModuleKeyword,jsModuleAsterisk,jsModuleGroup,jsFlowTypeKeyword
+syntax region  jsModuleGroup        contained matchgroup=jsModuleBraces        start=/{/ end=/}/   contains=jsModuleKeyword,jsModuleComma,jsModuleAs,jsComment,jsFlowTypeKeyword skipwhite skipempty nextgroup=jsFrom fold
+                       
+
 syntax match jsAnd "&&" conceal cchar=∧ containedin=jsOperator
 syntax match jsOr "||" conceal cchar=∨ containedin=jsOperator
 syntax match jsNot "!" conceal cchar=￢ containedin=jsOperator,jsFuncArgs " ¬~～
