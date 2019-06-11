@@ -88,7 +88,7 @@ endif
 if executable('pbcopy')
   let s:clipCopy = 'pbcopy' " mac
 endif
-" Symlink windows executables to ~/bin path under Windows Subsystem for Linux
+" NOTE: Symlink executables to ~/bin path under Windows Subsystem for Linux
 if executable('clip')
  " Default (with no paste support) at /mnt/c/Windows/System32/clip.exe
   let s:clipCopy = 'clip'
@@ -116,7 +116,7 @@ endif
 if executable('pbcopy')
   let s:clipPaste = 'pbpaste' " mac
 endif
-" Symlink windows executables to ~/bin path under Windows Subsystem for Linux
+" NOTE: Symlink executables to ~/bin path under Windows Subsystem for Linux
 if executable('win32yank') && executable('unix2dos')
   " Install from https://github.com/equalsraf/win32yank/releases
   let s:clipPaste = 'win32yank -o | dos2unix'
