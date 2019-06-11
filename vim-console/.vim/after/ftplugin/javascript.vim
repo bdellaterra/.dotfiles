@@ -1,6 +1,7 @@
 
 setlocal iskeyword+=$
 setlocal suffixesadd=.js,.jsx,.ts,.tsx
+set path+=src
 
 hi! link Conceal Statement
 set concealcursor=n

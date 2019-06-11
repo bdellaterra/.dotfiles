@@ -1,3 +1,4 @@
+
 # STANDARDS
 tpope/vim-sensible # commonly accepted Vim settings
 tpope/vim-sleuth # automatically adjusts indentation settings

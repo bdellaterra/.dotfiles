@@ -27,6 +27,37 @@ function s:MakeDir(path)
   return s:DirSlashes(a:path)
 endfunction
 
+" Create file if necessary and normalize slashes
+function MakeFile(path, ...)
+  try
+    let file = fnamemodify(a:path, ':t')
+    let dir = s:DirSlashes(fnamemodify(a:path, ':h'))
+    let bufferDir = s:DirSlashes(fnamemodify(expand('%'), ':p:h'))
+    let projectDir = s:DirSlashes(fnamemodify(get(a:000, 0, $PWD), ':p'))
+    " full path
+    if dir =~ bufferDir
+      let targetDir = dir
+    " relative path
+    elseif dir =~ '^\V..\?/'
+      let targetDir = s:DirSlashes(fnamemodify(bufferDir . dir, ':.'))
+    " existing project path
+    elseif isdirectory(projectDir . dir)
+      let targetDir = projectDir . dir
+    " just filename
+    elseif dir == '' && isdirectory(bufferDir)
+      let targetDir = bufferDir
+    endif
+    if exists('targetDir')
+      call s:MakeDir(targetDir)
+      let file = targetDir . file
+      if filewritable(file)
+        call writefile([], file, 'a')
+      endif
+    endif
+  endtry
+  return file
+endfunction
+
 " Get full file path for current buffer or # buffer if command-count provided
 function s:BufferFile(...)
   let fnameMods = get(a:000, 0, '')
@@ -262,7 +293,9 @@ function s:CopyToClipboard(text, ...)
   else
     call setreg('+', a:text)
   endif
-  call setreg('"', a:text)
+  if register != ''
+    call setreg(register, a:text)
+  endif
 endfunction
 
 " Sync system clipboard with Vim for paste-support
@@ -303,16 +336,22 @@ map <leader>. :Ranger<CR>
 map <leader>p :RangerWorkingDirectory<CR>
 
 " ',wd' will copy working directory to the clipboard
-map <silent> <leader>wd :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:h'))<CR>
+map <silent> <leader>wd :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:h'), '"')<CR>
 
 " ',wf' will copy working file (full-path) to the clipboard
-map <silent> <leader>wf :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p'))<CR>
+map <silent> <leader>wf :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p', '"'))<CR>
 
 " ',wt' will copy "tail" of working path to the clipboard (just the filename)
-map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t'))<CR>
+map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t', '"'))<CR>
 
 " Automatically create missing parent directories when editing a new file
 autocmd BufWritePre * :call s:MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
+
+" 'Enter' will go to file under cursor
+map <Enter> gf
+
+" 'Ctrl+Enter' will go to file under cursor, creating it if necessary
+map <leader><Enter> :exe 'edit ' . MakeFile(expand('<cfile>'))<CR>
 
 
 " SELECTION
@@ -739,7 +778,7 @@ highlight link ALEError WarningMsg
 let g:ale_sign_column_always = 1
 
 " ',Enter' will auto-fix linter errors (without saving)
-map <leader><Enter> :ALEFix \| silent! %foldopen!<CR> " unclear why ALEFix closes folds
+map <leader>l :ALEFix \| silent! %foldopen!<CR> " unclear why ALEFix closes folds
 
 " ',k' will toggle spell-check highlighting
 map <leader>k :set spell! spell?<CR>
