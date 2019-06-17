@@ -82,15 +82,47 @@ function s:MaxLineWidth()
     \ - (&number ? len(line('$')) + 1 : 0)
 endfunction
 
+" Returns boolean indicating if cursor is currently over a concealed syntax region
+function s:IsCursorOverConcealed()
+  return synconcealed(line('.'), col('.'))[0]
+endfunction
+
 " Toggle between conceallevel 0 and 2. Pass optional boolean
 " to disable temporarily (false) or restore last on/off setting (true)
 augroup ToggleConceal
   autocmd!
   autocmd FileType * call <SID>ReinforceConcealSyntax()
+  autocmd CursorHold * call <SID>UpdateTime()
+  autocmd TextChanged * call <SID>RevealLine(1)
+  autocmd InsertLeave * call <SID>RevealLine(0)
 augroup END
 function s:ReinforceConcealSyntax()
-  if &conceallevel
-    silent! exe 'source ~/.dotfiles/vim-console/.vim/after/syntax/' . &filetype . '.vim'
+  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+    if &conceallevel
+      silent! exe 'source ~/.dotfiles/vim-console/.vim/after/syntax/' . &filetype . '.vim'
+    endif
+  endif
+endfunction
+function s:UpdateTime(...)
+  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+    let newUpdateTime = get(a:000, 0, 0)
+    if newUpdateTime && newUpdateTime != &updatetime
+      let g:restoreUpdateTime = &updatetime
+      let &updatetime = newUpdateTime
+    elseif exists('g:restoreUpdateTime')
+      let &updatetime = g:restoreUpdateTime
+      unlet g:['restoreUpdateTime']
+    endif
+  endif
+endfunction
+function s:RevealLine(...)
+  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+    let unconcealLine = get(a:000, 0, 0)
+    if unconcealLine
+      set concealcursor=
+    else
+      set concealcursor=n
+    endif
   endif
 endfunction
 function ToggleConceal(...)
@@ -106,8 +138,31 @@ function ToggleConceal(...)
       let b:save_conceallevel = &conceallevel
     endif
     call <SID>ReinforceConcealSyntax()
+    " Make cursor position more accurate with faster updates
+    noremap <expr> <Up> <SID>RevealLine(0) && UpdateTime(10)
+      \ ? "\<Up>" : "\<Up>"
+    noremap <expr> <Down> <SID>RevealLine(0) && UpdateTime(10)
+      \ ? "\<Down>" : "\<Down>"
+    noremap <expr> <Left> <SID>UpdateTime(10)
+      \ ? "\<Left>" : "\<Left>"
+    noremap <expr> <Right> <SID>UpdateTime(10)
+      \ ? "\<Right>" : "\<Right>"
   endif
 endfunction
+
+" Overload behavior of the enter key
+function s:EnterHelper(...)
+  let bufNum = get(a:000, 0, '')
+  if bufNum == ''
+    return "="
+  elseif bufNum == 0
+    return ":\<C-u>confirm buffer #\<CR>"
+  else
+    return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
+  endif
+  return ""
+endfunction
+
 
 
 " *** General Configuration ***************************************************
@@ -159,15 +214,6 @@ set ignorecase smartcase
 
 " Keep a long command history
 set history=100
-
-" Initial fold regions based on syntax-rules
-set foldmethod=syntax
-
-" Have all folds open when a new file is loaded
-set foldlevelstart=999
-
-" Automatically open folds in insert-mode
-set foldopen=all
 
 " Prevent "Hit enter to continue" message
 set shortmess+=T
@@ -350,7 +396,7 @@ autocmd BufWritePre * :call s:MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
 " 'Enter' will go to file under cursor
 map <Enter> gf
 
-" 'Ctrl+Enter' will go to file under cursor, creating it if necessary
+" ',Enter' will go to file under cursor, creating it if necessary
 map <leader><Enter> :exe 'edit ' . MakeFile(expand('<cfile>'))<CR>
 
 
@@ -870,6 +916,16 @@ set noshowmode
 
 " FOLDING
 
+" Initial fold regions based on syntax-rules
+set foldmethod=syntax
+
+" Have all folds open when a new file is loaded
+set foldlevelstart=999
+
+" Automatically open/close folds in insert-mode
+set foldopen=all
+set foldclose=all
+
 " Set a nicer foldtext function
 " (Modified) From Edouard, 2008, http://vim.wikia.com/wiki/Customize_text_for_closed_folds
 function! MyFoldText()
@@ -920,6 +976,7 @@ function SetDefaultStatusModeHLGroups()
   highlight User3 ctermfg=233 ctermbg=231
   highlight User4 ctermfg=233 ctermbg=88
   highlight User5 ctermfg=233 ctermbg=123
+  highlight User6 ctermfg=233 ctermbg=240
 endfunction
 
 " Set statusline highlight based on current mode
@@ -932,6 +989,10 @@ function! s:StatusModeHL()
   " User2 highlight when in Visual mode
   elseif mode =~ '\vv|s|'
     return '%2*'
+  endif
+  " User6 if over concealed syntax
+  if s:IsCursorOverConcealed()
+    return '%6*'
   endif
   " User1 highlight for Normal mode
   " User5 for non-modifiable bufffers
