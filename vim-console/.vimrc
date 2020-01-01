@@ -152,15 +152,17 @@ endfunction
 
 " Overload behavior of the enter key
 function s:EnterHelper(...)
-  let bufNum = get(a:000, 0, '')
-  if bufNum == ''
-    return "="
-  elseif bufNum == 0
-    return ":\<C-u>confirm buffer #\<CR>"
-  else
-    return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
-  endif
-  return ""
+  try
+    normal gf
+  catch
+    LspDefinition
+  catch
+    LspDeclaration
+  catch
+    exe "normal \<C-]>"
+  catch
+    LspImplementation
+  endtry
 endfunction
 
 " Show syntax group and translated syntax group of character under cursor
@@ -415,21 +417,24 @@ map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t
 autocmd BufWritePre * :call s:MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
 
 " 'Enter' will go to file under cursor
-map <Enter> gf
+map <Enter> :call <SID>EnterHelper()<CR>
 
 " ',Enter' will go to file under cursor, creating it if necessary
 map <leader><Enter> :exe 'edit ' . MakeFile(expand('<cfile>'))<CR>
+
+" 'Backspace' will go back
+map <Backspace> <C-o>
 
 
 " SELECTION
 
 " In input mode, Ctrl + movement keys initiate visual selection
 inoremap <C-Left>  <C-\><C-n>v
-inoremap <C-h>     <C-\><C-n>v
-inoremap <expr> <C-Down>   "\<C-o>v\<Down>\<Left>"
-inoremap <expr> <C-j>   "\<C-o>v\<Down>\<Left>"
-inoremap <expr> <C-Up>   "\<C-\>\<C-n>v\<Up>" . (col('.')>1?"\<Right>":"")
-inoremap <expr> <C-k>   "\<C-\>\<C-n>v\<Up>" . (col('.')>1?"\<Right>":"")
+" inoremap <C-h>     <C-\><C-n>v
+inoremap <expr> <C-Down>  "\<C-o>v\<Down>\<Left>"
+" inoremap <expr> <C-j>     "\<C-o>v\<Down>\<Left>"
+inoremap <expr> <C-Up>    "\<C-\>\<C-n>v\<Up>" . (col('.')>1?"\<Right>":"")
+inoremap <expr> <C-k>     "\<C-\>\<C-n>v\<Up>" . (col('.')>1?"\<Right>":"")
 inoremap <C-Right> <C-o>v
 inoremap <C-l>     <C-o>v
 
@@ -568,30 +573,77 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 
+" LANGUAGE SUPPORT
+
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_signs_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_signs_error = {'text': '•'}
+let g:lsp_signs_warning = {'text': '▶'}
+let g:lsp_textprop_enabled = 1
+
+let g:lsp_highlights_enabled = 0
+
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    highlight link LspErrorHighlight WarningMsg
+    highlight lspReference term=underline cterm=underline gui=underline
+	nmap <buffer> <C-e> :LspNextError<CR>
+	nmap <buffer> <C-q> :LspPreviousError<CR>
+	nmap <buffer> <C-n> :LspNextDiagnostic<CR>
+	nmap <buffer> <C-p> :LspPreviousDiagnostic<CR>
+	nmap <buffer> GR :LspRename<CR>
+	nmap <buffer> GF :LspReferences<CR>
+	nmap <buffer> GN :LspNextReference<CR>
+	nmap <buffer> GP :LspPreviousReference<CR>
+	nmap <buffer> GD :LspDefinition<CR>
+	nmap <buffer> Gd :LspPeekDefinition<CR>
+	nmap <buffer> GB :LspDeclaration<CR>
+	nmap <buffer> Gb :LspPeekDeclaration<CR>
+	nmap <buffer> GT :LspTypeDefinition<CR>
+	nmap <buffer> Gt :LspPeekTypeDefinition<CR>
+	nmap <buffer> GI :LspImplementation<CR>
+	nmap <buffer> Gi :LspPeekImplementation<CR>
+	nmap <buffer> GH :LspTypeHierarchy<CR>
+	nmap <buffer> GW :LspWorkspaceSymbol<CR>
+	nmap <buffer> GV :LspHover<CR>
+	nmap <buffer> GA :LspCodeAction<CR>
+	nmap <buffer> GS :LspStatus<CR>
+    nmap <buffer> GC :let g:lsp_highlight_references_enabled = !g:lsp_highlight_references_enabled<CR>
+endfunction
+
+augroup lsp_install
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+let g:vista_default_executive = 'vim_lsp'
+let g:vista_fzf_preview = ['right:50%']
+let g:vista_disable_statusline = 1
+let g:vista#renderer#enable_icon = 1
+let g:vista#renderer#icons = {
+      \   "function": "\uf794",
+      \   "variable": "\uf71b",
+      \  }
+
+
 " COMPLETION
 
-" Show completion menu even if it has one item
-set completeopt+=menuone
-
-" Do not auto-select completion option
-set completeopt+=noselect
+" Show completion menu even with one item. Do not auto-select option
+set completeopt=menu,menuone,noinsert,noselect
 
 " Shut off completion messages and beeps
 set shortmess+=c
 set belloff+=ctrlg
 
-" Show auto-complete menu without hitting <Tab>
-let g:mucomplete#enable_auto_at_startup = 1
 
-" Complete filenames relative to open buffer if './' is used to begin the path
-" <Tab> must be used to trigger this. Not applied for automatic-completion
-function! s:CompleteWithRelativeFilePaths()
-  let g:mucomplete#buffer_relative_paths = 0
-  .g:'\.[/\\]\([^/\\]*[/\\]\?\)*\%#:let g:mucomplete#buffer_relative_paths = 1
-  return "\<plug>(MyFwd)"
-endfunction
-imap <plug>(MyFwd) <plug>(MUcompleteFwd)
-imap <expr> <silent> <tab> <SID>CompleteWithRelativeFilePaths()
+" LINTING
+
+" ',k' will toggle spell-check highlighting
+map <leader>k :set spell! spell?<CR>
 
 
 " DELIMITERS
@@ -833,27 +885,6 @@ let g:fzf_action = {
   \ 'Ctrl-t': 'tab split',
   \ 'Ctrl-x': 'split',
   \ 'Ctrl-v': 'vsplit' }
-
-
-" LINTING
-
-" Set signs for sign column
-let g:ale_sign_warning = '•'
-let g:ale_sign_error = '▶'
-
-" Set highlight groups for signs
-highlight link ALEWarningSign SignColumn
-highlight link ALEErrorSign WarningMsg
-highlight link ALEError WarningMsg
-
-" Always keep sign column open
-let g:ale_sign_column_always = 1
-
-" ',Enter' will auto-fix linter errors (without saving)
-map <leader>l :ALEFix \| silent! %foldopen!<CR> " unclear why ALEFix closes folds
-
-" ',k' will toggle spell-check highlighting
-map <leader>k :set spell! spell?<CR>
 
 
 " VERSION CONTROL
@@ -1185,6 +1216,9 @@ let g:Startscreen_function = function('<SID>StartScreen')
 
 " 'gs' will display syntax information
 map gs :echo <SID>SynGroup()<CR>
+
+" 'gu' will display unicode metadata for character under cursor
+nmap gu <Plug>(characterize)
 
 " 'gu' will display unicode metadata for character under cursor
 nmap gu <Plug>(characterize)

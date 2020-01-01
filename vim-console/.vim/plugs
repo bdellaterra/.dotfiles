@@ -5,6 +5,7 @@ tpope/vim-sleuth # automatically adjusts indentation settings
 
 # PERFORMANCE
 vim-scripts/LargeFile # disables features when editing large files to improve speed
+prabirshrestha/async.vim # normalize async job control
 
 # MAPPINGS
 tpope/vim-rsi # support ubiquitous keymaps (see https://en.wikipedia.org/wiki/GNU_Readline)
@@ -64,15 +65,17 @@ tomtom/tcomment_vim # file-type sensible comments
 # UNDO
 sjl/gundo.vim # visualize the undo tree
 
-# COMPLETION
-lifepillar/vim-mucomplete # minmalist implementation of chained (fallback) completion
-
 # LANGUAGE SUPPORT
-w0rp/ale # asynchronous linting/fixing for Vim and Language Server Protocol LSP) integration
-ludovicchabant/vim-gutentags # (re)generate tag files as you work
+prabirshrestha/vim-lsp # async language server protocol plugin
+ryanolsonx/vim-lsp-javascript # sets up vim-lsp for JavaScript
+ryanolsonx/vim-lsp-typescript # sets up vim-lsp for TypeScript
+liuchengxu/vista.vim # Viewer & Finder for LSP symbols and tags
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
 mxw/vim-jsx # React JSX syntax highlighting and indenting for vim
+
+# COMPLETION
+ajh17/VimCompletesMe # light-weight tab-completion plugin for Vim
 
 # ENCODINGS
 tpope/vim-characterize # pressing ga on a character reveals additional info
