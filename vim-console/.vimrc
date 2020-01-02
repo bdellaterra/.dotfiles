@@ -163,14 +163,25 @@ function s:EnterHelper(...)
   return ""
 endfunction
 
-" Move forward to next non-whitespace charaacter in current column
-" Optional boolean triggers backwards search if true
+" Show syntax group and translated syntax group of character under cursor
+" From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
+function! s:SynGroup()
+  let l:s = synID(line('.'), col('.'), 1)
+  return synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
+endfunction
+
+" Move cursor through next whitespace in current column. Lands on non-whitespace
+" character after the gap. Optional boolean triggers backwards search if true
 function s:GoToNextVerticalNonBlank(...)
   let reverse = get(a:000, 0, 0)
   let col = virtcol('.') 
   let lastsearch=@/
-  call search('\(^\s*$\)\|\%' . col . 'v\s', reverse ? 'b' : '')
-  call search('\%' . col . 'v\S', reverse ? 'b' : '')
+  let blank = 1
+  while blank
+    call search('\(^\s*$\)\|\%' . col . 'v\s', reverse ? 'b' : '')
+    call search('\%' . col . 'v\S', reverse ? 'b' : '')
+    let blank = s:SynGroup() =~ '\<Ignore$'
+  endwhile
   let @/=lastsearch
 endfunction
 
@@ -1170,18 +1181,10 @@ endfunction
 let g:Startscreen_function = function('<SID>StartScreen')
 
 
-" VIM SCRIPTING
+" INFO
 
-" Show syntax group and translated syntax group of character under cursor
-" From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
-function! s:SynGroup()
-  let l:s = synID(line('.'), col('.'), 1)
-  echo synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
-endfunction
-
-" 
 " 'gs' will display syntax information
-map gs :call <SID>SynGroup()<CR>
+map gs :echo <SID>SynGroup()<CR>
 
 
 " *** Delayed Configuration **************************************************
