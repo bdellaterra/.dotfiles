@@ -26,6 +26,7 @@ alias l='ls -lAhF'
 [[ `command -v mc` ]] && alias m=mc
 [[ `command -v ranger` ]] && alias m="source ranger" # source embedded script to cd on exit
 # r: preferred grep w/ fallbacks
+# rh: include hidden files/folders
 [[ `command -v grep` ]] && alias r="grep -inr --color=auto" rh="r"
 [[ `command -v ack` ]] && alias r="ack --smart-case -r" rh="r"
 [[ `command -v ag` ]] && alias r="ag -Sr" rh="r --hidden" # -u to search ignored files
