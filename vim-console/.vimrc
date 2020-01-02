@@ -561,11 +561,11 @@ let g:sleuth_automatic = 0
 
 " ALIGNMENT
 
-" ',a' wil start interactive EasyAlign in visual mode (e.g. vip,a)
-xmap <leader>a <Plug>(EasyAlign)
+" 'ga' wil start interactive EasyAlign in visual mode (e.g. vip,a)
+xmap ga <Plug>(EasyAlign)
 
-" ',a' will start interactive EasyAlign for a motion/text object (e.g. ,aip)
-nmap <leader>a <Plug>(EasyAlign)"
+" 'ga' will start interactive EasyAlign for a motion/text object (e.g. ,aip)
+nmap ga <Plug>(EasyAlign)
 
 
 " COMPLETION
@@ -1185,6 +1185,9 @@ let g:Startscreen_function = function('<SID>StartScreen')
 
 " 'gs' will display syntax information
 map gs :echo <SID>SynGroup()<CR>
+
+" 'gu' will display unicode metadata for character under cursor
+nmap gu <Plug>(characterize)
 
 
 " *** Delayed Configuration **************************************************
