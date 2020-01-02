@@ -163,6 +163,16 @@ function s:EnterHelper(...)
   return ""
 endfunction
 
+" Move forward to next non-whitespace charaacter in current column
+" Optional boolean triggers backwards search if true
+function s:GoToNextVerticalNonBlank(...)
+  let reverse = get(a:000, 0, 0)
+  let col = virtcol('.') 
+  let lastsearch=@/
+  call search('\(^\s*$\)\|\%' . col . 'v\s', reverse ? 'b' : '')
+  call search('\%' . col . 'v\S', reverse ? 'b' : '')
+  let @/=lastsearch
+endfunction
 
 
 " *** General Configuration ***************************************************
@@ -421,6 +431,11 @@ noremap } }}{<Enter>
 " '{' will jump up to start of paragraph, not blank line before
 noremap { {{<Enter>
 
+" '\' will jump down to next non-blank character in current column
+nnoremap \ :silent! call <SID>GoToNextVerticalNonBlank()<CR>
+
+" '|' will jump up to previous non-blank character in current column
+nnoremap \| :silent! call <SID>GoToNextVerticalNonBlank(1)<CR>
 
 " SCROLLING
 
