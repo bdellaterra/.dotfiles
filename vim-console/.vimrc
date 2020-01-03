@@ -557,6 +557,13 @@ nnoremap =<Backspace> :Buffers!<CR>
 " No editing directories (buggy integration with ranger plugin)
 autocmd BufEnter * if isdirectory(expand("%")) | silent! bwipeout! | endif
 
+" When switching buffers, preserve window view.
+" From Ipkiss, 2007, https://vim.fandom.com/wiki/Avoid_scrolling_when_switch_buffers
+if v:version >= 700
+  au BufLeave * if !&diff | let b:winview = winsaveview() | endif
+  au BufEnter * if exists('b:winview') && !&diff | call winrestview(b:winview) | unlet! b:winview | endif
+endif
+
 
 " INDENTATION
 
