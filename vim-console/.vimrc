@@ -956,6 +956,9 @@ inoremap õ <C-\><C-n>u
 
 " VISUALS
 
+" Disable conceal syntax that is redundant with font ligatures
+let g:font_ligatures = 1
+
 " Always show the sign column
 set signcolumn=yes
 
