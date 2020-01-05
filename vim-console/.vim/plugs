@@ -72,7 +72,11 @@ ryanolsonx/vim-lsp-typescript # sets up vim-lsp for TypeScript
 liuchengxu/vista.vim # Viewer & Finder for LSP symbols and tags
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
-mxw/vim-jsx # React JSX syntax highlighting and indenting for vim
+
+# SYNTAX HIGHLIGHTING
+yuezk/vim-js # syntax highlighting for JavaScript and Flow
+HerringtonDarkholme/yats.vim # advanced TypeScript syntax highlighting
+maxmellon/vim-jsx-pretty # React syntax highlighting and indenting with Typescript support 
 
 # COMPLETION
 ajh17/VimCompletesMe # light-weight tab-completion plugin for Vim
