@@ -971,14 +971,20 @@ inoremap õ <C-\><C-n>u
 " Disable conceal syntax that is redundant with font ligatures
 let g:font_ligatures = 1
 
+" Set visual wrap indicator
+set showbreak=⋯ " ↪
+
 " Always show the sign column
 set signcolumn=yes
 
+" Do not show mode below the statusline
+set noshowmode
+
+" '/<Backspace>' will toggle search highlighting
+map /<Backspace> :set hls!<CR>
+
 " ',c' will toggle concealed text
 map <leader>c :call ToggleConceal()<CR>
-
-" Set visual wrap indicator
-set showbreak=⋯ " ↪
 
 " ',-' will toggle cursor line
 map <leader>- :set cursorline!<CR>
@@ -988,9 +994,6 @@ map <leader><bar> :set cursorcolumn!<CR>:call ToggleConceal(!&cursorcolumn)<CR>
 
 " ',+' will toggle both
 map <leader>+ :set cursorline! cursorcolumn!<CR>:call ToggleConceal(!&cursorcolumn)<CR>
-
-" Do not show mode below the statusline
-set noshowmode
 
 
 " FOLDING
