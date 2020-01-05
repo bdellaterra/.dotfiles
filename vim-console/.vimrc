@@ -453,6 +453,13 @@ nnoremap \ :silent! call <SID>GoToNextVerticalNonBlank()<CR>
 " '|' will jump up to previous non-blank character in current column
 nnoremap \| :silent! call <SID>GoToNextVerticalNonBlank(1)<CR>
 
+" ',m' will mark current location (VimPager plugin)
+map <Leader>m <Plug>SaveWinPosn
+
+" ',j' will jump to last marked location
+map <Leader>j <Plug>RestoreWinPosn
+
+
 " SCROLLING
 
 " lock cursor to optimal location while scrolling
@@ -596,28 +603,28 @@ function! s:on_lsp_buffer_enabled() abort
     setlocal signcolumn=yes
     highlight link LspErrorHighlight WarningMsg
     highlight lspReference term=underline cterm=underline gui=underline
-	nnoremap <buffer> <C-e> <plug>(lsp-next-error)
-	nnoremap <buffer> <C-q> <plug>(lsp-previous-error)
-	nnoremap <buffer> <C-n> <plug>(lsp-next-diagnostic)
-	nnoremap <buffer> <C-p> <plug>(lsp-previous-diagnostic)
-	nnoremap <buffer> GR <plug>(lsp-rename)
-	nnoremap <buffer> GF <plug>(lsp-references)
-	nnoremap <buffer> GN <plug>(lsp-next-reference)
-	nnoremap <buffer> GP <plug>(lsp-previous-reference)
-	nnoremap <buffer> GD <plug>(lsp-definition)
-	nnoremap <buffer> Gd <plug>(lsp-peek-definition)
-	nnoremap <buffer> GB <plug>(lsp-declaration)
-	nnoremap <buffer> Gb <plug>(lsp-peek-declaration)
-	nnoremap <buffer> GT <plug>(lsp-type-definition)
-	nnoremap <buffer> Gt <plug>(lsp-peek-type-definition)
-	nnoremap <buffer> GI <plug>(lsp-implementation)
-	nnoremap <buffer> Gi <plug>(lsp-peek-implementation)
-	nnoremap <buffer> GH <plug>(lsp-type-hierarchy)
-	nnoremap <buffer> GW <plug>(lsp-workspace-symbol)
-	nnoremap <buffer> GV <plug>(lsp-hover)
-	nnoremap <buffer> GA <plug>(lsp-code-action)
-	nnoremap <buffer> GS <plug>(lsp-status)
-    nnoremap <buffer> GC :let g:lsp_highlight_references_enabled = !g:lsp_highlight_references_enabled<CR>
+	nmap <buffer> <leader>r <plug>(lsp-next-error)
+	nmap <buffer> <leader>e <plug>(lsp-previous-error)
+	nmap <buffer> <C-n> <plug>(lsp-next-diagnostic)
+	nmap <buffer> <C-p> <plug>(lsp-previous-diagnostic)
+	nmap <buffer> GR <plug>(lsp-rename)
+	nmap <buffer> GF <plug>(lsp-references)
+	nmap <buffer> GN <plug>(lsp-next-reference)
+	nmap <buffer> GP <plug>(lsp-previous-reference)
+	nmap <buffer> GD <plug>(lsp-definition)
+	nmap <buffer> Gd <plug>(lsp-peek-definition)
+	nmap <buffer> GB <plug>(lsp-declaration)
+	nmap <buffer> Gb <plug>(lsp-peek-declaration)
+	nmap <buffer> GT <plug>(lsp-type-definition)
+	nmap <buffer> Gt <plug>(lsp-peek-type-definition)
+	nmap <buffer> GI <plug>(lsp-implementation)
+	nmap <buffer> Gi <plug>(lsp-peek-implementation)
+	nmap <buffer> GH <plug>(lsp-type-hierarchy)
+	nmap <buffer> GW <plug>(lsp-workspace-symbol)
+	nmap <buffer> GV <plug>(lsp-hover)
+	nmap <buffer> GA <plug>(lsp-code-action)
+	nmap <buffer> GS <plug>(lsp-status)
+    nmap <buffer> GC :let g:lsp_highlight_references_enabled = !g:lsp_highlight_references_enabled<CR>
 endfunction
 
 augroup lsp_install
