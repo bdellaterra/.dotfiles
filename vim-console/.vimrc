@@ -970,8 +970,9 @@ inoremap õ <C-\><C-n>u
 
 " VISUALS
 
-" Disable conceal syntax that is redundant with font ligatures
-let g:font_ligatures = 1
+" Enable conceal syntax that would be redundant with font ligatures
+" Set to true if using a font that supports programming ligatures
+let g:font_ligatures_enabled = 0
 
 " Set visual wrap indicator
 set showbreak=⋯ " ↪

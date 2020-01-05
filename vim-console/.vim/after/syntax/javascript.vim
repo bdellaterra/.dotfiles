@@ -1,6 +1,6 @@
 " To avoid conceal syntax that's redundant with ligatures:
 " let g:font_ligatures = 1
-let hasFontLigatures = get(g:, 'font_ligatures', 0)
+let hasFontLigatures = get(g:, 'font_ligatures_enabled', 0)
 
 syntax keyword jsVariableType const conceal cchar=● containedin=jsOperator,jsObject " ■▣◉◈◇⋄◆● ∃
 syntax keyword jsVariableType let conceal cchar=⊙ containedin=jsOperator,jsObject
