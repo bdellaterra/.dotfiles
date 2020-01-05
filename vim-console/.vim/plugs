@@ -43,7 +43,7 @@ junegunn/vim-peekaboo # extends ", @ and <CTRL-R> so you can see the contents of
 timakro/vim-searchant # persistent search-highlighting
 tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of a word
 bronson/vim-visual-star-search # Start a * or # search from a visual block
-vim-scripts/sherlock.vim # buffer-completion in command line for '/', '?' and ':' commands
+vim-scripts/CmdlineComplete # buffer-completion in command line for '/', '?' and ':' commands
 
 # FUZZY-FIND
 junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder

@@ -648,8 +648,8 @@ set belloff+=ctrlg
 
 " <C-Up> amd <C-Down> will peform command line completion using buffer info
 " (Works with ':', '/' and '?' commands)
-cnoremap <C-Up> <C-\>esherlock#completeBackward()<CR>
-cnoremap <C-Down> <C-\>esherlock#completeForward()<CR>
+cmap <c-Up> <Plug>CmdlineCompleteBackward
+cmap <c-Down> <Plug>CmdlineCompleteForward
 
 
 " LINTING
