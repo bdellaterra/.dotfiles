@@ -646,6 +646,11 @@ set completeopt=menu,menuone,noinsert,noselect
 set shortmess+=c
 set belloff+=ctrlg
 
+" <C-Up> amd <C-Down> will peform command line completion using buffer info
+" (Works with ':', '/' and '?' commands)
+cnoremap <C-Up> <C-\>esherlock#completeBackward()<CR>
+cnoremap <C-Down> <C-\>esherlock#completeForward()<CR>
+
 
 " LINTING
 
