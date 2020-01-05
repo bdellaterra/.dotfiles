@@ -105,5 +105,6 @@ carpetsmoker/startscreen.vim # customize Vim's start screen
 
 # COLORS
 flazz/vim-colorschemes # one stop shop for Vim colorschemes
+mhartington/oceanic-next # theme inspired by Oceanic Next for Sublime
 noahfrederick/vim-noctu # inherits restricted 16-color terminal scheme
 
