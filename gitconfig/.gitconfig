@@ -94,6 +94,9 @@
     # Resolve merge conflicts with Vim
     con = "!vim +Conflicted"
 
+    # cleanup untracked files and directories (interactive)
+    cu = clean -id
+
     # diff
     d = diff --word-diff
 
@@ -141,6 +144,9 @@
 
     # push all branches
     pa = push -u origin --all
+
+    # force push
+    pf = push --force-with-lease
 
     # push branch
     pb = push -u origin
