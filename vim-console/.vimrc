@@ -590,7 +590,7 @@ nmap ga <Plug>(EasyAlign)
 " LANGUAGE SUPPORT
 
 let g:lsp_diagnostics_enabled = 1
-let g:lsp_signs_enabled = 1
+let g:lsp_signs_enabled = 0
 let g:lsp_diagnostics_echo_cursor = 1
 let g:lsp_signs_error = {'text': '•'}
 let g:lsp_signs_warning = {'text': '▶'}
@@ -601,8 +601,10 @@ let g:lsp_highlights_enabled = 0
 function! s:on_lsp_buffer_enabled() abort
     setlocal omnifunc=lsp#complete
     setlocal signcolumn=yes
-    highlight link LspErrorHighlight WarningMsg
-    highlight lspReference term=underline cterm=underline gui=underline
+    highlight LspErrorHighlight term=underline cterm=underline ctermfg=131 gui=underline guifg=#af5f5f
+    highlight LspWarningHighlight term=underline cterm=underline ctermfg=11 gui=underline guifg=#ffee33
+    highlight LspHintHighlight term=underline cterm=underline gui=underline
+    highlight lspReference term=italic cterm=italic gui=italic
 	nmap <buffer> <leader>r <plug>(lsp-next-error)
 	nmap <buffer> <leader>e <plug>(lsp-previous-error)
 	nmap <buffer> <C-n> <plug>(lsp-next-diagnostic)
