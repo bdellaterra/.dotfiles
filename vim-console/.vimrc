@@ -1230,9 +1230,6 @@ map gs :echo <SID>SynGroup()<CR>
 " 'gu' will display unicode metadata for character under cursor
 nmap gu <Plug>(characterize)
 
-" 'gu' will display unicode metadata for character under cursor
-nmap gu <Plug>(characterize)
-
 
 " *** Delayed Configuration **************************************************
 

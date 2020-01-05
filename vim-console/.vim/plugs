@@ -2,21 +2,21 @@
 # STANDARDS
 tpope/vim-sensible # commonly accepted Vim settings
 tpope/vim-sleuth # automatically adjusts indentation settings
+prabirshrestha/async.vim # normalize async job control
 
 # PERFORMANCE
 vim-scripts/LargeFile # disables features when editing large files to improve speed
-prabirshrestha/async.vim # normalize async job control
+
+# TERMINAL
+drmikehenry/vim-fixkey # fixes key codes for console Vim
+tmux-plugins/vim-tmux-focus-events # fixes FocusGained and FocusLost autocommands
 
 # MAPPINGS
 tpope/vim-rsi # support ubiquitous keymaps (see https://en.wikipedia.org/wiki/GNU_Readline)
 tpope/vim-repeat # enable repeating supported mappings with "."
-drmikehenry/vim-fixkey # fixes key codes for console Vim
 
 # MOUSE
 bdellaterra/vim-speedy # fast characterwise, linewise, and blockwise mouse selections
-
-# TERMINAL
-tmux-plugins/vim-tmux-focus-events # fixes FocusGained and FocusLost autocommands
 
 # BUFFERS
 dbakker/vim-projectroot # utils to find project dir (supplements bdellaterra/vim-pick-me-up)
@@ -25,7 +25,7 @@ dbakker/vim-projectroot # utils to find project dir (supplements bdellaterra/vim
 bdellaterra/vim-pick-me-up # automatically save/restore per-project sessions
 
 # LISTS
-romainl/vim-qf # tame the quickfix window (possible conflicts with w0rp/ale)
+romainl/vim-qf # tame the quickfix window
 
 # FILES
 francoiscabrol/ranger.vim # vim-friendly file manager
@@ -43,7 +43,7 @@ junegunn/vim-peekaboo # extends ", @ and <CTRL-R> so you can see the contents of
 timakro/vim-searchant # persistent search-highlighting
 tpope/vim-abolish # search for, substitute, and abbreviate multiple variants of a word
 bronson/vim-visual-star-search # Start a * or # search from a visual block
- 
+
 # FUZZY-FIND
 junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder
 junegunn/fzf.vim # fzf-based commands and mappings
@@ -55,7 +55,7 @@ junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easya
 # TEXT OBJECTS
 wellle/targets.vim # provides additional text objects
 michaeljsmith/vim-indent-object # defines a new text object based on indentation levels
-tpope/vim-surround # delete, change and add such surrounding delimiters in pairs
+tpope/vim-surround # delete, change and add surrounding delimiters in pairs
 terryma/vim-expand-region # visually select increasingly larger regions of text
 tommcdo/vim-exchange # provides an operator that swaps two regions of text
 
@@ -69,7 +69,7 @@ sjl/gundo.vim # visualize the undo tree
 prabirshrestha/vim-lsp # async language server protocol plugin
 ryanolsonx/vim-lsp-javascript # sets up vim-lsp for JavaScript
 ryanolsonx/vim-lsp-typescript # sets up vim-lsp for TypeScript
-liuchengxu/vista.vim # Viewer & Finder for LSP symbols and tags
+liuchengxu/vista.vim # viewer & finder for LSP symbols and tags
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
 
@@ -82,7 +82,7 @@ maxmellon/vim-jsx-pretty # React syntax highlighting and indenting with Typescri
 ajh17/VimCompletesMe # light-weight tab-completion plugin for Vim
 
 # ENCODINGS
-tpope/vim-characterize # pressing ga on a character reveals additional info
+tpope/vim-characterize # display unicode metadata for character under cursor
 
 # VERSION CONTROL
 tpope/vim-fugitive # A complement to command line git
@@ -91,7 +91,7 @@ christoomey/vim-conflicted # Easy git merge conflict resolution in Vim
 mhinz/vim-signify # indicate added, modified and removed lines in the sign column
 
 # SNIPPETS
-SirVer/ultisnips # snippets files for various programming languagesadvanced snippet engine written in python
+SirVer/ultisnips # advanced snippet engine written in python
 honza/vim-snippets # community-maintained snippets files for various programming languages
 pgilad/vim-skeletons # automatically scaffold file types using UltiSnips templates
 
@@ -104,7 +104,7 @@ junegunn/limelight.vim # hyperfocused editing
 carpetsmoker/startscreen.vim # customize Vim's start screen
 
 # COLORS
-flazz/vim-colorschemes # one stop shop for Vim colorschemes
+flazz/vim-colorschemes # large bundle of Vim colorschemes
 mhartington/oceanic-next # theme inspired by Oceanic Next for Sublime
 noahfrederick/vim-noctu # inherits restricted 16-color terminal scheme
 
