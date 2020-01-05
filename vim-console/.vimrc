@@ -1279,3 +1279,13 @@ colorscheme apprentice " loading this first can improve other colorschemes
 colorscheme alduin
 call SetDefaultStatusModeHLGroups()
 
+" Source personal configurations, if present
+if filereadable($HOME . '/.vim/personal.vim')
+  exe 'source ' . $HOME . '/.vim/personal.vim'
+endif
+
+" Source work configurations, if present
+if filereadable($HOME . '/.vim/work.vim')
+  exe 'source ' . $HOME . '/.vim/work.vim'
+endif
+
