@@ -1272,11 +1272,10 @@ call plug#end()
 " POST-PLUGIN CONFIGURATION
 
 " Set colorscheme
-" dark: alduin antares apprentice hybrid_material iceberg PaperColor
+" dark: alduin antares apprentice hybrid_material iceberg OceanicNext PaperColor
 " light: disciple earendel lightning
 " base16: noctu
 colorscheme apprentice " loading this first can improve other colorschemes
-colorscheme alduin
 call SetDefaultStatusModeHLGroups()
 
 " Source personal configurations, if present
