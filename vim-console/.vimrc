@@ -1284,7 +1284,7 @@ if filereadable($HOME . '/.vim/personal.vim')
 endif
 
 " Source work configurations, if present
-if filereadable($HOME . '/.vim/work.vim')
-  exe 'source ' . $HOME . '/.vim/work.vim'
+if filereadable($HOME . '/.vim/business.vim')
+  exe 'source ' . $HOME . '/.vim/business.vim'
 endif
 
