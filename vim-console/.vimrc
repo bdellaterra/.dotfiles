@@ -1158,6 +1158,9 @@ map <silent> <leader>vs :call <SID>ToggleVerboseStatus()<CR>
 
 " Apply focus-mode customizations
 function! s:Focus()
+  if !exists('g:limelight_conceal_ctermfg')
+   let g:limelight_conceal_ctermfg = 239
+  endif
   if has('gui_running')
     set fullscreen
   elseif exists('$TMUX')
