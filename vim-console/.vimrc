@@ -923,7 +923,7 @@ map <leader>gs  :Gstatus<CR>
 map <leader>gc  :Gcommit<CR>
 map <leader>ga  :Gcommit --amend<CR>
 map <leader>g/  :Ggrep<Space>
-map <leader>gl  :Glog --graph --decorate --date=short<CR>
+map <leader>gl  :Commits<CR>
 map <leader>ge  :Gedit<Space>
 map <leader>gh  :Gsplit<Space>
 map <leader>gv  :Gvsplit<Space>
