@@ -190,6 +190,15 @@ function s:GoToNextVerticalNonBlank(...)
   let @/=lastsearch
 endfunction
 
+" ':GCheckout' will checkout git branch with command-line completion
+function! s:ListBranches(...)
+   let argLead = get(a:000, 0, '')
+   let g:branches = system("git branch -a --no-color | grep -v '^\* ' ")
+   let trimmed = map(split(g:branches, '\n'), 'trim(v:val)')
+   return filter(trimmed, 'v:val =~ "^'. argLead . '"') 
+endfunction
+command -complete=customlist,<SID>ListBranches -nargs=1 Gcheckout !git checkout <args>
+
 
 " *** General Configuration ***************************************************
 
@@ -915,6 +924,7 @@ let g:fzf_action = {
 
 " Git mappings are all prefixed with ',g'
 map <leader>g<Space> :Git<Space>
+map <leader>go  :Gcheckout<Space>
 map <leader>gwd :Gcd<Space>
 map <leader>gr  :Gread<CR>
 map <leader>gw  :Gwrite!<CR>
