@@ -166,9 +166,12 @@ function s:EnterHelper(...)
 endfunction
 
 " Show syntax group and translated syntax group of character under cursor
-" From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
-function! s:SynGroup()
-  let l:s = synID(line('.'), col('.'), 1)
+" Will look at syntax v:count lines below cursor if a count is specified
+" If optional boolean true is passed, will look v:count lines above cursor
+" (Modified) From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
+function! s:SynGroup(...)
+  let reverse = get(a:000, 0, 0)
+  let l:s = synID(line('.') + v:count * (reverse ? -1 : 1), col('.'), 1)
   return synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
 endfunction
 
@@ -1244,8 +1247,13 @@ let g:Startscreen_function = function('<SID>StartScreen')
 
 " INFO
 
-" 'gs' will display syntax information
-map gs :echo <SID>SynGroup()<CR>
+" 'gs' will display syntax information for highlighting at cursor position.
+" Specify count to look at syntax that number of lines below cursor
+map gs :<C-u>echo <SID>SynGroup()<CR>
+
+" 'gs' will display syntax information for highlighting at cursor position.
+" Specify count to look at syntax that number of lines above cursor
+map gS :<C-u>echo <SID>SynGroup(1)<CR>
 
 " 'gu' will display unicode metadata for character under cursor
 nmap gu <Plug>(characterize)
