@@ -868,27 +868,27 @@ map <leader>/~   :Files ~<CR>
 map <leader>/.   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
 map <leader>/=   :Buffers<CR>
 map <leader>/3   :Colors<CR> " '#' for color-code
-map <leader>/o   :Lines<CR> " 'o' for "open" buffer lines
-map <leader>/b   :BLines<CR> " 'b' for "buffer" lines
-map <leader>/t   :Tags<CR>
-map <leader>/f   :BTags<CR> " 'f' for current "file"
+map <leader>/l   :BLines<CR> " in current buffer
+map <leader>/L   :Lines<CR>
+map <leader>/t   :BTags<CR>  " in current buffer
+map <leader>/T   :Tags<CR>
 map <leader>/'   :Marks<CR>
 map <leader>/`   :Marks<CR>
-map <leader>/W   :Windows<CR>
+map <leader>/w   :Windows<CR>
 map <leader>/L   :Locate
-map <leader>/h   :History<CR>
-map <leader>/:   :History:<CR>
-map <leader>//   :History/<CR>
+map <leader>/f   :History<CR>  " file history
+map <leader>/:   :History:<CR> " command history
+map <leader>//   :History/<CR> " search history
 map <leader>/s   :Snippets<CR>
 map <leader>/C   :Commands<CR>
-map <leader>/M   :Maps<CR>
-map <leader>/?   :Helptags<CR>
-map <leader>/w   :GFiles<CR> " 'w' for "watched" files
-map <leader>/d   :GFiles?<CR> " 'd' for "diff"
-map <leader>/m   :FZFMru<CR> " 'm' for "most recent"
+map <leader>/k   :Maps<CR>     " 'k' for "keymaps"
+map <leader>/h   :Helptags<CR>
+map <leader>/P   :GFiles<CR>   " 'P' for "git project"
+map <leader>/d   :GFiles?<CR>  " 'd' for "diff"
+map <leader>/M   :FZFMru<CR>   " 'm' for "most recent"
 " Requires ProjectRoot plugin
 map <leader>/p   :exe 'Files ' . ProjectRootGuess()<CR>
-map <leader>/l   :FZFRelativeMru<CR> " 'l' for "latest"
+map <leader>/m   :FZFRelativeMru<CR> " mru files in project
   \ :let g:fzf_mru_relative
 " Requires Fugitive plugin
 map <leader>/c   :Commits!<CR>
