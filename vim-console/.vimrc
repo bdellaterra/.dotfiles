@@ -609,7 +609,7 @@ function! s:on_lsp_buffer_enabled() abort
 	nmap <buffer> <leader>e <plug>(lsp-previous-error)
 	nmap <buffer> <C-n> <plug>(lsp-next-diagnostic)
 	nmap <buffer> <C-p> <plug>(lsp-previous-diagnostic)
-	nmap <buffer> GR <plug>(lsp-rename)
+	nmap <buffer> GR <plug>(lsp-rename)<C-u>
 	nmap <buffer> GF <plug>(lsp-references)
 	nmap <buffer> GN <plug>(lsp-next-reference)
 	nmap <buffer> GP <plug>(lsp-previous-reference)
