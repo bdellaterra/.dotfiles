@@ -865,34 +865,44 @@ command! -bang -nargs=* FZFRelativeMru call <SID>FZFRelativeMru()
 " FZF mappings are all prefixed with ',/'
 map <leader>/<space>   :Files 
 map <leader>/~   :Files ~<CR>
-map <leader>/.   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
-map <leader>/=   :Buffers<CR>
-map <leader>/3   :Colors<CR> " '#' for color-code
-map <leader>/l   :BLines<CR> " in current buffer
-map <leader>/L   :Lines<CR>
-map <leader>/t   :BTags<CR>  " in current buffer
-map <leader>/T   :Tags<CR>
-map <leader>/'   :Marks<CR>
-map <leader>/`   :Marks<CR>
+ " 'i' for 'in' current folder (recursive)
+map <leader>/i   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
+map <leader>/b   :Buffers<CR>
 map <leader>/w   :Windows<CR>
-map <leader>/L   :Locate
+ " '#' for color-code
+map <leader>/3   :Colors<CR>
+" lines in current buffer
+map <leader>/.   :BLines<CR>
+" lines in open buffers
+map <leader>/o   :Lines<CR>
+" 'l' for latest
 map <leader>/f   :History<CR>  " file history
 map <leader>/:   :History:<CR> " command history
 map <leader>//   :History/<CR> " search history
+" tags in current buffer
+map <leader>/t   :BTags<CR>
+" tags in open buffers
+map <leader>/T   :Tags<CR>
+map <leader>/'   :Marks<CR>
+map <leader>/`   :Marks<CR>
+map <leader>/L   :Locate 
 map <leader>/s   :Snippets<CR>
 map <leader>/C   :Commands<CR>
-map <leader>/k   :Maps<CR>     " 'k' for "keymaps"
+" 'k' for keymaps
+map <leader>/k   :Maps<CR>
 map <leader>/h   :Helptags<CR>
-map <leader>/P   :GFiles<CR>   " 'P' for "git project"
-map <leader>/d   :GFiles?<CR>  " 'd' for "diff"
-map <leader>/M   :FZFMru<CR>   " 'm' for "most recent"
+" 'P' for project
+map <leader>/P   :GFiles<CR>
+" 'd' for diff
+map <leader>/d   :GFiles?<CR>
+" 'm' for most recent
+map <leader>/m   :FZFMru<CR>
 " Requires ProjectRoot plugin
 map <leader>/p   :exe 'Files ' . ProjectRootGuess()<CR>
-map <leader>/m   :FZFRelativeMru<CR> " mru files in project
-  \ :let g:fzf_mru_relative
+map <leader>/l   :FZFRelativeMru<CR> " 'l' for latest
 " Requires Fugitive plugin
 map <leader>/c   :Commits!<CR>
-map <leader>/v   :BCommits!<CR> " 'v' for 'versions'
+map <leader>/v   :BCommits!<CR> " 'v' for versions
 " Requires git
 if executable('git')
   map <leader>/g   :GGrep<CR>
