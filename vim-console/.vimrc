@@ -153,15 +153,15 @@ endfunction
 " Overload behavior of the enter key
 function s:EnterHelper(...)
   try
-    normal gf
+    silent! normal gf
   catch
-    LspDefinition
+    exe "silent! normal \<C-]>"
   catch
-    LspDeclaration
+    silent! LspDefinition
   catch
-    exe "normal \<C-]>"
+    silent! LspDeclaration
   catch
-    LspImplementation
+    silent! LspImplementation
   endtry
 endfunction
 
