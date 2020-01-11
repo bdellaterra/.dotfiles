@@ -658,6 +658,15 @@ let g:vista#renderer#icons = {
       \  }
 
 
+" MARKDOWN
+
+let g:vim_markdown_folding_style_pythonic = 1
+let g:vim_markdown_override_foldtext = 0
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_follow_anchor = 1
+
+let g:vim_markdown_fenced_languages = ['javascript=javascript.jsx', 'typescript=typescriptreact']
+
 " COMPLETION
 
 " Show completion menu even with one item. Do not auto-select option
@@ -1068,7 +1077,8 @@ function! MyFoldText()
   let fold_w = getwinvar( 0, '&foldcolumn' )
   let sub = strpart( sub, 0, winwidth(0)
     \ - strlen( info ) - num_w - fold_w - 1 )
-  return sub . info
+  let pad = winwidth(0) - strlen(sub) - strlen(info) - 1
+  return sub . repeat(' ', pad) . info
 endfunction
 
 " Customize how folded lines are displayed
