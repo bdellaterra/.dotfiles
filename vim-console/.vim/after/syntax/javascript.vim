@@ -1,5 +1,5 @@
-" To avoid conceal syntax that's redundant with ligatures:
-" let g:font_ligatures = 1
+" Use command below to avoid conceal syntax that's redundant with font ligatures:
+"   let g:font_ligatures_enabled = 1
 let hasFontLigatures = get(g:, 'font_ligatures_enabled', 0)
 
 syntax keyword jsVariableType const conceal cchar=● containedin=jsOperator,jsObject " ■▣◉◈◇⋄◆● ∃
@@ -34,6 +34,10 @@ if (!hasFontLigatures)
   syntax match jsFuncArgOperator "=>" conceal cchar=⇒ containedin=jsObject,jsFuncArgs
   syntax match jsArrowFunction /=>/ skipwhite skipempty nextgroup=jsFuncBlock,jsObject,jsFuncArgs,jsCommentFunction conceal cchar=⇒
 endif
+
+" Define syntax group for folding long import statements
+syntax keyword jsFoldImport import skipwhite skipempty
+
 
 "" " Under Consideration:
 "" syntax match jsOperator "/" conceal cchar=÷ contained skipwhite skipempty nextgroup=@jsExpression
