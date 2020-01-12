@@ -150,12 +150,41 @@ function ToggleConceal(...)
   endif
 endfunction
 
+" Return text matching regex if cursor is inside it
+let s:url = '[a-zA-Z]*:\/\/[^][ <>,;()]*'
+let s:markdownUrl = '\[[^]]*\](\s*'.s:url.'\s*)\|<\s*'.s:url.'\s*>'
+let s:markdownLink = '\[[^]]*\]([^)]*)\|<[^>]*>'
+function s:PatternUnderCursor(regex)
+  let cursorPos = getcurpos()[1:2]
+  let startPos = searchpos(a:regex, 'ncb')
+  let endPos = searchpos(a:regex, 'nce')
+  let cursorOnLine = cursorPos[0] == startPos[0] && startPos[0] == endPos[0]
+  let cursorInPattern = cursorPos[1] >= startPos[1] && cursorPos[1] <= endPos[1]
+  if (cursorOnLine && cursorInPattern)
+      return strpart(getline('.'), startPos[1]-1, endPos[1] - startPos[1] + 1)
+  endif
+endfunction
+
 " Overload behavior of the enter key
 function s:EnterHelper(...)
   try
-    silent! normal gf
+    let url = s:PatternUnderCursor(s:url)
+    if (type(url) == type(''))
+      " From https://github.com/plasticboy/vim-markdown/blob/master/ftplugin/markdown.vim
+      if has('patch-7.4.567')
+        call netrw#BrowseX(url, 0)
+      else
+        call netrw#NetrwBrowseX(url, 0)
+      endif
+    elseif (type(s:PatternUnderCursor(s:markdownUrl)) == type(''))
+      normal gx
+    elseif (type(s:PatternUnderCursor(s:markdownLink)) == type(''))
+      normal ge
+    else
+      exe "silent! normal \<C-]>"
+    endif
   catch
-    exe "silent! normal \<C-]>"
+    silent! normal gf
   catch
     silent! LspDefinition
   catch
@@ -664,8 +693,9 @@ let g:vim_markdown_folding_style_pythonic = 1
 let g:vim_markdown_override_foldtext = 0
 let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_follow_anchor = 1
-
-let g:vim_markdown_fenced_languages = ['javascript=javascript.jsx', 'typescript=typescriptreact']
+let g:vim_markdown_no_extensions_in_markdown = 1
+let g:vim_markdown_autowrite = 1
+let g:vim_markdown_fenced_languages = ['javascript=typescriptreact', 'typescript=typescriptreact']
 
 " COMPLETION
 
