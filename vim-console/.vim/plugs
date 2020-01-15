@@ -93,7 +93,6 @@ tomtom/tcomment_vim # file-type sensible comments
 # DOCUMENTATION
 rkitover/vimpager # pager using vim and less.vim
 plasticboy/vim-markdown # Syntax highlighting, matching rules and mappings for Markdown
-iamcco/markdown-preview.nvim {'do': { -> mkdp#util#install() }} # Preview Markdown in browser
 
 # VERSION CONTROL
 tpope/vim-fugitive # A complement to command line git
