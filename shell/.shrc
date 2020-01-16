@@ -21,7 +21,8 @@ alias l='ls -lAhF'
 [[ `command -v kill` ]] && alias k=kill
 [[ `command -v sudo` ]] && alias s=sudo
 [[ `command -v tmux` ]] && alias t=tmux
-[[ `command -v vim` ]] && alias v=vim
+# v: launch Vim, or show reminder to resume if suspended
+[[ `command -v vim` ]] && alias v='jobs | grep vim && echo "Resume Vim with fg" || vim'
 # m: preferred file-manager w/ fallbacks
 [[ `command -v mc` ]] && alias m=mc
 [[ `command -v ranger` ]] && alias m="source ranger" # source embedded script to cd on exit
