@@ -597,7 +597,7 @@ nnoremap =[ :<C-u>exe (v:count ? v:count : '') . 'bprev'<CR>
 " Alias 'Shift-Tab'
 nmap <S-Tab> =[
 
-" '=,Backspace' will display active buffers for selection/search
+" '=/' will display active buffers for selection/search
 nnoremap =/ :Buffers<CR>
 " '=<Backspace>' will list buffers with fullscreen display
 nnoremap =<Backspace> :Buffers!<CR>
