@@ -181,16 +181,16 @@ function s:EnterHelper(...)
     elseif (type(s:PatternUnderCursor(s:markdownLink)) == type(''))
       normal ge
     else
-      exe "silent! normal \<C-]>"
+      exe "normal \<C-]>"
     endif
   catch
-    silent! normal gf
+    normal gf
   catch
-    silent! LspDefinition
+    LspDefinition
   catch
-    silent! LspDeclaration
+    LspDeclaration
   catch
-    silent! LspImplementation
+    LspImplementation
   endtry
 endfunction
 
@@ -458,7 +458,7 @@ map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t
 autocmd BufWritePre * :call s:MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
 
 " 'Enter' will go to file under cursor
-map <Enter> :call <SID>EnterHelper()<CR>
+map <silent> <Enter> :call <SID>EnterHelper()<CR>
 
 " ',Enter' will go to file under cursor, creating it if necessary
 map <leader><Enter> :exe 'edit ' . MakeFile(expand('<cfile>'))<CR>
