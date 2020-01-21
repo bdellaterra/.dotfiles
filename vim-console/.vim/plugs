@@ -96,6 +96,7 @@ rkitover/vimpager # pager using vim and less.vim
 # MARKDOWN
 vim-pandoc/vim-pandoc # pandoc integration and utilities for Vim
 vim-pandoc/vim-pandoc-syntax # pandoc markdown syntax
+dkarter/bullets.vim # automated bullet lists
 
 # VERSION CONTROL
 tpope/vim-fugitive # A complement to command line git
