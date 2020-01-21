@@ -1,5 +1,6 @@
 
 " Mappings
+nmap <buffer> <leader>h :TOC<CR>
 nmap <buffer> ` <Plug>(pandoc-keyboard-apply-header)
 nmap <buffer> 0` <Plug>(pandoc-keyboard-remove-header)
 nmap <buffer> <leader>i <Plug>(pandoc-keyboard-toggle-emphasis)
