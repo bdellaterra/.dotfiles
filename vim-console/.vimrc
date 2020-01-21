@@ -151,9 +151,10 @@ function ToggleConceal(...)
 endfunction
 
 " Return text matching regex if cursor is inside it
-let s:url = '[a-zA-Z]*:\/\/[^][ <>,;()]*'
-let s:markdownUrl = '\[[^]]*\](\s*'.s:url.'\s*)\|<\s*'.s:url.'\s*>'
-let s:markdownLink = '\[[^]]*\]([^)]*)\|<[^>]*>'
+let g:url = '[a-zA-Z]*:\/\/[^][ <>,;()]*'
+let g:markdownUrl = '\[[^]]*\](\s*'.g:url.'\s*)\|<\s*'.g:url.'\s*>'
+let g:markdownLink = '\[[^]]*\]([^)]*)\|<[^>]*>'
+let g:markdownLinkTarget = '\[[^]]*\]([^)]*)\|<[^>]*>'
 function s:PatternUnderCursor(regex)
   let cursorPos = getcurpos()[1:2]
   let startPos = searchpos(a:regex, 'ncb')
@@ -165,26 +166,40 @@ function s:PatternUnderCursor(regex)
   endif
 endfunction
 
+function s:GoToUrl(...)
+  let url = matchstr(get(a:000, 0, ''), g:url)
+  if url != ''
+    " From https://github.com/plasticboy/vim-markdown/blob/master/ftplugin/markdown.vim
+    if has('patch-7.4.567')
+      call netrw#BrowseX(url, 0)
+    else
+      call netrw#NetrwBrowseX(url, 0)
+    endif
+  endif
+endfunction
+
 " Overload behavior of the enter key
 function s:EnterHelper(...)
   try
-    let url = s:PatternUnderCursor(s:url)
+    let url = s:PatternUnderCursor(g:url)
     if (type(url) == type(''))
-      " From https://github.com/plasticboy/vim-markdown/blob/master/ftplugin/markdown.vim
-      if has('patch-7.4.567')
-        call netrw#BrowseX(url, 0)
-      else
-        call netrw#NetrwBrowseX(url, 0)
-      endif
-    elseif (type(s:PatternUnderCursor(s:markdownUrl)) == type(''))
-      normal gx
-    elseif (type(s:PatternUnderCursor(s:markdownLink)) == type(''))
-      normal ge
+      echo "GO TO URL: " . url
+      call s:GoToUrl(url)
+    elseif (type(s:PatternUnderCursor(g:markdownUrl)) == type(''))
+      let url = matchstr(getline('.'), g:url, searchpos(g:markdownUrl, 'bn')[1])
+      echo "GO TO MARKDOWN URL: " . url
+      call s:GoToUrl(url)
+    elseif (type(s:PatternUnderCursor(g:markdownLink)) == type(''))
+      let url = pandoc#hypertext#GetLinkAddress()
+      echo "GO TO MARKDOWN LINK: " . url
+      call pandoc#hypertext#OpenLocal('test', g:pandoc#hypertext#edit_open_cmd)
     else
-      exe "normal \<C-]>"
+      " File
+      normal gf
     endif
   catch
-    normal gf
+    " Tag
+    exe "normal \<C-]>"
   catch
     LspDefinition
   catch
@@ -688,14 +703,32 @@ let g:vista#renderer#icons = {
 
 
 " MARKDOWN
+" See .vim/after/ftplugin/pandoc.vim for key mappings
 
-let g:vim_markdown_folding_style_pythonic = 1
-let g:vim_markdown_override_foldtext = 0
-let g:vim_markdown_toc_autofit = 1
-let g:vim_markdown_follow_anchor = 1
-let g:vim_markdown_no_extensions_in_markdown = 1
-let g:vim_markdown_autowrite = 1
-let g:vim_markdown_fenced_languages = ['javascript=typescriptreact', 'typescript=typescriptreact']
+let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
+let g:pandoc#folding#fastfolds = 1
+let g:pandoc#spell#enabled = 0
+let g:pandoc#hypertext#autosave_on_edit_open_link = 1
+let g:pandoc#hypertext#create_if_no_alternates_exists = 1
+let g:pandoc#syntax#conceal#use = 1
+let g:pandoc#syntax#conceal#cchar_overrides = {
+  \ 'atx': '░',
+  \ 'codelang': '‴',
+  \ 'codeend':  '‷'
+  \ }
+let g:pandoc#syntax#conceal#urls = 1
+let g:pandoc#syntax#codeblocks#embeds#use = 1
+let g:pandoc#syntax#codeblocks#embeds#langs = [
+  \ 'javascript=typescriptreact',
+  \ 'typescript=typescriptreact'
+  \ ]
+
+augroup VimCompletesMePandoc
+  autocmd!
+  autocmd FileType pandoc
+    \ let b:vcm_omni_pattern = '@'
+augroup END
+
 
 " COMPLETION
 
@@ -1237,6 +1270,7 @@ function! s:Focus()
   let &showtabline = 0
   set noshowmode
   set noshowcmd
+  set nofoldenable
   Limelight
 endfunction
 
