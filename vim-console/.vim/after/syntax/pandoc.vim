@@ -9,3 +9,7 @@ if exists('g:pandoc#syntax#conceal#use') && g:pandoc#syntax#conceal#use != 0
   endif
 endif
 
+hi! link pandocStrong Statement
+hi! link pandocStrikeout Comment
+hi! link pandocStrikeoutMark WarningMsg
+
