@@ -466,6 +466,9 @@ map <silent> <leader>wd :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:h
 " ',wf' will copy working file (full-path) to the clipboard
 map <silent> <leader>wf :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p'))<CR>
 
+" ',wr' will copy working file (relative-path) to the clipboard
+map <silent> <leader>wr :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:.'))<CR>
+
 " ',wt' will copy "tail" of working path to the clipboard (just the filename)
 map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t'))<CR>
 
