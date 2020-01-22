@@ -733,6 +733,15 @@ augroup VimCompletesMePandoc
 augroup END
 
 
+" NOTES
+
+let g:nv_search_paths = ['~/notes', '~/wiki']
+let g:nv_default_extension = '.md'
+
+" ',m' will make a note
+noremap <silent> <leader>m :NV<CR>
+
+
 " TABLES
 
 " ',tm' will toggle vim-table-mode plugin

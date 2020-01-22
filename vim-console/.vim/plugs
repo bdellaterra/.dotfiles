@@ -2,6 +2,7 @@
 # STANDARDS
 tpope/vim-sensible # commonly accepted Vim settings
 tpope/vim-sleuth # automatically adjusts indentation settings
+romainl/vim-qf # tame the quickfix window
 prabirshrestha/async.vim # normalize async job control
 
 # PERFORMANCE
@@ -23,9 +24,6 @@ dbakker/vim-projectroot # utils to find project dir (supplements bdellaterra/vim
 
 # SESSIONS
 bdellaterra/vim-pick-me-up # automatically save/restore per-project sessions
-
-# LISTS
-romainl/vim-qf # tame the quickfix window
 
 # FILES
 francoiscabrol/ranger.vim # vim-friendly file manager
@@ -90,14 +88,15 @@ pgilad/vim-skeletons # automatically scaffold file types using UltiSnips templat
 # COMMENTS
 tomtom/tcomment_vim # file-type sensible comments
 
-# DOCUMENTATION
+# READING
 rkitover/vimpager # pager using vim and less.vim
 
-# MARKDOWN
+# WRITING
 vim-pandoc/vim-pandoc # pandoc integration and utilities for Vim
 vim-pandoc/vim-pandoc-syntax # pandoc markdown syntax
 dkarter/bullets.vim # automated bullet lists
 dhruvasagar/vim-table-mode # automatic table creation and formatting
+alok/notational-fzf-vim # search/create notes with a single operation
 
 # VERSION CONTROL
 tpope/vim-fugitive # A complement to command line git
