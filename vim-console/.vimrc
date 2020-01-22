@@ -192,7 +192,7 @@ function s:EnterHelper(...)
     elseif (type(s:PatternUnderCursor(g:markdownLink)) == type(''))
       let url = pandoc#hypertext#GetLinkAddress()
       echo "GO TO MARKDOWN LINK: " . url
-      call pandoc#hypertext#OpenLocal('test', g:pandoc#hypertext#edit_open_cmd)
+      call pandoc#hypertext#OpenLocal(url, g:pandoc#hypertext#edit_open_cmd)
     else
       " File
       normal gf
