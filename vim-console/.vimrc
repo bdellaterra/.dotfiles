@@ -154,8 +154,8 @@ endfunction
 let g:url = '[a-zA-Z]*:\/\/[^][ <>,;()]*'
 let g:markdownUrl = '\[[^]]*\](\s*'.g:url.'\s*)\|<\s*'.g:url.'\s*>'
 let g:markdownLink = '\[[^]]*\]([^)]*)\|<[^>]*>'
-let g:markdownLinkTarget = '\[[^]]*\]([^)]*)\|<[^>]*>'
-function s:PatternUnderCursor(regex)
+let g:markdownLinkTarget = '\[[^]]*\](\zs[^)]*\ze)\|<\zs[^>]*\ze>'
+function PatternUnderCursor(regex)
   let cursorPos = getcurpos()[1:2]
   let startPos = searchpos(a:regex, 'ncb')
   let endPos = searchpos(a:regex, 'nce')
@@ -181,18 +181,20 @@ endfunction
 " Overload behavior of the enter key
 function s:EnterHelper(...)
   try
-    let url = s:PatternUnderCursor(g:url)
+    let url = PatternUnderCursor(g:url)
     if (type(url) == type(''))
       echo "GO TO URL: " . url
       call s:GoToUrl(url)
-    elseif (type(s:PatternUnderCursor(g:markdownUrl)) == type(''))
-      let url = matchstr(getline('.'), g:url, searchpos(g:markdownUrl, 'bn')[1])
+    elseif (type(PatternUnderCursor(g:markdownUrl)) == type(''))
+      let startPos = searchpos(g:markdownUrl, 'bn')[1]-1
+      let url = matchstr(getline('.'), g:url, startPos)
       echo "GO TO MARKDOWN URL: " . url
       call s:GoToUrl(url)
-    elseif (type(s:PatternUnderCursor(g:markdownLink)) == type(''))
-      let url = pandoc#hypertext#GetLinkAddress()
+    elseif (type(PatternUnderCursor(g:markdownLink)) == type(''))
+      let startPos = searchpos(g:markdownLink, 'bn')[1]-1
+      let url = matchstr(getline('.'), g:markdownLinkTarget, startPos)
       echo "GO TO MARKDOWN LINK: " . url
-      call pandoc#hypertext#OpenLocal(url, g:pandoc#hypertext#edit_open_cmd)
+      call pandoc#hypertext#OpenLocal(fnameescape(url), g:pandoc#hypertext#edit_open_cmd)
     else
       " File
       normal gf
@@ -278,6 +280,9 @@ set nobackup
 exe 'set directory=' . s:TmpDir
 set undofile
 exe 'set undodir=' . s:TmpDir
+
+" Automatically change to directory of the file being edited
+set autochdir
 
 " Disable beep and visual flash alerts
 autocmd VimEnter * set vb t_vb=
