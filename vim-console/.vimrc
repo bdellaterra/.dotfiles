@@ -10,7 +10,16 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 
-" SHARED FUNCTIONS
+" SHARED CONSTANTS / FUNCTIONS
+
+" Regex Patterns
+let s:rgx = {}
+let s:rgx.url = '[a-zA-Z]*:\/\/[^][ <>,;()]*'
+let s:rgx.markdownUrl = '\[[^]]*\](\s*'.s:rgx.url.'\s*)\|<\s*'.s:rgx.url.'\s*>'
+let s:rgx.markdownLink = '\[[^]]*\]([^)]*)\|<[^>]*>'
+let s:rgx.markdownLinkTarget = '\[[^]]*\](\zs[^)]*\ze)\|<\zs[^>]*\ze>'
+let s:rgx.markdownRef = '\(\[[^]]*\]\)\?\[\([^]]*\)\]'
+let s:rgx.markdownRefTarget = '\(\[[^]]*\]\)\?\[\([^]]*\)\]\_.*\[\2\]\s*\S'
 
 " Convert path to forward slashes with a slash at the end
 function s:DirSlashes(path)
@@ -151,11 +160,7 @@ function ToggleConceal(...)
 endfunction
 
 " Return text matching regex if cursor is inside it
-let g:url = '[a-zA-Z]*:\/\/[^][ <>,;()]*'
-let g:markdownUrl = '\[[^]]*\](\s*'.g:url.'\s*)\|<\s*'.g:url.'\s*>'
-let g:markdownLink = '\[[^]]*\]([^)]*)\|<[^>]*>'
-let g:markdownLinkTarget = '\[[^]]*\](\zs[^)]*\ze)\|<\zs[^>]*\ze>'
-function PatternUnderCursor(regex)
+function s:PatternUnderCursor(regex)
   let cursorPos = getcurpos()[1:2]
   let startPos = searchpos(a:regex, 'ncb')
   let endPos = searchpos(a:regex, 'nce')
@@ -167,7 +172,7 @@ function PatternUnderCursor(regex)
 endfunction
 
 function s:GoToUrl(...)
-  let url = matchstr(get(a:000, 0, ''), g:url)
+  let url = matchstr(get(a:000, 0, ''), s:rgx.url)
   if url != ''
     " From https://github.com/plasticboy/vim-markdown/blob/master/ftplugin/markdown.vim
     if has('patch-7.4.567')
@@ -181,32 +186,42 @@ endfunction
 " Overload behavior of the enter key
 function s:EnterHelper(...)
   try
-    let url = PatternUnderCursor(g:url)
-    if (type(url) == type(''))
-      echo "GO TO URL: " . url
-      call s:GoToUrl(url)
-    elseif (type(PatternUnderCursor(g:markdownUrl)) == type(''))
-      let startPos = searchpos(g:markdownUrl, 'bn')[1]-1
-      let url = matchstr(getline('.'), g:url, startPos)
-      echo "GO TO MARKDOWN URL: " . url
-      call s:GoToUrl(url)
-    elseif (type(PatternUnderCursor(g:markdownLink)) == type(''))
-      let startPos = searchpos(g:markdownLink, 'bn')[1]-1
-      let url = matchstr(getline('.'), g:markdownLinkTarget, startPos)
-      echo "GO TO MARKDOWN LINK: " . url
-      call pandoc#hypertext#OpenLocal(fnameescape(url), g:pandoc#hypertext#edit_open_cmd)
+    let link = s:PatternUnderCursor(s:rgx.url)
+    if (type(link) == type(''))
+      " echo "GO TO URL: " . link
+      call s:GoToUrl(link)
+    elseif (type(s:PatternUnderCursor(s:rgx.markdownUrl)) == type(''))
+      let startPos = searchpos(s:rgx.markdownUrl, 'bn')[1]-1
+      let link = matchstr(getline('.'), s:rgx.url, startPos)
+      " echo "GO TO MARKDOWN URL: " . link
+      call s:GoToUrl(link)
+    elseif (type(s:PatternUnderCursor(s:rgx.markdownLink)) == type(''))
+      let startPos = searchpos(s:rgx.markdownLink, 'bn')[1]-1
+      let link = matchstr(getline('.'), s:rgx.markdownLinkTarget, startPos)
+      " echo "GO TO MARKDOWN LINK: " . link
+      call pandoc#hypertext#OpenLocal(fnameescape(link), g:pandoc#hypertext#edit_open_cmd)
+    elseif (type(s:PatternUnderCursor(s:rgx.markdownRef)) == type(''))
+      " let startPos = searchpos(s:rgx.markdownRef, 'bn')[1]-1
+      " let link = matchlist(getline('.'), s:rgx.markdownRef, startPos)[2]
+      " echo "GO TO MARKDOWN REFERENCE: " . link
+      " Add current position to the jumplist and move to markdown reference
+      normal m'
+      call search(s:rgx.markdownRefTarget, 'e')
     else
-      " File
-      normal gf
+      " echo "GO TO FILE"
+      " normal gf
     endif
   catch
-    " Tag
+    " echo "GO TO TAG"
     exe "normal \<C-]>"
   catch
+    " echo "GO TO DEFINITION"
     LspDefinition
   catch
+    " echo "GO TO DECLARATION"
     LspDeclaration
   catch
+    " echo "GO TO IMPLEMENTATION"
     LspImplementation
   endtry
 endfunction
