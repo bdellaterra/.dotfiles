@@ -183,6 +183,21 @@ function s:GoToUrl(...)
   endif
 endfunction
 
+" Create a list of alternate file paths based on (1) base file name
+" (2) automatic extensions (3) index filenames for directory paths
+function s:FilePattern(...)
+  let name = get(a:000, 0, 'index')
+  let extensions = get(a:000, 1, [])
+  let indexes = get(a:000, 2, ['index'])
+  let link = fnameescape(name)
+  let attempts = [link]
+  let attempts += map(copy(indexes), 'link."/".fnameescape(v:val)')
+  for a in copy(attempts)
+    let attempts += map(copy(extensions), 'a.fnameescape(v:val)')
+  endfor
+  return attempts
+endfunction
+
 " Overload behavior of the enter key
 function s:EnterHelper(...)
   try
@@ -199,7 +214,18 @@ function s:EnterHelper(...)
       let startPos = searchpos(s:rgx.markdownLink, 'bn')[1]-1
       let link = matchstr(getline('.'), s:rgx.markdownLinkTarget, startPos)
       " echo "GO TO MARKDOWN LINK: " . link
-      call pandoc#hypertext#OpenLocal(fnameescape(link), g:pandoc#hypertext#edit_open_cmd)
+      for f in s:FilePattern(link, ['.md', '.txt'])
+        let foundFile = 0
+        if filereadable(f)
+          call pandoc#hypertext#OpenLocal(fnameescape(f), g:pandoc#hypertext#edit_open_cmd)
+          let foundFile = 1
+          break
+        endif
+      endfor
+      if !foundFile
+        let g:newFile = MakeFile(input('New File: ', link == fnamemodify(link, ':r') ? link . '.md' : link))
+        call pandoc#hypertext#OpenLocal(fnameescape(g:newFile), g:pandoc#hypertext#edit_open_cmd)
+      endif
     elseif (type(s:PatternUnderCursor(s:rgx.markdownRef)) == type(''))
       " let startPos = searchpos(s:rgx.markdownRef, 'bn')[1]-1
       " let link = matchlist(getline('.'), s:rgx.markdownRef, startPos)[2]
@@ -209,7 +235,7 @@ function s:EnterHelper(...)
       call search(s:rgx.markdownRefTarget, 'e')
     else
       " echo "GO TO FILE"
-      " normal gf
+      normal gf
     endif
   catch
     " echo "GO TO TAG"
