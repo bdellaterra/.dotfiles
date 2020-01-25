@@ -654,6 +654,7 @@ endif
 " INDENTATION
 
 " for efficiency, don't auto-detect indentation settings
+" (Use ':Sleuth' command to do so manually)
 let g:sleuth_automatic = 0
 
 
