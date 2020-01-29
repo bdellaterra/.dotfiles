@@ -10,16 +10,37 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 
-" SHARED CONSTANTS / FUNCTIONS
+" CONSTANTS
 
 " Regex Patterns
-let s:rgx = {}
-let s:rgx.url = '[a-zA-Z]*:\/\/[^][ <>,;()]*'
-let s:rgx.markdownUrl = '\[[^]]*\](\s*'.s:rgx.url.'\s*)\|<\s*'.s:rgx.url.'\s*>'
-let s:rgx.markdownLink = '\[[^]]*\]([^)]*)\|<[^>]*>'
-let s:rgx.markdownLinkTarget = '\[[^]]*\](\zs[^)]*\ze)\|<\zs[^>]*\ze>'
-let s:rgx.markdownRef = '\(\[[^]]*\]\)\?\[\([^]]*\)\]'
-let s:rgx.markdownRefTarget = '\(\[[^]]*\]\)\?\[\([^]]*\)\]\_.*\[\2\]\s*\S'
+let g:rgx = {}
+let g:rgx.url = '\([a-zA-Z]*:\/\/[^][ <>,;()]*\)'
+let g:rgx.mdLabel = '\['. '\([^]]*\)' . '\]' " 'md' for 'markdown'
+let g:rgx.mdTargetName = '\([^)]\{-}\)'
+let g:rgx.mdTargetAnchor = '\%(' . '#' . '\([^)]*\)' . '\)\?'
+let g:rgx.mdTarget = '(' . '\('
+  \ . g:rgx.mdTargetName
+  \ . g:rgx.mdTargetAnchor
+  \ . '\)' . ')'
+let g:rgx.mdUrlTarget = '(' . '\('
+  \ . g:rgx.url
+  \ . g:rgx.mdTargetAnchor
+  \ . '\)' . ')'
+let g:rgx.mdLink = g:rgx.mdLabel . g:rgx.mdTarget
+let g:rgx.mdLinkNoLabel = '<' . '\('
+  \ . g:rgx.mdTargetName
+  \ . g:rgx.mdTargetAnchor
+  \ . '\)' . '>'
+let g:rgx.mdUrlLink = g:rgx.mdLabel . g:rgx.mdUrlTarget
+let g:rgx.mdUrlLinkNoLabel = '<' . '\('
+  \ . g:rgx.url
+  \ . g:rgx.mdTargetAnchor
+  \ . '\)' . '>'
+let g:rgx.mdRefLink = '\%(' . g:rgx.mdLabel . '\)\?' . g:rgx.mdLabel
+let g:rgx.mdAfterLinkStart = '\%(<[^>]*\|([^)]*\|\[[^]]*\)'
+
+
+" FUNCTIONS
 
 " Convert path to forward slashes with a slash at the end
 function s:DirSlashes(path)
@@ -159,20 +180,31 @@ function ToggleConceal(...)
   endif
 endfunction
 
-" Return text matching regex if cursor is inside it
-function s:PatternUnderCursor(regex)
+function s:MatchUnderCursor(regex,...)
+  let outerRegex = a:regex
+  let innerRegex = get(a:000, 1, a:regex)
+
   let cursorPos = getcurpos()[1:2]
   let startPos = searchpos(a:regex, 'ncb')
   let endPos = searchpos(a:regex, 'nce')
+
   let cursorOnLine = cursorPos[0] == startPos[0] && startPos[0] == endPos[0]
   let cursorInPattern = cursorPos[1] >= startPos[1] && cursorPos[1] <= endPos[1]
+
   if (cursorOnLine && cursorInPattern)
-      return strpart(getline('.'), startPos[1]-1, endPos[1] - startPos[1] + 1)
+    let startPos = searchpos(outerRegex, 'bn')[1]-1
+    return matchlist(getline('.'), innerRegex, startPos)
+  else
+    return []
   endif
 endfunction
 
+function s:CursorIsOn(regex)
+  return s:MatchUnderCursor(a:regex) != []
+endfunction
+
 function s:GoToUrl(...)
-  let url = matchstr(get(a:000, 0, ''), s:rgx.url)
+  let url = matchstr(get(a:000, 0, ''), g:rgx.url)
   if url != ''
     " From https://github.com/plasticboy/vim-markdown/blob/master/ftplugin/markdown.vim
     if has('patch-7.4.567')
@@ -183,17 +215,64 @@ function s:GoToUrl(...)
   endif
 endfunction
 
+function s:GoToMarkdownLink(...)
+  let link = get(a:000, 0, '')
+  let jumpId = get(a:000, 1, '')
+  if link =~ g:rgx.url
+    let url = jumpId == '' ? link : link . '#' . jumpId 
+    call s:GoToUrl(url)
+  else
+    " Save current location in the jump list
+    normal m'
+    let foundFile = 0
+    if link != ''
+      for f in s:FilePattern(link, ['.md', '.txt'])
+        if filereadable(f)
+          call pandoc#hypertext#OpenLocal(f, g:pandoc#hypertext#edit_open_cmd)
+          let foundFile = 1
+          break
+        endif
+      endfor
+      if !foundFile
+        " create and open new file with name found in link, adding default extension if necessary
+        let g:newFile = MakeFile(
+              \ input('New File: ',
+              \ fnameescape(link == fnamemodify(link, ':r') ? link . '.md' : link))
+              \ )
+        call pandoc#hypertext#OpenLocal(g:newFile, g:pandoc#hypertext#edit_open_cmd)
+        let foundFile = 1
+      endif
+    endif
+    " Jump to first anchor id not inside a link. Can be anchor within current file
+    if jumpId != ''
+      echo "GO TO anchor: " . jumpId
+      call search('\%(' . '\%(<[^<]*\|([^(]*\|\[[^[]*\)' . '\)\@<!' . '#\s*' . jumpId, 'c')
+    endif
+  endif
+endfunction
+
+function s:GoToMarkdownReference(...)
+  let link = get(a:000, 0, '')
+  if link != ''
+    " Add current position to the jumplist
+    normal m'
+    " Jump to markdown reference
+    let refTargetRegex = '\_.*\[' . link . '\]\s*\S'
+    call search(refTargetRegex, 'e')
+  endif
+endfunction
+
 " Create a list of alternate file paths based on (1) base file name
 " (2) automatic extensions (3) index filenames for directory paths
 function s:FilePattern(...)
   let name = get(a:000, 0, 'index')
   let extensions = get(a:000, 1, [])
   let indexes = get(a:000, 2, ['index'])
-  let link = fnameescape(name)
+  let link = name
   let attempts = [link]
-  let attempts += map(copy(indexes), 'link."/".fnameescape(v:val)')
+  let attempts += map(copy(indexes), 'link."/".v:val')
   for a in copy(attempts)
-    let attempts += map(copy(extensions), 'a.fnameescape(v:val)')
+    let attempts += map(copy(extensions), 'a.v:val')
   endfor
   return attempts
 endfunction
@@ -201,38 +280,22 @@ endfunction
 " Overload behavior of the enter key
 function s:EnterHelper(...)
   try
-    let link = s:PatternUnderCursor(s:rgx.url)
-    if (type(link) == type(''))
+    if s:CursorIsOn(g:rgx.url)
+      let link = s:MatchUnderCursor(g:rgx.url)[0]
       " echo "GO TO URL: " . link
       call s:GoToUrl(link)
-    elseif (type(s:PatternUnderCursor(s:rgx.markdownUrl)) == type(''))
-      let startPos = searchpos(s:rgx.markdownUrl, 'bn')[1]-1
-      let link = matchstr(getline('.'), s:rgx.url, startPos)
-      " echo "GO TO MARKDOWN URL: " . link
-      call s:GoToUrl(link)
-    elseif (type(s:PatternUnderCursor(s:rgx.markdownLink)) == type(''))
-      let startPos = searchpos(s:rgx.markdownLink, 'bn')[1]-1
-      let link = matchstr(getline('.'), s:rgx.markdownLinkTarget, startPos)
-      " echo "GO TO MARKDOWN LINK: " . link
-      for f in s:FilePattern(link, ['.md', '.txt'])
-        let foundFile = 0
-        if filereadable(f)
-          call pandoc#hypertext#OpenLocal(fnameescape(f), g:pandoc#hypertext#edit_open_cmd)
-          let foundFile = 1
-          break
-        endif
-      endfor
-      if !foundFile
-        let g:newFile = MakeFile(input('New File: ', link == fnamemodify(link, ':r') ? link . '.md' : link))
-        call pandoc#hypertext#OpenLocal(fnameescape(g:newFile), g:pandoc#hypertext#edit_open_cmd)
-      endif
-    elseif (type(s:PatternUnderCursor(s:rgx.markdownRef)) == type(''))
-      " let startPos = searchpos(s:rgx.markdownRef, 'bn')[1]-1
-      " let link = matchlist(getline('.'), s:rgx.markdownRef, startPos)[2]
+    elseif s:CursorIsOn(g:rgx.mdLink)
+      let [link, jumpId] = s:MatchUnderCursor(g:rgx.mdLink)[3:4]
+      " echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
+      call s:GoToMarkdownLink(link, jumpId)
+    elseif s:CursorIsOn(g:rgx.mdLinkNoLabel)
+      let [link, jumpId] = s:MatchUnderCursor(g:rgx.mdLinkNoLabel)[2:3]
+      " echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
+      call s:GoToMarkdownLink(link, jumpId)
+    elseif s:CursorIsOn(g:rgx.mdRefLink)
+      let link = s:MatchUnderCursor(g:rgx.mdRefLink)[2]
       " echo "GO TO MARKDOWN REFERENCE: " . link
-      " Add current position to the jumplist and move to markdown reference
-      normal m'
-      call search(s:rgx.markdownRefTarget, 'e')
+      call s:GoToMarkdownReference(link)
     else
       " echo "GO TO FILE"
       normal gf
