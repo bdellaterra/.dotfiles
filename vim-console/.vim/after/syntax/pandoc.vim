@@ -9,6 +9,10 @@ if exists('g:pandoc#syntax#conceal#use') && g:pandoc#syntax#conceal#use != 0
   endif
 endif
 
+" Conceal escaped quotes
+syn match pandocSlashDoubleQuote /\\"/ conceal cchar="
+syn match pandocSlashSingleQuote /\\'/ conceal cchar='
+
 " adjust styling highlights
 hi! link pandocStrong Statement
 hi! link pandocStrikeout Comment

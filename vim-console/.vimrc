@@ -18,13 +18,16 @@ let g:rgx.url = '\([a-zA-Z]*:\/\/[^][ <>,;()]*\)'
 let g:rgx.mdLabel = '\['. '\([^]]*\)' . '\]' " 'md' for 'markdown'
 let g:rgx.mdTargetName = '\([^)]\{-}\)'
 let g:rgx.mdTargetAnchor = '\%(' . '#' . '\([^)]*\)' . '\)\?'
+let g:rgx.mdTargetExtra = '\%(\s\+"[^"]*"\)\?'
 let g:rgx.mdTarget = '(' . '\('
   \ . g:rgx.mdTargetName
   \ . g:rgx.mdTargetAnchor
+  \ . g:rgx.mdTargetExtra
   \ . '\)' . ')'
 let g:rgx.mdUrlTarget = '(' . '\('
   \ . g:rgx.url
   \ . g:rgx.mdTargetAnchor
+  \ . g:rgx.mdTargetExtra
   \ . '\)' . ')'
 let g:rgx.mdLink = g:rgx.mdLabel . g:rgx.mdTarget
 let g:rgx.mdLinkNoLabel = '<' . '\('
@@ -38,6 +41,7 @@ let g:rgx.mdUrlLinkNoLabel = '<' . '\('
   \ . '\)' . '>'
 let g:rgx.mdRefLink = '\%(' . g:rgx.mdLabel . '\)\?' . g:rgx.mdLabel
 let g:rgx.mdAfterLinkStart = '\%(<[^>]*\|([^)]*\|\[[^]]*\)'
+let g:rgx.mdAnyLink = '\%('.g:rgx.mdLink.'\|'.g:rgx.mdLinkNoLabel.'\)'
 
 
 " FUNCTIONS
@@ -180,7 +184,7 @@ function ToggleConceal(...)
   endif
 endfunction
 
-function s:MatchUnderCursor(regex,...)
+function MatchUnderCursor(regex,...)
   let outerRegex = a:regex
   let innerRegex = get(a:000, 1, a:regex)
 
@@ -192,15 +196,15 @@ function s:MatchUnderCursor(regex,...)
   let cursorInPattern = cursorPos[1] >= startPos[1] && cursorPos[1] <= endPos[1]
 
   if (cursorOnLine && cursorInPattern)
-    let startPos = searchpos(outerRegex, 'bn')[1]-1
+    let startPos = searchpos(outerRegex, 'bnc')[1]-1
     return matchlist(getline('.'), innerRegex, startPos)
   else
     return []
   endif
 endfunction
 
-function s:CursorIsOn(regex)
-  return s:MatchUnderCursor(a:regex) != []
+function CursorIsOn(regex)
+  return MatchUnderCursor(a:regex) != []
 endfunction
 
 function s:GoToUrl(...)
@@ -215,12 +219,30 @@ function s:GoToUrl(...)
   endif
 endfunction
 
+function ReadUrl(link, ...)
+  let jumpId = get(a:000, 0, '')
+  let url = jumpId == '' ? a:link : a:link . '#' . jumpId 
+  let tmpdir = s:TmpDir . 'www/'
+  let safeUrl = matchstr(url, '\w\+:\/\/\zs.*') 
+  let g:urlfilename = tmpdir . fnameescape(safeUrl)
+  exe 'edit ' . MakeFile(g:urlfilename)
+  set noreadonly
+  normal ggVGx
+  set ft=markdown
+  let &statusline = a:link
+  " exe 'r ! curl -s ' . url . ' | pandoc -f html -t markdown'
+  exe 'r ! chromium --headless --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
+  let g:baseUrl = matchstr(a:link, '\(^\w\+:\/\/\)\?[^\/]*')
+  silent! call CleanHtmlToMarkdown(g:baseUrl)
+  normal gg
+  call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId == '' ? 'main' : jumpId, 'c')
+endfunction
+
 function s:GoToMarkdownLink(...)
   let link = get(a:000, 0, '')
   let jumpId = get(a:000, 1, '')
   if link =~ g:rgx.url
-    let url = jumpId == '' ? link : link . '#' . jumpId 
-    call s:GoToUrl(url)
+    call ReadUrl(link, jumpId)
   else
     " Save current location in the jump list
     normal m'
@@ -245,8 +267,8 @@ function s:GoToMarkdownLink(...)
     endif
     " Jump to first anchor id not inside a link. Can be anchor within current file
     if jumpId != ''
-      echo "GO TO anchor: " . jumpId
-      call search('\%(' . '\%(<[^<]*\|([^(]*\|\[[^[]*\)' . '\)\@<!' . '#\s*' . jumpId, 'c')
+      " echo "GO TO anchor: " . jumpId
+      call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId, 'c')
     endif
   endif
 endfunction
@@ -280,38 +302,38 @@ endfunction
 " Overload behavior of the enter key
 function s:EnterHelper(...)
   try
-    if s:CursorIsOn(g:rgx.url)
-      let link = s:MatchUnderCursor(g:rgx.url)[0]
-      " echo "GO TO URL: " . link
-      call s:GoToUrl(link)
-    elseif s:CursorIsOn(g:rgx.mdLink)
-      let [link, jumpId] = s:MatchUnderCursor(g:rgx.mdLink)[3:4]
-      " echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
+    if CursorIsOn(g:rgx.url)
+      let link = MatchUnderCursor(g:rgx.url)[0]
+      echo "GO TO URL: " . link
+      call ReadUrl(link)
+    elseif CursorIsOn(g:rgx.mdLink)
+      let [link, jumpId] = MatchUnderCursor(g:rgx.mdLink)[3:4]
+      echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
       call s:GoToMarkdownLink(link, jumpId)
-    elseif s:CursorIsOn(g:rgx.mdLinkNoLabel)
-      let [link, jumpId] = s:MatchUnderCursor(g:rgx.mdLinkNoLabel)[2:3]
-      " echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
+    elseif CursorIsOn(g:rgx.mdLinkNoLabel)
+      let [link, jumpId] = MatchUnderCursor(g:rgx.mdLinkNoLabel)[2:3]
+      echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
       call s:GoToMarkdownLink(link, jumpId)
-    elseif s:CursorIsOn(g:rgx.mdRefLink)
-      let link = s:MatchUnderCursor(g:rgx.mdRefLink)[2]
-      " echo "GO TO MARKDOWN REFERENCE: " . link
+    elseif CursorIsOn(g:rgx.mdRefLink)
+      let link = MatchUnderCursor(g:rgx.mdRefLink)[2]
+      echo "GO TO MARKDOWN REFERENCE: " . link
       call s:GoToMarkdownReference(link)
     else
-      " echo "GO TO FILE"
+      echo "GO TO FILE"
       normal gf
     endif
-  catch
-    " echo "GO TO TAG"
-    exe "normal \<C-]>"
-  catch
-    " echo "GO TO DEFINITION"
-    LspDefinition
-  catch
-    " echo "GO TO DECLARATION"
-    LspDeclaration
-  catch
-    " echo "GO TO IMPLEMENTATION"
-    LspImplementation
+  " catch
+  "   " echo "GO TO TAG"
+  "   exe "normal \<C-]>"
+  " catch
+  "   " echo "GO TO DEFINITION"
+  "   LspDefinition
+  " catch
+  "   " echo "GO TO DECLARATION"
+  "   LspDeclaration
+  " catch
+  "   " echo "GO TO IMPLEMENTATION"
+  "   LspImplementation
   endtry
 endfunction
 
@@ -348,6 +370,54 @@ function! s:ListBranches(...)
    return filter(trimmed, 'v:val =~ "^'. argLead . '"') 
 endfunction
 command -complete=customlist,<SID>ListBranches -nargs=1 Gcheckout !git checkout <args>
+
+function CleanHtmlToMarkdown(...)
+  let save_lazyredraw = &lazyredraw
+  set lazyredraw
+
+  let g:baseUrl = get(a:000, 0, '')
+  let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
+
+  silent! %s@{\(#[^ }]*\)\_[^}]\{-}}@[\1]@g
+  silent! %s@:::\s*\({\_[^}]\{-}}\)\?@@g
+  silent! %s@\([])]\){\_[^}]\{-}}@\1@g
+  silent! %s@<!--\_.\{-}-->@@g " html comment
+  silent! %s#```{=[^}]*}\(\s*\n\)*```## " empty html code
+
+  silent! %s~\(#\(\f\+\)\)\@>\_.*\zs\[\1\]\ze~[# \2]~g " mark used ref ids
+  silent! %s~\[#\S\f\+\]~~g " delete unused ref ids
+
+  " Remove unnecessary line breaks in link labels
+  silent! %s#\[\(\zs\_s*\(\f\+\)\_s\+\ze\)\+#\2 #g
+  silent! %s#\[\zs\_s*\ze\f##g
+
+  silent! %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g " fill empty links with alt text
+  silent! %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\))~<\1>~g " convert links with no label
+
+  " remove empty brackets (not in code)
+  silent! %s#\(```\_.\{-}\)\@<=\zs\[\]\ze\(\_.\{-}```\)#[---KEEP---]#g
+  silent! %s~\[\][^[(]~~g
+  silent! %s~---KEEP---~~g
+
+  " remove div and span tags
+  silent! %s#\_s*<\/\?div\/\?>\_s*#\r#
+  silent! %s#\<\/\?span\/\?>#\r#
+
+  " remove extra spaces after bullets
+  silent! %s~^\s*[-*]\zs\s\+~ ~
+
+  " silent! %s#!\ze[<[]##g " '!' before link
+  silent! %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
+
+  " Delete multiple patterns
+  exe '%s~' . deletePatterns . '~~g'
+
+  " add base url to links
+  exe '%s~\[\_.\{-}\](\zs\(\/\?'.escape(g:baseUrl, '\').'\|\(www\.\)\?'.g:baseDomain.'\)\?\ze/~'.g:baseUrl.'~'
+
+  let &lazyredraw = save_lazyredraw
+  redraw!
+endfunction
 
 
 " *** General Configuration ***************************************************
