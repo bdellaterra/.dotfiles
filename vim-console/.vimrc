@@ -207,42 +207,52 @@ function CursorIsOn(regex)
   return MatchUnderCursor(a:regex) != []
 endfunction
 
-function s:GoToUrl(...)
-  let url = matchstr(get(a:000, 0, ''), g:rgx.url)
-  if url != ''
-    " From https://github.com/plasticboy/vim-markdown/blob/master/ftplugin/markdown.vim
-    if has('patch-7.4.567')
-      call netrw#BrowseX(url, 0)
-    else
-      call netrw#NetrwBrowseX(url, 0)
-    endif
-  endif
-endfunction
-
 function ReadUrl(link, ...)
   let jumpId = get(a:000, 0, '')
   let url = jumpId == '' ? a:link : a:link . '#' . jumpId 
   let tmpdir = s:TmpDir . 'www/'
+  exe 'cd ' . tmpdir
   let safeUrl = matchstr(url, '\w\+:\/\/\zs.*') 
   let g:urlfilename = tmpdir . fnameescape(safeUrl)
-  exe 'edit ' . MakeFile(g:urlfilename)
+  if safeUrl !~ '[/\\]'
+    let g:urlfilename .= '/'
+  endif
+  exe 'edit ' . MakeFile(substitute(g:urlfilename, '[/\\]\zs\ze$', 'index.html', ''))
+  set modifiable
   set noreadonly
+  let b:pandocNoEmphasis = 1
   normal ggVGx
   set ft=markdown
   let &statusline = a:link
   " exe 'r ! curl -s ' . url . ' | pandoc -f html -t markdown'
-  exe 'r ! chromium --headless --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
+  exe 'r ! chromium --headless --incognito --minimal --daemon --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
   let g:baseUrl = matchstr(a:link, '\(^\w\+:\/\/\)\?[^\/]*')
   silent! call CleanHtmlToMarkdown(g:baseUrl)
   normal gg
   call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId == '' ? 'main' : jumpId, 'c')
 endfunction
 
+function s:GoToUrl(...)
+  let url = matchstr(get(a:000, 0, ''), g:rgx.url)
+  let altEnter = get(a:000, 1, 0)
+  if altEnter
+    " From https://github.com/plasticboy/vim-markdown/blob/master/ftplugin/markdown.vim
+    if has('patch-7.4.567')
+      call netrw#BrowseX(url, 0)
+    else
+      call netrw#NetrwBrowseX(url, 0)
+    endif
+  elseif url != ''
+    call ReadUrl(url)
+  endif
+endfunction
+
 function s:GoToMarkdownLink(...)
   let link = get(a:000, 0, '')
   let jumpId = get(a:000, 1, '')
+  let altEnter = get(a:000, 2, 0)
   if link =~ g:rgx.url
-    call ReadUrl(link, jumpId)
+    call s:GoToUrl(link, jumpId, altEnter)
   else
     " Save current location in the jump list
     normal m'
@@ -301,26 +311,32 @@ endfunction
 
 " Overload behavior of the enter key
 function s:EnterHelper(...)
+  let altEnter = get(a:000, 0, 0)
   try
     if CursorIsOn(g:rgx.url)
       let link = MatchUnderCursor(g:rgx.url)[0]
       echo "GO TO URL: " . link
-      call ReadUrl(link)
+      call s:GoToUrl(link, altEnter)
     elseif CursorIsOn(g:rgx.mdLink)
       let [link, jumpId] = MatchUnderCursor(g:rgx.mdLink)[3:4]
       echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
-      call s:GoToMarkdownLink(link, jumpId)
+      call s:GoToMarkdownLink(link, jumpId, altEnter)
     elseif CursorIsOn(g:rgx.mdLinkNoLabel)
       let [link, jumpId] = MatchUnderCursor(g:rgx.mdLinkNoLabel)[2:3]
       echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
-      call s:GoToMarkdownLink(link, jumpId)
+      call s:GoToMarkdownLink(link, jumpId, altEnter)
     elseif CursorIsOn(g:rgx.mdRefLink)
       let link = MatchUnderCursor(g:rgx.mdRefLink)[2]
       echo "GO TO MARKDOWN REFERENCE: " . link
       call s:GoToMarkdownReference(link)
     else
-      echo "GO TO FILE"
-      normal gf
+      if altEnter
+        echo "CREATE AND GO TO FILE"
+        exe 'edit ' . MakeFile(expand('<cfile>'))
+      else 
+        echo "GO TO FILE"
+        normal gf
+      endif
     endif
   " catch
   "   " echo "GO TO TAG"
@@ -387,17 +403,15 @@ function CleanHtmlToMarkdown(...)
   silent! %s~\(#\(\f\+\)\)\@>\_.*\zs\[\1\]\ze~[# \2]~g " mark used ref ids
   silent! %s~\[#\S\f\+\]~~g " delete unused ref ids
 
-  " Remove unnecessary line breaks in link labels
-  silent! %s#\[\(\zs\_s*\(\f\+\)\_s\+\ze\)\+#\2 #g
-  silent! %s#\[\zs\_s*\ze\f##g
-
   silent! %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g " fill empty links with alt text
   silent! %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\))~<\1>~g " convert links with no label
 
-  " remove empty brackets (not in code)
-  silent! %s#\(```\_.\{-}\)\@<=\zs\[\]\ze\(\_.\{-}```\)#[---KEEP---]#g
-  silent! %s~\[\][^[(]~~g
-  silent! %s~---KEEP---~~g
+  silent! %s#!\ze[<[]##g " '!' before link
+
+  " remove empty brackets
+  " silent! %s#\(```\_.\{-}\)\@<=\zs\[\]\ze\(\_.\{-}```\)#[---KEEP---]#g " mark brackets in code
+  silent! %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
+  silent! %s~<\_s*[/\\#]\?\_s*>~~g
 
   " remove div and span tags
   silent! %s#\_s*<\/\?div\/\?>\_s*#\r#
@@ -406,14 +420,14 @@ function CleanHtmlToMarkdown(...)
   " remove extra spaces after bullets
   silent! %s~^\s*[-*]\zs\s\+~ ~
 
-  " silent! %s#!\ze[<[]##g " '!' before link
-  silent! %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
+  " Remove unnecessary line breaks in link labels
+  silent! %s#\[\(\zs\_s*\(\f\+\)\_s\+\ze\)\+#\2 #g
+  silent! %s#\[\zs\_s*\ze\f##g
 
-  " Delete multiple patterns
-  exe '%s~' . deletePatterns . '~~g'
+  silent! %s~\(\_^[-*]\?\s*\\\?\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 
   " add base url to links
-  exe '%s~\[\_.\{-}\](\zs\(\/\?'.escape(g:baseUrl, '\').'\|\(www\.\)\?'.g:baseDomain.'\)\?\ze/~'.g:baseUrl.'~'
+  exe '%s~[(<]\zs\([/\\]\?'.escape(g:baseUrl, '\').'\|\(www\.\)\?'.g:baseDomain.'\)\?\ze[/\\]\%()\|\f\+\)~'.g:baseUrl.'~g'
 
   let &lazyredraw = save_lazyredraw
   redraw!
@@ -658,10 +672,23 @@ autocmd BufWritePre * :call s:MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
 map <silent> <Enter> :call <SID>EnterHelper()<CR>
 
 " ',Enter' will go to file under cursor, creating it if necessary
-map <leader><Enter> :exe 'edit ' . MakeFile(expand('<cfile>'))<CR>
+" map <leader><Enter> :exe 'edit ' . MakeFile(expand('<cfile>'))<CR>
+map <silent> <leader><Enter> :call <SID>EnterHelper(1)<CR>
+map <silent> <M-Enter> :call <SID>EnterHelper(1)<CR>
 
 " 'Backspace' will go back
 map <Backspace> <C-o>
+
+
+" URLS
+
+command! -nargs=1 VUE
+      \ call ReadUrl(<q-args>)
+command! -nargs=1 VUB
+      \ call GoToUrl(<q-args>, 1)
+
+map <silent> <leader>vv :VUE<Space>
+map <silent> <leader>vb :VUB<Space>
 
 
 " SELECTION

@@ -18,6 +18,12 @@ hi! link pandocStrong Statement
 hi! link pandocStrikeout Comment
 hi! link pandocStrikeoutMark WarningMsg
 
+" False emphasis can be problemaic with markdown generated from html
+if exists('b:pandocNoEmphasis') && b:pandocNoEmphasis == 1
+  syn clear pandocEmphasis
+  syn clear pandocEmphasisInStrong
+endif
+
 " Highlight markdown references without label the same as normal references 
 hi! link pandocNoLabel Statement
 
