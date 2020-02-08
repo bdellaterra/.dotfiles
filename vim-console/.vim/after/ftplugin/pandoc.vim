@@ -1,6 +1,6 @@
 
 " Mappings
-nmap <buffer> <leader>l :TOC<CR>:set ft=pandoc<CR> " l = list/locate sections
+nmap <buffer> <leader>l :TOC<CR>:set ft=pandoc<CR>:set cursorline<CR> " l = list/locate sections
 nmap <buffer> ` <Plug>(pandoc-keyboard-apply-header)
 nmap <buffer> 0` <Plug>(pandoc-keyboard-remove-header)
 nmap <buffer> <leader>i <Plug>(pandoc-keyboard-toggle-emphasis)
