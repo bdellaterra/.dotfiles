@@ -150,7 +150,9 @@ function s:UpdateTime(...)
   endif
 endfunction
 function s:RevealLine(...)
-  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+  if !exists('g:enableConcealAtCursor') || !g:enableConcealAtCursor
+    set concealcursor=
+  elseif !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
     let unconcealLine = get(a:000, 0, 0)
     if unconcealLine
       set concealcursor=
@@ -1308,6 +1310,10 @@ inoremap õ <C-\><C-n>u
 " Set to true if using a font that supports programming ligatures
 let g:font_ligatures_enabled = 0
 
+" Don't conceal characters on line under cursor
+" (this is flipped for focus-mode)
+let g:enableConcealAtCursor = 0
+
 " Set visual wrap indicator
 set showbreak=⋯ " ↪
 
@@ -1505,6 +1511,8 @@ function! s:Focus()
     autocmd VerticallyCenterCursor CursorMoved * exe 'normal zz'
       \ . repeat("\<C-e>", (winheight(0) / 2) - <SID>CursorRatio())
   augroup END
+  let s:save_enableConcealAtCursor = get(g:, 'enableConcealAtCursor', 0)
+  let g:enableConcealAtCursor = 1
   let s:save_showtabline = &showtabline
   let &showtabline = 0
   set noshowmode
@@ -1522,6 +1530,7 @@ function! s:Blur()
     silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
   endif
   au! VerticallyCenterCursor CursorMoved
+  let g:enableConcealAtCursor = s:save_enableConcealAtCursor
   let &showtabline = s:save_showtabline
   silent! unlet s:save_showtabline
   set showmode
