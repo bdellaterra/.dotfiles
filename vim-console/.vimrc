@@ -888,10 +888,12 @@ function! s:OnLspBufferEnabled() abort
 	nmap <buffer> Gi <plug>(lsp-peek-implementation)
 	nmap <buffer> GH <plug>(lsp-type-hierarchy)
 	nmap <buffer> GW <plug>(lsp-workspace-symbol)
+	nmap <buffer> GB <plug>(lsp-hover)
 	nmap <buffer> GV <plug>(lsp-hover)
 	nmap <buffer> GA <plug>(lsp-code-action)
 	nmap <buffer> GS <plug>(lsp-status)
     nmap <buffer> GC :let g:lsp_highlight_references_enabled = !g:lsp_highlight_references_enabled<CR>
+    nmap <buffer> GE :echo lsp#ui#vim#diagnostics#get_diagnostics_under_cursor()<CR>
 endfunction
 
 augroup lsp_install
