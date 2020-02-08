@@ -267,10 +267,12 @@ function s:GoToMarkdownLink(...)
       endfor
       if !foundFile
         " create and open new file with name found in link, adding default extension if necessary
-        let g:newFile = MakeFile(
-              \ input('New File: ',
-              \ fnameescape(link == fnamemodify(link, ':r') ? link . '.md' : link))
-              \ )
+        let isDirectory = link =~ '[/\\]$' || filewritable(link) == 2
+        let needsExtension = link == fnamemodify(link, ':r')
+        let newFile = isDirectory
+              \ ? s:DirSlashes(link) . 'index.md' 
+              \ : (needsExtension ? link . '.md' : link)
+        let g:newFile = MakeFile(input('New File: ', newFile))
         call pandoc#hypertext#OpenLocal(g:newFile, g:pandoc#hypertext#edit_open_cmd)
         let foundFile = 1
       endif
@@ -302,7 +304,7 @@ function s:FilePattern(...)
   let indexes = get(a:000, 2, ['index'])
   let link = name
   let attempts = [link]
-  let attempts += map(copy(indexes), 'link."/".v:val')
+  let attempts += map(copy(indexes), 's:DirSlashes(link).v:val')
   for a in copy(attempts)
     let attempts += map(copy(extensions), 'a.v:val')
   endfor
@@ -468,9 +470,6 @@ set nobackup
 exe 'set directory=' . s:TmpDir
 set undofile
 exe 'set undodir=' . s:TmpDir
-
-" Automatically change to directory of the file being edited
-set autochdir
 
 " Disable beep and visual flash alerts
 autocmd VimEnter * set vb t_vb=
