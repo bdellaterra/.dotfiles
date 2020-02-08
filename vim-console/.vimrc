@@ -340,18 +340,18 @@ function s:EnterHelper(...)
         normal gf
       endif
     endif
-  " catch
-  "   " echo "GO TO TAG"
-  "   exe "normal \<C-]>"
-  " catch
-  "   " echo "GO TO DEFINITION"
-  "   LspDefinition
-  " catch
-  "   " echo "GO TO DECLARATION"
-  "   LspDeclaration
-  " catch
-  "   " echo "GO TO IMPLEMENTATION"
-  "   LspImplementation
+  catch
+    " echo "GO TO TAG"
+    exe "normal \<C-]>"
+  catch
+    " echo "GO TO DEFINITION"
+    LspDefinition
+  catch
+    " echo "GO TO DECLARATION"
+    LspDeclaration
+  catch
+    " echo "GO TO IMPLEMENTATION"
+    LspImplementation
   endtry
 endfunction
 
