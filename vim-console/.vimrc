@@ -864,7 +864,7 @@ let g:lsp_textprop_enabled = 1
 
 let g:lsp_highlights_enabled = 0
 
-function! s:on_lsp_buffer_enabled() abort
+function! s:OnLspBufferEnabled() abort
     setlocal omnifunc=lsp#complete
     setlocal signcolumn=yes
     highlight LspErrorHighlight term=underline cterm=underline ctermfg=131 gui=underline guifg=#af5f5f
@@ -898,7 +898,7 @@ endfunction
 augroup lsp_install
     au!
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+    autocmd User lsp_buffer_enabled call s:OnLspBufferEnabled()
 augroup END
 
 let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
@@ -953,7 +953,7 @@ noremap <silent> <leader>m :NV<CR>
 
 " ',tm' will toggle vim-table-mode plugin
 
-function! s:isAtStartOfLine(mapping)
+function! s:IsAtStartOfLine(mapping)
   let text_before_cursor = getline('.')[0 : col('.')-1]
   let mapping_pattern = '\V' . escape(a:mapping, '\')
   let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
@@ -961,10 +961,10 @@ function! s:isAtStartOfLine(mapping)
 endfunction
 
 inoreabbrev <expr> <bar><bar>
-          \ <SID>isAtStartOfLine('\|\|') ?
+          \ <SID>IsAtStartOfLine('\|\|') ?
           \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
 inoreabbrev <expr> __
-          \ <SID>isAtStartOfLine('__') ?
+          \ <SID>IsAtStartOfLine('__') ?
           \ '<c-o>:silent! TableModeDisable<cr>' : '__'
 
 
@@ -1116,8 +1116,8 @@ let g:fzf_colors = {
   \ 'header':  ['fg', 'Comment']
   \ }
 
-" Helper commands taken directly from fzf-vim documentation
-function! s:build_quickfix_list(lines)
+" Helper commands from fzf-vim documentation
+function! s:BuildQuickfixList(lines)
   call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
   copen
   cc
