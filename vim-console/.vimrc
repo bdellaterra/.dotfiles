@@ -1284,6 +1284,9 @@ exe "map \<leader>sr :\<C-u>RestoreSession " . g:pickMeUpSessionDir
 " ',sd' will prompt to delete a named session
 exe "map \<leader>sd :\<C-u>DeleteSession " . g:pickMeUpSessionDir
 
+" save session on exit
+autocmd QuitPre * SaveSession
+
 
 " UNDO
 
