@@ -1,4 +1,3 @@
-
 " Gradient Headers
 if exists('g:pandoc#syntax#conceal#use') && g:pandoc#syntax#conceal#use != 0
   if !exists('g:pandoc#syntax#conceal#blacklist') || index(g:pandoc#syntax#conceal#blacklist, 'atx') == -1
@@ -18,10 +17,11 @@ hi! link pandocStrong Statement
 hi! link pandocStrikeout Comment
 hi! link pandocStrikeoutMark WarningMsg
 
-" False emphasis can be problemaic with markdown generated from html
-if exists('b:pandocNoEmphasis') && b:pandocNoEmphasis == 1
+" Prevent false emphasis syntax region that can lead to runaway highlighting
+if !(get(g:, 'allowPandocEmphasis', 0) || get(b:, 'allowPandocEmphasis', 0))
   syn clear pandocEmphasis
   syn clear pandocEmphasisInStrong
+  syn match pandocEmphasisDelimiter /\*/ conceal cchar=✱
 endif
 
 " Highlight markdown references without label the same as normal references 

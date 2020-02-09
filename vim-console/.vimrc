@@ -98,6 +98,17 @@ function s:BufferFile(...)
   return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
 endfunction
 
+" Establish lost settings after session reload
+function s:OnSessionLoaded()
+  if get(b:, 'isRestoredSession', 0)
+    if &ft == '' && exists('s:defaultFiletype')
+      let &ft = s:defaultFiletype
+    endif
+    edit
+    unlet b:isRestoredSession
+  endif
+endfunction
+
 " Calculate ideal position for cursor to settle during scrolling
 function! s:CursorRatio()
   return float2nr(round(winheight(0) * 0.381966))
@@ -216,7 +227,6 @@ function ReadUrl(link, ...)
   exe 'edit ' . MakeFile(substitute(g:urlfilename, '[/\\]\zs\ze$', 'index.html', ''))
   set modifiable
   set noreadonly
-  let b:pandocNoEmphasis = 1
   normal ggVGx
   set ft=markdown
   let &statusline = a:link
@@ -276,7 +286,9 @@ function s:GoToMarkdownLink(...)
     " Jump to first anchor id not inside a link. Can be anchor within current file
     if jumpId != ''
       " echo "GO TO anchor: " . jumpId
-      call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId, 'c')
+      let g:notInLink = '\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!'
+      let g:jumpSearch = '#\s*\[\?' . substitute(jumpId, '[-_ ]', escape('[-_ ]\?', '\'), 'g')
+      call search(g:notInLink . g:jumpSearch, 'c')
     endif
   endif
 endfunction
@@ -340,14 +352,20 @@ function s:EnterHelper(...)
     " echo "GO TO TAG"
     exe "normal \<C-]>"
   catch
-    " echo "GO TO DEFINITION"
-    LspDefinition
+    if b:lspBufferEnabled == 1
+      " echo "GO TO DEFINITION"
+      LspDefinition
+    endif
   catch
-    " echo "GO TO DECLARATION"
-    LspDeclaration
+    if b:lspBufferEnabled == 1
+      " echo "GO TO DECLARATION"
+      LspDeclaration
+    endif
   catch
-    " echo "GO TO IMPLEMENTATION"
-    LspImplementation
+    if b:lspBufferEnabled == 1
+      " echo "GO TO IMPLEMENTATION"
+      LspImplementation
+    endif
   endtry
 endfunction
 
@@ -422,7 +440,8 @@ function CleanHtmlToMarkdown(...)
   silent! %s#\[\(\zs\_s*\(\f\+\)\_s\+\ze\)\+#\2 #g
   silent! %s#\[\zs\_s*\ze\f##g
 
-  silent! %s~\(\_^[-*]\?\s*\\\?\n\)\+~\r~g " repeated empty lines (possibly just bullets)
+  silent! %s~\\\?$~~ " escaped newlines
+  silent! %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 
   " add base url to links
   exe '%s~[(<]\zs\([/\\]\?'.escape(g:baseUrl, '\').'\|\(www\.\)\?'.g:baseDomain.'\)\?\ze[/\\]\%()\|\f\+\)~'.g:baseUrl.'~g'
@@ -860,6 +879,7 @@ let g:lsp_textprop_enabled = 1
 let g:lsp_highlights_enabled = 0
 
 function! s:OnLspBufferEnabled() abort
+    let b:lspBufferEnabled = 1
     setlocal omnifunc=lsp#complete
     setlocal signcolumn=yes
     highlight LspErrorHighlight term=underline cterm=underline ctermfg=131 gui=underline guifg=#af5f5f
@@ -911,6 +931,9 @@ let g:vista#renderer#icons = {
 
 " MARKDOWN
 " See .vim/after/ftplugin/pandoc.vim for key mappings
+
+" Set default filetype to pandoc markdown
+let s:defaultFiletype = 'pandoc'
 
 let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
 let g:pandoc#folding#fastfolds = 1
@@ -1286,6 +1309,10 @@ exe "map \<leader>sd :\<C-u>DeleteSession " . g:pickMeUpSessionDir
 
 " save session on exit
 autocmd QuitPre * SaveSession
+
+" reestablish settings that can't be reloaded from session
+autocmd SessionLoadPost * ++once let b:isRestoredSession=1
+autocmd SafeState * ++once call s:OnSessionLoaded()
 
 
 " UNDO
