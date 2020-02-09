@@ -218,12 +218,12 @@ function ReadUrl(link, ...)
   let jumpId = get(a:000, 0, '')
   let url = jumpId == '' ? a:link : a:link . '#' . jumpId 
   let tmpdir = s:TmpDir . 'www/'
-  exe 'cd ' . tmpdir
   let safeUrl = matchstr(url, '\w\+:\/\/\zs.*') 
   let g:urlfilename = tmpdir . fnameescape(safeUrl)
   if safeUrl !~ '[/\\]'
     let g:urlfilename .= '/'
   endif
+  exe 'cd ' . fnamemodify(g:urlfilename, ':h')
   exe 'edit ' . MakeFile(substitute(g:urlfilename, '[/\\]\zs\ze$', 'index.html', ''))
   set modifiable
   set noreadonly
