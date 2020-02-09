@@ -127,6 +127,7 @@ augroup ToggleConceal
   autocmd!
   autocmd FileType * call <SID>ReinforceConcealSyntax()
   autocmd CursorHold * call <SID>UpdateTime()
+  autocmd CursorMoved * call <SID>RevealLine(0)
   autocmd TextChanged * call <SID>RevealLine(1)
   autocmd InsertLeave * call <SID>RevealLine(0)
 augroup END
@@ -150,6 +151,7 @@ function s:UpdateTime(...)
   endif
 endfunction
 function s:RevealLine(...)
+  let l:save_view = winsaveview()
   if !exists('g:enableConcealAtCursor') || !g:enableConcealAtCursor
     set concealcursor=
   elseif !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
@@ -160,6 +162,7 @@ function s:RevealLine(...)
       set concealcursor=n
     endif
   endif
+  call winrestview(l:save_view)
 endfunction
 function ToggleConceal(...)
   if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
@@ -174,15 +177,6 @@ function ToggleConceal(...)
       let b:save_conceallevel = &conceallevel
     endif
     call <SID>ReinforceConcealSyntax()
-    " Make cursor position more accurate with faster updates
-    noremap <expr> <Up> <SID>RevealLine(0) && UpdateTime(10)
-      \ ? "\<Up>" : "\<Up>"
-    noremap <expr> <Down> <SID>RevealLine(0) && UpdateTime(10)
-      \ ? "\<Down>" : "\<Down>"
-    noremap <expr> <Left> <SID>UpdateTime(10)
-      \ ? "\<Left>" : "\<Left>"
-    noremap <expr> <Right> <SID>UpdateTime(10)
-      \ ? "\<Right>" : "\<Right>"
   endif
 endfunction
 
