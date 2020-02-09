@@ -2,6 +2,10 @@
 " Automatically change to directory of the file being edited
 set autochdir
 
+" Make sure file is editable
+set modifiable
+set noreadonly
+
 " Mappings
 nmap <buffer> <leader>l :TOC<CR>:set ft=pandoc<CR>:set cursorline<CR> " l = list/locate sections
 nmap <buffer> ` <Plug>(pandoc-keyboard-apply-header)

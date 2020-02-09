@@ -278,8 +278,8 @@ function s:GoToMarkdownLink(...)
         let newFile = isDirectory
               \ ? s:DirSlashes(link) . 'index.md' 
               \ : (needsExtension ? link . '.md' : link)
-        let g:newFile = MakeFile(input('New File: ', newFile))
-        call pandoc#hypertext#OpenLocal(g:newFile, g:pandoc#hypertext#edit_open_cmd)
+        let newFile = MakeFile(input('New File: ', newFile))
+        call pandoc#hypertext#OpenLocal(newFile, g:pandoc#hypertext#edit_open_cmd)
         let foundFile = 1
       endif
     endif
@@ -312,6 +312,9 @@ function s:FilePattern(...)
   let indexes = get(a:000, 2, ['index'])
   let link = name
   let attempts = [link]
+  if link !~ '^\.'
+    let attempts += [ProjectRootGuess() . link]
+  endif
   let attempts += map(copy(indexes), 's:DirSlashes(link).v:val')
   for a in copy(attempts)
     let attempts += map(copy(extensions), 'a.v:val')
@@ -436,11 +439,11 @@ function CleanHtmlToMarkdown(...)
   " remove extra spaces after bullets
   silent! %s~^\s*[-*]\zs\s\+~ ~
 
-  " Remove unnecessary line breaks in link labels
-  silent! %s#\[\(\zs\_s*\(\f\+\)\_s\+\ze\)\+#\2 #g
-  silent! %s#\[\zs\_s*\ze\f##g
+  " Remove line breaks in link labels
+  silent! %s~\[\_[^]\n]*\zs\_s*\n\_s*~ ~g
 
   silent! %s~\\\?$~~ " escaped newlines
+  silent! %s~\\\([-'"]\)~\1~ " escaped characters
   silent! %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 
   " add base url to links
@@ -448,6 +451,13 @@ function CleanHtmlToMarkdown(...)
 
   let &lazyredraw = save_lazyredraw
   redraw!
+endfunction
+
+" Join selected lines as markdown table row
+function s:JoinLinesAsTableRow()
+  '<,'>:s~\n\_s*~\|~
+  normal I|
+  normal A|
 endfunction
 
 
@@ -986,6 +996,9 @@ inoreabbrev <expr> <bar><bar>
 inoreabbrev <expr> __
           \ <SID>IsAtStartOfLine('__') ?
           \ '<c-o>:silent! TableModeDisable<cr>' : '__'
+
+" ',tr' will join selected lines as table row
+vnoremap <leader>tr :<C-u>call <SID>JoinLinesAsTableRow()<CR>
 
 
 " COMPLETION
