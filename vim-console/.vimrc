@@ -223,15 +223,20 @@ function ReadUrl(link, ...)
   if safeUrl !~ '[/\\]'
     let g:urlfilename .= '/'
   endif
-  exe 'cd ' . fnamemodify(g:urlfilename, ':h')
+  exe 'cd ' . s:MakeDir(fnamemodify(g:urlfilename, ':h'))
   exe 'edit ' . MakeFile(substitute(g:urlfilename, '[/\\]\zs\ze$', 'index.html', ''))
   set modifiable
   set noreadonly
   normal ggVGx
   set ft=markdown
   let &statusline = a:link
-  " exe 'r ! curl -s ' . url . ' | pandoc -f html -t markdown'
-  exe 'r ! chromium --headless --incognito --minimal --daemon --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
+  if executable('chromium')
+    exe 'r ! chromium --headless --incognito --minimal --daemon --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
+  elseif executable('curl') && executable('pandoc')
+    exe 'r ! curl -s ' . url . ' | pandoc -f html -t markdown'
+  else
+    throw "Error: Need chromium or pandoc/curl to browse web urls"
+  endif
   let g:baseUrl = matchstr(a:link, '\(^\w\+:\/\/\)\?[^\/]*')
   silent! call CleanHtmlToMarkdown(g:baseUrl)
   normal gg
@@ -249,6 +254,8 @@ function s:GoToUrl(...)
       call netrw#NetrwBrowseX(url, 0)
     endif
   elseif url != ''
+    " Save current location in the jump list
+    normal m'
     call ReadUrl(url)
   endif
 endfunction
@@ -701,7 +708,7 @@ map <silent> <leader><Enter> :call <SID>EnterHelper(1)<CR>
 map <silent> <M-Enter> :call <SID>EnterHelper(1)<CR>
 
 " 'Backspace' will go back
-map <Backspace> <C-o>
+noremap <Backspace> <C-o>
 
 
 " URLS
