@@ -379,15 +379,22 @@ function s:EnterHelper(...)
   endtry
 endfunction
 
-" Show syntax group and translated syntax group of character under cursor
-" Will look at syntax v:count lines below cursor if a count is specified
-" If optional boolean true is passed, will look v:count lines above cursor
-" (Modified) From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
-function! s:SynGroup(...)
-  let reverse = get(a:000, 0, 0)
-  let l:s = synID(line('.') + v:count * (reverse ? -1 : 1), col('.'), 1)
-  return synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
-endfunction
+" " (Modified) From Eloi, 2019, https://superuser.com/questions/575910/how-do-i-use-the-jumplist-to-jump-once-per-file
+" function! JumpToNextBufferInJumplist(dir) " 1=forward, -1=backward
+"     let jl = getjumplist() | let jumplist = jl[0] | let curjump = jl[1]
+"     let jumpcmdstr = a:dir > 0 ? '<C-O>' : '<C-I>'
+"     let jumpcmdchr = a:dir > 0 ? '' : '	' " <C-I> or <C-O>
+"     let searchrange = a:dir > 0 ? range(curjump+1,len(jumplist))
+"                               \ : range(curjump-1,0,-1)
+"     for i in searchrange
+"         if jumplist[i]["bufnr"] != bufnr('%')
+"             let n = (i - curjump) * a:dir
+"             echo "Executing ".jumpcmdstr." ".n." times."
+"             execute "silent normal! ".n.jumpcmdchr
+"             break
+"         endif
+"     endfor
+" endfunction
 
 " Move cursor through next whitespace in current column. Lands on non-whitespace
 " character after the gap. Optional boolean triggers backwards search if true
@@ -402,6 +409,16 @@ function s:GoToNextVerticalNonBlank(...)
     let blank = s:SynGroup() =~ '\<Ignore$'
   endwhile
   let @/=lastsearch
+endfunction
+
+" Show syntax group and translated syntax group of character under cursor
+" Will look at syntax v:count lines below cursor if a count is specified
+" If optional boolean true is passed, will look v:count lines above cursor
+" (Modified) From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
+function! s:SynGroup(...)
+  let reverse = get(a:000, 0, 0)
+  let l:s = synID(line('.') + v:count * (reverse ? -1 : 1), col('.'), 1)
+  return synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
 endfunction
 
 " ':GCheckout' will checkout git branch with command-line completion
@@ -707,8 +724,30 @@ map <silent> <Enter> :call <SID>EnterHelper()<CR>
 map <silent> <leader><Enter> :call <SID>EnterHelper(1)<CR>
 map <silent> <M-Enter> :call <SID>EnterHelper(1)<CR>
 
-" 'Backspace' will go back
+" 'Backspace' will go back in the jumplist
 noremap <Backspace> <C-o>
+
+" Go count forward/backward in the list of Most Recently Used files
+let s:mruIndex = 0
+let s:mruFiles = []
+function! JumpMRU(...)
+  let delta = get(a:000, 0, -1)
+  " let mruFiles = insert(copy(fzf_mru#mrufiles#list()), expand('%'))
+  let s:mruFiles = len(s:mruFiles) > 0
+    \ ? s:mruFiles
+    \ : map(fzf_mru#mrufiles#list(), "fnamemodify(v:val, ':p')")
+  let s:mruIndex = max([0, s:mruIndex - delta])
+  let s:mruIndex = min([s:mruIndex, len(s:mruFiles) - 1])
+  echo s:mruIndex . ': ' . s:mruFiles[s:mruIndex]
+  exe 'buffer ' .  s:mruFiles[s:mruIndex]
+endfunction
+autocmd InsertEnter,TextChanged * :let s:mruFiles = [] | let s:mruIndex = 0
+
+" '-' will go back in the MRU list
+nnoremap - :call JumpMRU(-1)<CR>
+
+" '+' will go forward in the MRU list
+nnoremap + :call JumpMRU(1)<CR>
 
 
 " URLS
@@ -734,6 +773,11 @@ inoremap <expr> <C-k>     "\<C-\>\<C-n>v\<Up>" . (col('.')>1?"\<Right>":"")
 inoremap <C-Right> <C-o>v
 inoremap <C-l>     <C-o>v
 
+" '_' will start a visual selection at cursor and expand it with each repeat
+ nmap _ <Plug>(expand_region_expand)
+ vmap _ <Plug>(expand_region_expand)
+ vmap <C-_> <Plug>(expand_region_shrink)
+ nmap <C-_> <Plug>(expand_region_shrink)
 
 " MOVEMENT
 
@@ -854,8 +898,8 @@ nmap <S-Tab> =[
 
 " '=/' will display active buffers for selection/search
 nnoremap =/ :Buffers<CR>
-" '=<Backspace>' will list buffers with fullscreen display
-nnoremap =<Backspace> :Buffers!<CR>
+" '=\' will list buffers with fullscreen display
+nnoremap =\ :Buffers!<CR>
 
 " No editing directories (buggy integration with ranger plugin)
 autocmd BufEnter * if isdirectory(expand("%")) | silent! bwipeout! | endif
