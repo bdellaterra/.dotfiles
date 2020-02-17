@@ -18,11 +18,11 @@ hi! link pandocStrikeout Comment
 hi! link pandocStrikeoutMark WarningMsg
 
 " Prevent false emphasis syntax region that can lead to runaway highlighting
-if !(get(g:, 'allowPandocEmphasis', 0) || get(b:, 'allowPandocEmphasis', 0))
-  syn clear pandocEmphasis
-  syn clear pandocEmphasisInStrong
-  syn match pandocEmphasisDelimiter /\*/ conceal cchar=✱
-endif
+" if !(get(g:, 'allowPandocEmphasis', 0) || get(b:, 'allowPandocEmphasis', 0))
+"   syn clear pandocEmphasis
+"   syn clear pandocEmphasisInStrong
+"   syn match pandocEmphasisDelimiter /\*/ conceal cchar=✱
+" endif
 
 " Highlight markdown references without label the same as normal references 
 hi! link pandocNoLabel Statement

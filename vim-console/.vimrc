@@ -736,12 +736,15 @@ function! JumpMRU(...)
   " let mruFiles = insert(copy(fzf_mru#mrufiles#list()), expand('%'))
   let s:mruFiles = len(s:mruFiles) > 0
     \ ? s:mruFiles
-    \ : map(fzf_mru#mrufiles#list(), "fnamemodify(v:val, ':p')")
+    \ : map(
+    \   fzf_mru#mrufiles#list(),
+    \   "fnamemodify(filereadable(v:val) ? v:val : ProjectRootGuess() . '/' . v:val, ':p')"
+    \ )
   let s:mruIndex = max([0, s:mruIndex - delta])
   let s:mruIndex = min([s:mruIndex, len(s:mruFiles) - 1])
   echo s:mruIndex . ': ' . s:mruFiles[s:mruIndex]
   let s:mruJump = 1
-  exe 'buffer ' .  s:mruFiles[s:mruIndex]
+  silent! exe 'silent! buffer ' .  s:mruFiles[s:mruIndex]
   let s:mruJump = 0
 endfunction
 autocmd BufEnter * :if !s:mruJump | let s:mruFiles = [] | let s:mruIndex = 0 | endif
