@@ -229,7 +229,7 @@ function ReadUrl(link, ...)
   set noreadonly
   normal ggVGx
   set ft=markdown
-  let &statusline = a:link
+  " let &statusline = a:link
   if executable('chromium')
     exe 'r ! chromium --headless --incognito --minimal --daemon --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
   elseif executable('curl') && executable('pandoc')
@@ -728,6 +728,7 @@ map <silent> <M-Enter> :call <SID>EnterHelper(1)<CR>
 noremap <Backspace> <C-o>
 
 " Go count forward/backward in the list of Most Recently Used files
+let s:mruJump = 0
 let s:mruIndex = 0
 let s:mruFiles = []
 function! JumpMRU(...)
@@ -739,9 +740,11 @@ function! JumpMRU(...)
   let s:mruIndex = max([0, s:mruIndex - delta])
   let s:mruIndex = min([s:mruIndex, len(s:mruFiles) - 1])
   echo s:mruIndex . ': ' . s:mruFiles[s:mruIndex]
+  let s:mruJump = 1
   exe 'buffer ' .  s:mruFiles[s:mruIndex]
+  let s:mruJump = 0
 endfunction
-autocmd InsertEnter,TextChanged * :let s:mruFiles = [] | let s:mruIndex = 0
+autocmd BufEnter * :if !s:mruJump | let s:mruFiles = [] | let s:mruIndex = 0 | endif
 
 " '-' will go back in the MRU list
 nnoremap - :call JumpMRU(-1)<CR>
