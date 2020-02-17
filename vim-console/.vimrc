@@ -227,7 +227,7 @@ function ReadUrl(link, ...)
   exe 'edit ' . MakeFile(substitute(g:urlfilename, '[/\\]\zs\ze$', 'index.html', ''))
   set modifiable
   set noreadonly
-  normal ggVGx
+  keepjumps normal ggVGx
   set ft=markdown
   " let &statusline = a:link
   if executable('chromium')
@@ -239,8 +239,8 @@ function ReadUrl(link, ...)
   endif
   let g:baseUrl = matchstr(a:link, '\(^\w\+:\/\/\)\?[^\/]*')
   silent! call CleanHtmlToMarkdown(g:baseUrl)
-  normal gg
-  call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId == '' ? 'main' : jumpId, 'c')
+  keepjumps normal gg
+  keepjumps call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId == '' ? 'main' : jumpId, 'c')
 endfunction
 
 function s:GoToUrl(...)
@@ -437,41 +437,41 @@ function CleanHtmlToMarkdown(...)
   let g:baseUrl = get(a:000, 0, '')
   let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
 
-  silent! %s@{\(#[^ }]*\)\_[^}]\{-}}@[\1]@g
-  silent! %s@:::\s*\({\_[^}]\{-}}\)\?@@g
-  silent! %s@\([])]\){\_[^}]\{-}}@\1@g
-  silent! %s@<!--\_.\{-}-->@@g " html comment
-  silent! %s#```{=[^}]*}\(\s*\n\)*```## " empty html code
+  silent! keepjumps %s@{\(#[^ }]*\)\_[^}]\{-}}@[\1]@g
+  silent! keepjumps %s@:::\s*\({\_[^}]\{-}}\)\?@@g
+  silent! keepjumps %s@\([])]\){\_[^}]\{-}}@\1@g
+  silent! keepjumps %s@<!--\_.\{-}-->@@g " html comment
+  silent! keepjumps %s#```{=[^}]*}\(\s*\n\)*```## " empty html code
 
-  silent! %s~\(#\(\f\+\)\)\@>\_.*\zs\[\1\]\ze~[# \2]~g " mark used ref ids
-  silent! %s~\[#\S\f\+\]~~g " delete unused ref ids
+  silent! keepjumps %s~\(#\(\f\+\)\)\@>\_.*\zs\[\1\]\ze~[# \2]~g " mark used ref ids
+  silent! keepjumps %s~\[#\S\f\+\]~~g " delete unused ref ids
 
-  silent! %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g " fill empty links with alt text
-  silent! %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\))~<\1>~g " convert links with no label
+  silent! keepjumps %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g " fill empty links with alt text
+  silent! keepjumps %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\))~<\1>~g " convert links with no label
 
-  silent! %s#!\ze[<[]##g " '!' before link
+  silent! keepjumps %s#!\ze[<[]##g " '!' before link
 
   " remove empty brackets
   " silent! %s#\(```\_.\{-}\)\@<=\zs\[\]\ze\(\_.\{-}```\)#[---KEEP---]#g " mark brackets in code
-  silent! %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
-  silent! %s~<\_s*[/\\#]\?\_s*>~~g
+  silent! keepjumps %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
+  silent! keepjumps %s~<\_s*[/\\#]\?\_s*>~~g
 
   " remove div and span tags
-  silent! %s#\_s*<\/\?div\/\?>\_s*#\r#
-  silent! %s#\<\/\?span\/\?>#\r#
+  silent! keepjumps %s#\_s*<\/\?div\/\?>\_s*#\r#
+  silent! keepjumps %s#\<\/\?span\/\?>#\r#
 
   " remove extra spaces after bullets
-  silent! %s~^\s*[-*]\zs\s\+~ ~
+  silent! keepjumps %s~^\s*[-*]\zs\s\+~ ~
 
   " Remove line breaks in link labels
-  silent! %s~\[\_[^]\n]*\zs\_s*\n\_s*~ ~g
+  silent! keepjumps %s~\[\_[^]\n]*\zs\_s*\n\_s*~ ~g
 
-  silent! %s~\\\?$~~ " escaped newlines
-  silent! %s~\\\([-'"]\)~\1~ " escaped characters
-  silent! %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
+  silent! keepjumps %s~\\\?$~~ " escaped newlines
+  silent! keepjumps %s~\\\([-'"]\)~\1~ " escaped characters
+  silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 
   " add base url to links
-  exe '%s~[(<]\zs\([/\\]\?'.escape(g:baseUrl, '\').'\|\(www\.\)\?'.g:baseDomain.'\)\?\ze[/\\]\%()\|\f\+\)~'.g:baseUrl.'~g'
+  exe 'keepjumps %s~[(<]\zs\([/\\]\?'.escape(g:baseUrl, '\').'\|\(www\.\)\?'.g:baseDomain.'\)\?\ze[/\\]\%()\|\f\+\)~'.g:baseUrl.'~g'
 
   let &lazyredraw = save_lazyredraw
   redraw!
