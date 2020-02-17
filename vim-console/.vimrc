@@ -350,12 +350,12 @@ function s:EnterHelper(...)
       echo "GO TO MARKDOWN REFERENCE: " . link
       call s:GoToMarkdownReference(link)
     else
-      if altEnter
+      if filereadable(expand('<cfile>'))
+        echo "GO TO FILE"
+        normal! gf
+      elseif  altEnter
         echo "CREATE AND GO TO FILE"
         exe 'edit ' . MakeFile(expand('<cfile>'))
-      else 
-        echo "GO TO FILE"
-        normal gf
       endif
     endif
   catch
@@ -716,11 +716,11 @@ map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t
 " Automatically create missing parent directories when editing a new file
 autocmd BufWritePre * :call s:MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
 
-" 'Enter' will go to file under cursor
+" 'Enter' will go to file/url/tag/definition/declaration under cursor
 map <silent> <Enter> :call <SID>EnterHelper()<CR>
 
-" ',Enter' will go to file under cursor, creating it if necessary
-" map <leader><Enter> :exe 'edit ' . MakeFile(expand('<cfile>'))<CR>
+" ',Enter' of Alt-Enter will go to file, creating it if necessary
+" or open URL in external web browser
 map <silent> <leader><Enter> :call <SID>EnterHelper(1)<CR>
 map <silent> <M-Enter> :call <SID>EnterHelper(1)<CR>
 
