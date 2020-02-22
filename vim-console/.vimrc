@@ -243,7 +243,7 @@ function ReadUrl(link, ...)
   keepjumps call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId == '' ? 'main' : jumpId, 'c')
 endfunction
 
-function s:GoToUrl(...)
+function GoToUrl(...)
   let url = matchstr(get(a:000, 0, ''), g:rgx.url)
   let altEnter = get(a:000, 1, 0)
   if altEnter
@@ -265,7 +265,7 @@ function s:GoToMarkdownLink(...)
   let jumpId = get(a:000, 1, '')
   let altEnter = get(a:000, 2, 0)
   if link =~ g:rgx.url
-    call s:GoToUrl(link, jumpId, altEnter)
+    call GoToUrl(link, jumpId, altEnter)
   else
     " Save current location in the jump list
     normal m'
@@ -336,7 +336,7 @@ function s:EnterHelper(...)
     if CursorIsOn(g:rgx.url)
       let link = MatchUnderCursor(g:rgx.url)[0]
       echo "GO TO URL: " . link
-      call s:GoToUrl(link, altEnter)
+      call GoToUrl(link, altEnter)
     elseif CursorIsOn(g:rgx.mdLink)
       let [link, jumpId] = MatchUnderCursor(g:rgx.mdLink)[3:4]
       echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
@@ -471,9 +471,16 @@ function CleanHtmlToMarkdown(...)
   silent! keepjumps %s~\\\([-'"]\)~\1~ " escaped characters
   silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 
+  " Remove Advertisements
+  silent! keepjumps %s~\[Advertisement\]\%(([^)]*)\)\?\s*\n~~ " escaped newlines
+
   " add base url to links
   exe 'keepjumps %s~[(<]\zs'.g:baseRegex.'\ze~'.g:baseUrl.'/~gi'
-  exe '%s~[(<]\@>\%(#\|\w\+://\)\@!\zs[/\\]\ze~'.g:baseUrl.'/~gi'
+  exe 'keepjumps %s~[(<]\@>\%(#\|\w\+://\)\@!\zs[/\\]\ze~'.g:baseUrl.'/~gi'
+
+  " Fix highlighting glitches
+  " lines w/ emphasized bullets after 4+ spaces lose styling
+  silent! keepjumps %s~^\(\s\{4,}\)\(\(\*\+\)[^*]*\3\)~   \2~
 
   let &lazyredraw = save_lazyredraw
   redraw!
@@ -765,8 +772,52 @@ command! -nargs=1 VUE
 command! -nargs=1 VUB
       \ call GoToUrl(<q-args>, 1)
 
-map <silent> <leader>vv :VUE<Space>
-map <silent> <leader>vb :VUB<Space>
+function File(file)
+ let file = fnamemodify(fnameescape(a:file), ':p')
+ if filereadable(file)
+   return file
+ endif
+ return ''
+endfunction
+
+function SearchUrl(url, searchTerm, ...)
+  let openInBrowser = get(a:000, 0, 0)
+  call ReadUrl('https://https://www.etymonline.com/search?q=frugal')
+endfunction
+
+function SearchFile(file, searchTerm)
+  exe 'edit ' . File(a:file)
+  call search(a:searchTerm)
+endfunction
+
+" Browse URLs
+map <leader>vv :VUE https://
+map <leader>VV :VUB https://
+
+" Dictionary
+let g:localDictionary = '~/compendium/eBooks/Reference/Dictionary/index.txt'
+if File(g:localDictionary) != ''
+  map <leader>ld :call SearchFile(g:localDictionary, '^\C' . toupper(input('Dictionary Search: ')))<CR>
+endif
+
+let g:onlineDictionary = 'https://www.wordnik.com/words/'
+map <silent> <leader>vd :exe "call ReadUrl('" . g:onlineDictionary .input('Online Dictionary Search: ') . "')"<CR>
+map <silent> <leader>VD :exe "call GoToUrl('" . g:onlineDictionary .input('Online Dictionary Search: ') . "')"<CR>
+
+" Thesaurus
+let g:localThesaurus = '~/compendium/eBooks/Reference/Thesaurus/index.txt'
+if File(g:localThesaurus) != ''
+  map <leader>lt :call SearchFile(g:localThesaurus, '^' . input('Thesaurus Search: '))<CR>
+endif
+
+let g:onlineThesaurus = 'https://www.thesaurus.com/browse/'
+map <silent> <leader>vt :exe "call ReadUrl('" . g:onlineThesaurus .input('Online Thesaurus Search: ') . "')"<CR>
+map <silent> <leader>VT :exe "call GoToUrl('" . g:onlineThesaurus .input('Online Thesaurus Search: ') . "')"<CR>
+
+" Etymology
+let g:onlineEtymology = 'https://www.etymonline.com/search?q='
+map <silent> <leader>ve :exe "call ReadUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
+map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
 
 
 " SELECTION
@@ -1033,6 +1084,7 @@ augroup END
 
 let g:nv_search_paths = ['~/notes', '~/wiki']
 let g:nv_default_extension = '.md'
+let g:nv_show_preview = 0
 
 " ',m' will make a note
 noremap <silent> <leader>m :NV<CR>
