@@ -214,6 +214,16 @@ function CursorIsOn(regex)
   return MatchUnderCursor(a:regex) != []
 endfunction
 
+function s:mdHeadingJump(...)
+  let headingCount = get(a:000, 0, 1)
+  return 'normal ' . string(headingCount) . ']]zt'
+endfunction
+
+let g:postHtmlToMdCleanup = [
+  \ ['www.thesaurus.com', s:mdHeadingJump(1)],
+  \ ['www.wordnik.com', s:mdHeadingJump(1)],
+  \ ]
+
 function ReadUrl(link, ...)
   let jumpId = get(a:000, 0, '')
   let url = jumpId == '' ? a:link : a:link . '#' . jumpId 
@@ -240,6 +250,12 @@ function ReadUrl(link, ...)
   let g:baseUrl = matchstr(a:link, '\(^\w\+:\/\/\)\?[^\/]*')
   silent! call CleanHtmlToMarkdown(g:baseUrl)
   keepjumps normal gg
+  " Site-specific customizations
+  for [siteRegex, cmd] in g:postHtmlToMdCleanup
+    if url =~ siteRegex
+      exe 'keepjumps ' . cmd
+    endif
+  endfor
   keepjumps call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId == '' ? 'main' : jumpId, 'c')
 endfunction
 
