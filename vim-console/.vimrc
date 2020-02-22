@@ -527,9 +527,6 @@ set modelines=0
 " Allow backspacing over everything
 set backspace=indent,eol,start
 
-" Set minimum lines of context to display around cursor
-set scrolloff=0
-
 " Display most of a last line that doesn't fit in the window
 set display=lastline
 
@@ -1657,6 +1654,13 @@ map <silent> <leader>vs :call <SID>ToggleVerboseStatus()<CR>
 
 
 " FOCUS-MODE
+function s:ScrollAdjustment()
+  let adjustment = (winheight(0) / 2) - s:CursorRatio()
+  if line('.') <= adjustment || (line('$') - line('.')) < (winheight(0) - adjustment)
+    return 0
+  endif
+  return adjustment
+endfunction
 
 " Apply focus-mode customizations
 function! s:Focus()
@@ -1673,14 +1677,12 @@ function! s:Focus()
     autocmd!
     " Keep cursor/scroll position just north of center
     autocmd VerticallyCenterCursor CursorMoved * exe 'normal zz'
-      \ . repeat("\<C-e>", (winheight(0) / 2) - <SID>CursorRatio())
+      \ . repeat("\<C-e>", s:ScrollAdjustment())
   augroup END
   let s:save_enableConcealAtCursor = get(g:, 'enableConcealAtCursor', 0)
   let g:enableConcealAtCursor = 1
   let s:save_showtabline = &showtabline
   let &showtabline = 0
-  let s:save_scrolloff = &scrolloff
-  let &scrolloff = 0
   set noshowmode
   set noshowcmd
   set nofoldenable
@@ -1698,7 +1700,6 @@ function! s:Blur()
   au! VerticallyCenterCursor CursorMoved
   let g:enableConcealAtCursor = s:save_enableConcealAtCursor
   let &showtabline = s:save_showtabline
-  let &scrolloff = s:save_scrolloff
   silent! unlet s:save_showtabline
   set showmode
   set showcmd
