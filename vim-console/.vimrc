@@ -436,6 +436,7 @@ function CleanHtmlToMarkdown(...)
 
   let g:baseUrl = get(a:000, 0, '')
   let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
+  let g:baseRegex = '\%(\%(\%(\%(\w\+:\)\?//\)\?www\.\)\?'.g:baseDomain.'[/\\]\?\)'
 
   silent! keepjumps %s@{\(#[^ }]*\)\_[^}]\{-}}@[\1]@g
   silent! keepjumps %s@:::\s*\({\_[^}]\{-}}\)\?@@g
@@ -471,7 +472,8 @@ function CleanHtmlToMarkdown(...)
   silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 
   " add base url to links
-  exe 'keepjumps %s~[(<]\zs\([/\\]\?'.escape(g:baseUrl, '\').'\|\(www\.\)\?'.g:baseDomain.'\)\?\ze[/\\]\%()\|\f\+\)~'.g:baseUrl.'~g'
+  exe 'keepjumps %s~[(<]\zs'.g:baseRegex.'\ze~'.g:baseUrl.'/~gi'
+  exe '%s~[(<]\@>\%(#\|\w\+://\)\@!\zs[/\\]\ze~'.g:baseUrl.'/~gi'
 
   let &lazyredraw = save_lazyredraw
   redraw!
