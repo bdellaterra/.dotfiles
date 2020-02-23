@@ -249,7 +249,7 @@ function ReadUrl(link, ...)
   set modifiable
   set noreadonly
   keepjumps normal ggVGx
-  set ft=markdown
+  set ft=pandoc
   " let &statusline = a:link
   if executable('chromium')
     exe 'r ! chromium --headless --incognito --minimal --daemon --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
