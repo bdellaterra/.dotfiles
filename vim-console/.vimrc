@@ -14,7 +14,12 @@ endif
 
 " Regex Patterns
 let g:rgx = {}
-let g:rgx.url = '\([a-zA-Z]*:\/\/[^][ <>,;()]*\)'
+let g:rgx.urlProtocol = '[a-zA-Z]*:\/\/'
+let g:rgx.urlPathChar = '[^][ <>,;()]'
+let g:rgx.urlQuery = '?' . g:rgx.urlPathChar . '*'
+let g:rgx.url = '\(' . g:rgx.urlProtocol . g:rgx.urlPathChar . '*\)'
+let g:rgx.url = '\(' . g:rgx.urlProtocol . g:rgx.urlPathChar . '*\)'
+let g:rgx.urlFile = g:rgx.urlPathChar . '\{-}\([^/]\{-}\)' . '\%( . g:rgx.urlQuery . \)\?'
 let g:rgx.mdLabel = '\['. '\([^]]*\)' . '\]' " 'md' for 'markdown'
 let g:rgx.mdTargetName = '\([^)]\{-}\)'
 let g:rgx.mdTargetAnchor = '\%(' . '#' . '\([^)]*\)' . '\)\?'
@@ -176,6 +181,9 @@ function s:RevealLine(...)
   call winrestview(l:save_view)
 endfunction
 function ToggleConceal(...)
+  syntax off
+  let save_lazyredraw = &lazyredraw
+  set lazyredraw
   if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
     let tmpToggle = get(a:000, 0, 0)
     if !exists('b:save_conceallevel')
@@ -189,6 +197,9 @@ function ToggleConceal(...)
     endif
     call <SID>ReinforceConcealSyntax()
   endif
+  let &lazyredraw = save_lazyredraw
+  redraw!
+  syntax on
 endfunction
 
 function MatchUnderCursor(regex,...)
@@ -454,49 +465,73 @@ function CleanHtmlToMarkdown(...)
   let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
   let g:baseRegex = '\%(\%(\%(\%(\w\+:\)\?//\)\?www\.\)\?'.g:baseDomain.'[/\\]\?\)'
 
-  silent! keepjumps %s@{\(#[^ }]*\)\_[^}]\{-}}@[\1]@g
-  silent! keepjumps %s@:::\s*\({\_[^}]\{-}}\)\?@@g
-  silent! keepjumps %s@\([])]\){\_[^}]\{-}}@\1@g
-  silent! keepjumps %s@<!--\_.\{-}-->@@g " html comment
-  silent! keepjumps %s#```{=[^}]*}\(\s*\n\)*```## " empty html code
+  " Preserve ids
+  silent! keepjumps %s~{\(#[^ }]*\)\_[^}]\{-}}~[\1]~g
 
-  silent! keepjumps %s~\(#\(\f\+\)\)\@>\_.*\zs\[\1\]\ze~[# \2]~g " mark used ref ids
-  silent! keepjumps %s~\[#\S\f\+\]~~g " delete unused ref ids
+  " Strip CSS
+  silent! keepjumps %s~\([])]\){\_[^}]\{-}}~\1~g
+  silent! keepjumps %s~:::\s*\({\_[^}]\{-}}\)\?~~g "
 
-  silent! keepjumps %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g " fill empty links with alt text
-  silent! keepjumps %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\))~<\1>~g " convert links with no label
+  " Strip HTML
+  silent! keepjumps %s~<!--\_.\{-}-->~~g " html comment
+  silent! keepjumps %s~```{=[^}]*}\(\s*\n\)*```~~ " empty html code
+  silent! keepjumps %s~\_s*<\/\?div\/\?>\_s*~\r~gi " div tags
+  silent! keepjumps %s~\<\/\?span\/\?>~\r~gi " span tags
 
-  silent! keepjumps %s#!\ze[<[]##g " '!' before link
+  " Mark used ref ids 
+  silent! keepjumps %s~\(#\(\f\+\)\)\@>\_.*\zs\[\1\]\ze~[# \2]~g
+  " Delete unused ref ids
+  silent! keepjumps %s~\[#\S\f\+\]~~g
+  
+  " Remove unwanted line breaks
+  " silent keepjumps %s~\[\zs\_s\+\(\_[^]]*\)\_s*\ze\]~\=substitute(submatch(0), '\n\_s\+', ' ', 'g')~gc
+  silent! keepjumps %s~\[\zs\([^]]*\n\_[^]]*\)\ze\]~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
+  silent! keepjumps %s~<\zs\([^>]*\n\_[^>]*\)\ze>~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
+  silent! keepjumps %s~(\zs\([^)]*\n\_[^)]*\)\ze)~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
 
-  " remove empty brackets
+  " Extract nested links
+  silent! keepjumps %s~\[\(\[\_[^]]*\]\)\((\_[^)]\+)\)\?\]~\1\2~g
+  " silent! keepjumps %s~\[\%(<.\{-}\([^/]\{-}\)\%(?[^>]*\)\?>\)\]~[\1]~
+  silent! keepjumps %s~\[\(<\_[^>]*>\)\]~\1~g
+
+  " Use alt text for labels
+  " silent! keepjumps %s~\[!\%(\[\_[^]]*\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~gc
+  silent! keepjumps %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g
+  silent! keepjumps %s~\[.\{-}\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g
+  
+  " Convert remaining links with no label
+  silent! keepjumps %s~\[\%(!\?\[\]\)\?\](\(\_[^)]\{-}\))~<\1>~g
+  
+  " Unescape characters
+  silent! keepjumps %s~\\\?$~~g " newlines
+  silent! keepjumps %s~\\\([-'"]\)~\1~g " other characters
+
+  " Remove empty brackets
   " silent! %s#\(```\_.\{-}\)\@<=\zs\[\]\ze\(\_.\{-}```\)#[---KEEP---]#g " mark brackets in code
   silent! keepjumps %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
   silent! keepjumps %s~<\_s*[/\\#]\?\_s*>~~g
 
-  " remove div and span tags
-  silent! keepjumps %s#\_s*<\/\?div\/\?>\_s*#\r#
-  silent! keepjumps %s#\<\/\?span\/\?>#\r#
-
-  " remove extra spaces after bullets
-  silent! keepjumps %s~^\s*[-*]\zs\s\+~ ~
-
-  " Remove line breaks in link labels
-  silent! keepjumps %s~\[\_[^]\n]*\zs\_s*\n\_s*~ ~g
-
-  silent! keepjumps %s~\\\?$~~ " escaped newlines
-  silent! keepjumps %s~\\\([-'"]\)~\1~ " escaped characters
-  silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
+  " Excessively long dividers
+  silent! keepjumps %s~^\(\(-\|=\)\{80}\)\1*~\1~
 
   " Remove Advertisements
-  silent! keepjumps %s~\[Advertisement\]\%(([^)]*)\)\?\s*\n~~ " escaped newlines
+  silent! keepjumps %s~\[ad\%(vertisement\)\?\]\%(([^)]*)\)\?\s*\n~~gi
 
-  " add base url to links
-  exe 'keepjumps %s~[(<]\zs'.g:baseRegex.'\ze~'.g:baseUrl.'/~gi'
-  exe 'keepjumps %s~[(<]\@>\%(#\|\w\+://\)\@!\zs[/\\]\ze~'.g:baseUrl.'/~gi'
+  " " Remove extra space around bullets
+  silent! keepjumps %s~^\s*-\_s*\ze[^-]~- ~
 
   " Fix highlighting glitches
-  " lines w/ emphasized bullets after 4+ spaces lose styling
-  silent! keepjumps %s~^\(\s\{4,}\)\(\(\*\+\)[^*]*\3\)~   \2~
+  silent! keepjumps %s~^\(-\s\)\?\zs\s\+\ze[[<*-\#]~\1~g " whitespace before links/headings/bullets
+  silent! keepjumps %s~^\s*#~\r#~ " '#' headings must be at start of line and have a blank line above
+
+  " add base url to links
+  if g:baseUrl != ''
+    exe 'silent! keepjumps %s~[(<]\zs'.g:baseRegex.'\ze~'.g:baseUrl.'/~gi'
+    exe 'silent! keepjumps %s~[(<]\@>\%(#\|\w\+://\)\@!\zs[/\\]\ze~'.g:baseUrl.'/~gi'
+  endif
+
+  " Remove whitespace
+  silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 
   let &lazyredraw = save_lazyredraw
   redraw!
@@ -1458,7 +1493,7 @@ autocmd SafeState * ++once call s:OnSessionLoaded()
 map <leader>uh :GundoToggle<CR>
 
 " Temporarily toggle conceal to fix undo behavior
-map u :call ToggleConceal(0) \| undo \| :call ToggleConceal(1)<CR>
+map u :silent! call ToggleConceal(0) \| undo \| :silent! call ToggleConceal(1)<CR>
 
 " Prevent <Esc>u from accidentally inserting special character 'õ' in insert-mode
 " (Use 'Ctrl-v,245' to insert 'õ' intentionally)
