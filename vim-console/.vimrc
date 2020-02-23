@@ -181,7 +181,6 @@ function s:RevealLine(...)
   call winrestview(l:save_view)
 endfunction
 function ToggleConceal(...)
-  syntax off
   let save_lazyredraw = &lazyredraw
   set lazyredraw
   if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
@@ -199,7 +198,6 @@ function ToggleConceal(...)
   endif
   let &lazyredraw = save_lazyredraw
   redraw!
-  syntax on
 endfunction
 
 function MatchUnderCursor(regex,...)
@@ -227,13 +225,8 @@ endfunction
 
 function s:mdHeadingJump(...)
   let headingCount = get(a:000, 0, 1)
-  return 'normal ' . string(headingCount) . ']]zt'
+  return 'normal gg' . string(headingCount) . ']]zt'
 endfunction
-
-let g:postHtmlToMdCleanup = [
-  \ ['www.thesaurus.com', s:mdHeadingJump(1)],
-  \ ['www.wordnik.com', s:mdHeadingJump(1)],
-  \ ]
 
 function ReadUrl(link, ...)
   let jumpId = get(a:000, 0, '')
@@ -822,20 +815,15 @@ command! -nargs=1 VUB
 
 function File(file)
  let file = fnamemodify(fnameescape(a:file), ':p')
- if filereadable(file)
+ if filereadable(file) || isdirectory(file)
    return file
  endif
  return ''
 endfunction
 
-function SearchUrl(url, searchTerm, ...)
-  let openInBrowser = get(a:000, 0, 0)
-  call ReadUrl('https://https://www.etymonline.com/search?q=frugal')
-endfunction
-
 function SearchFile(file, searchTerm)
   exe 'edit ' . File(a:file)
-  call search(a:searchTerm)
+  call search(a:searchTerm, 'cw')
 endfunction
 
 " Browse URLs
@@ -843,21 +831,11 @@ map <leader>vv :VUE https://
 map <leader>VV :VUB https://
 
 " Dictionary
-let g:localDictionary = '~/compendium/eBooks/Reference/Dictionary/index.txt'
-if File(g:localDictionary) != ''
-  map <leader>ld :call SearchFile(g:localDictionary, '^\C' . toupper(input('Dictionary Search: ')))<CR>
-endif
-
 let g:onlineDictionary = 'https://www.wordnik.com/words/'
 map <silent> <leader>vd :exe "call ReadUrl('" . g:onlineDictionary .input('Online Dictionary Search: ') . "')"<CR>
 map <silent> <leader>VD :exe "call GoToUrl('" . g:onlineDictionary .input('Online Dictionary Search: ') . "')"<CR>
 
 " Thesaurus
-let g:localThesaurus = '~/compendium/eBooks/Reference/Thesaurus/index.txt'
-if File(g:localThesaurus) != ''
-  map <leader>lt :call SearchFile(g:localThesaurus, '^' . input('Thesaurus Search: '))<CR>
-endif
-
 let g:onlineThesaurus = 'https://www.thesaurus.com/browse/'
 map <silent> <leader>vt :exe "call ReadUrl('" . g:onlineThesaurus .input('Online Thesaurus Search: ') . "')"<CR>
 map <silent> <leader>VT :exe "call GoToUrl('" . g:onlineThesaurus .input('Online Thesaurus Search: ') . "')"<CR>
@@ -866,6 +844,23 @@ map <silent> <leader>VT :exe "call GoToUrl('" . g:onlineThesaurus .input('Online
 let g:onlineEtymology = 'https://www.etymonline.com/search?q='
 map <silent> <leader>ve :exe "call ReadUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
 map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
+
+" Web Search
+let g:onlineWebSearch = 'https://www.startpage.com/do/search?q='
+map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
+map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
+
+" Wiki Search
+let g:onlineWebSearch = 'https://en.wikipedia.org/wiki/'
+map <silent> <leader>vw :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Wiki Search: ') . "')"<CR>
+map <silent> <leader>VW :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Wiki Search: ') . "')"<CR>
+
+let g:postHtmlToMdCleanup = [
+  \ ['www.thesaurus.com', s:mdHeadingJump(1)],
+  \ ['www.wordnik.com', s:mdHeadingJump(1)],
+  \ ['www.startpage.com', s:mdHeadingJump(1)],
+  \ ['en.wikipedia.org', s:mdHeadingJump(1)],
+  \ ]
 
 
 " SELECTION
@@ -1422,6 +1417,11 @@ if executable('rg')
   map <leader>/r   :Rg<CR>
   map <leader>/R   :Rg!<CR>
   map <leader>/<leader> :Rg!<CR> " convenience mapping
+endif
+" Requires notational-fzf plugin and ripgrep
+if exists('g:nv_search_paths')
+  let g:rgAny = 'rg --column --line-number --no-heading --color=always --smart-case -e "" '
+  map <leader>/n :call fzf#vim#grep(<C-r>="g:rgAny . join(map(g:nv_search_paths, 'File(v:val)'))"<CR>, 1, fzf#vim#with_preview('up:60%'), 1)<CR>
 endif
 
 " 'Ctrl-a' prefix will setup the following custom mappings in FZF window
