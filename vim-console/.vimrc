@@ -242,10 +242,9 @@ function ReadUrl(link, ...)
   set modifiable
   set noreadonly
   keepjumps normal ggVGx
-  set ft=pandoc
   " let &statusline = a:link
   if executable('chromium')
-    exe 'r ! chromium --headless --incognito --minimal --daemon --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
+    exe 'r ! chromium --silent-launch --no-startup-window --headless --incognito --minimal --daemon --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
   elseif executable('curl') && executable('pandoc')
     exe 'r ! curl -s ' . url . ' | pandoc -f html -t markdown'
   else
@@ -261,6 +260,7 @@ function ReadUrl(link, ...)
     endif
   endfor
   keepjumps call search('\%(' . '\%(<[^<]*\|([^(]*\)' . '\)\@<!' . '#\s*' . jumpId == '' ? 'main' : jumpId, 'c')
+  set ft=pandoc
 endfunction
 
 function GoToUrl(...)
@@ -451,9 +451,6 @@ endfunction
 command -complete=customlist,<SID>ListBranches -nargs=1 Gcheckout !git checkout <args>
 
 function CleanHtmlToMarkdown(...)
-  let save_lazyredraw = &lazyredraw
-  set lazyredraw
-
   let g:baseUrl = get(a:000, 0, '')
   let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
   let g:baseRegex = '\%(\%(\%(\%(\w\+:\)\?//\)\?www\.\)\?'.g:baseDomain.'[/\\]\?\)'
@@ -525,9 +522,6 @@ function CleanHtmlToMarkdown(...)
 
   " Remove whitespace
   silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
-
-  let &lazyredraw = save_lazyredraw
-  redraw!
 endfunction
 
 " Join selected lines as markdown table row
