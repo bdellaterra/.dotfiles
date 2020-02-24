@@ -30,6 +30,6 @@ map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Onlin
 
 " Web Development
 let g:onlineDevSearch = 'https://developer.mozilla.org/en-US/search?q='
-map <silent> <leader>vd :exe "call ReadUrl('" . g:onlineDevSearch . input('Online Dev Search: ') . "')"<CR>
-map <silent> <leader>VD :exe "call GoToUrl('" . g:onlineDevSearch . input('Online Dev Search: ') . "')"<CR>
+map <silent> <leader>vm :exe "call ReadUrl('" . g:onlineDevSearch . input('Online Dev Search: ') . "')"<CR>
+map <silent> <leader>VM :exe "call GoToUrl('" . g:onlineDevSearch . input('Online Dev Search: ') . "')"<CR>
 
