@@ -244,9 +244,9 @@ function ReadUrl(link, ...)
   keepjumps normal ggVGx
   " let &statusline = a:link
   if executable('chromium')
-    exe 'r ! chromium --silent-launch --no-startup-window --headless --incognito --minimal --daemon --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
+    silent! exe 'r ! chromium --silent-launch --no-startup-window --headless --minimal --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown'
   elseif executable('curl') && executable('pandoc')
-    exe 'r ! curl -s ' . url . ' | pandoc -f html -t markdown'
+    silent! exe 'r ! curl -s ' . url . ' | pandoc -f html -t markdown'
   else
     throw "Error: Need chromium or pandoc/curl to browse web urls"
   endif
