@@ -1109,6 +1109,7 @@ let g:pandoc#syntax#codeblocks#embeds#langs = [
   \ 'javascript=typescriptreact',
   \ 'typescript=typescriptreact'
   \ ]
+let g:pandoc#keyboard#sections#header_style = 's'
 
 augroup VimCompletesMePandoc
   autocmd!
