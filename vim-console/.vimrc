@@ -355,27 +355,27 @@ function s:EnterHelper(...)
   try
     if CursorIsOn(g:rgx.url)
       let link = MatchUnderCursor(g:rgx.url)[0]
-      echo "GO TO URL: " . link
+      " echo "GO TO URL: " . link
       call GoToUrl(link, altEnter)
     elseif CursorIsOn(g:rgx.mdLink)
       let [link, jumpId] = MatchUnderCursor(g:rgx.mdLink)[3:4]
-      echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
+      " echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
       call s:GoToMarkdownLink(link, jumpId, altEnter)
     elseif CursorIsOn(g:rgx.mdLinkNoLabel)
       let [link, jumpId] = MatchUnderCursor(g:rgx.mdLinkNoLabel)[2:3]
-      echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
+      " echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
       call s:GoToMarkdownLink(link, jumpId, altEnter)
     elseif CursorIsOn(g:rgx.mdRefLink)
       let link = MatchUnderCursor(g:rgx.mdRefLink)[2]
-      echo "GO TO MARKDOWN REFERENCE: " . link
+      " echo "GO TO MARKDOWN REFERENCE: " . link
       call s:GoToMarkdownReference(link)
     else
-      if filereadable(expand('<cfile>'))
-        echo "GO TO FILE"
-        normal! gf
-      elseif  altEnter
-        echo "CREATE AND GO TO FILE"
+      if altEnter
+        " echo "CREATE AND GO TO FILE"
         exe 'edit ' . MakeFile(expand('<cfile>'))
+      else
+        " echo "GO TO FILE"
+        normal! gf
       endif
     endif
   catch
