@@ -399,23 +399,6 @@ function s:EnterHelper(...)
   endtry
 endfunction
 
-" " (Modified) From Eloi, 2019, https://superuser.com/questions/575910/how-do-i-use-the-jumplist-to-jump-once-per-file
-" function! JumpToNextBufferInJumplist(dir) " 1=forward, -1=backward
-"     let jl = getjumplist() | let jumplist = jl[0] | let curjump = jl[1]
-"     let jumpcmdstr = a:dir > 0 ? '<C-O>' : '<C-I>'
-"     let jumpcmdchr = a:dir > 0 ? '' : '	' " <C-I> or <C-O>
-"     let searchrange = a:dir > 0 ? range(curjump+1,len(jumplist))
-"                               \ : range(curjump-1,0,-1)
-"     for i in searchrange
-"         if jumplist[i]["bufnr"] != bufnr('%')
-"             let n = (i - curjump) * a:dir
-"             echo "Executing ".jumpcmdstr." ".n." times."
-"             execute "silent normal! ".n.jumpcmdchr
-"             break
-"         endif
-"     endfor
-" endfunction
-
 " Move cursor through next whitespace in current column. Lands on non-whitespace
 " character after the gap. Optional boolean triggers backwards search if true
 function s:GoToNextVerticalNonBlank(...)
