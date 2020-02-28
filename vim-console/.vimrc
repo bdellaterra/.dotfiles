@@ -229,16 +229,19 @@ function s:mdHeadingJump(...)
 endfunction
 
 function ReadUrl(link, ...)
+  let url = a:link
   let jumpId = get(a:000, 0, '')
-  let url = jumpId == '' ? a:link : a:link . '#' . jumpId 
-  let tmpdir = s:TmpDir . 'www/'
-  let safeUrl = matchstr(url, '\w\+:\/\/\zs.*') 
-  let g:urlfilename = tmpdir . fnameescape(safeUrl)
-  if safeUrl !~ '[/\\]'
-    let g:urlfilename .= '/'
+  let g:urlFilename = get(a:000, 1, '')
+  if g:urlFilename == ''
+    let tmpDir = s:TmpDir . 'www/'
+    let safeUrl = matchstr(url, '\w\+:\/\/\zs.*') 
+    let g:urlFilename = tmpDir . fnameescape(safeUrl)
+    if safeUrl !~ '[/\\]'
+      let g:urlFilename .= '/'
+    endif
   endif
-  exe 'cd ' . s:MakeDir(fnamemodify(g:urlfilename, ':h'))
-  exe 'edit ' . MakeFile(substitute(g:urlfilename, '[/\\]\zs\ze$', 'index.html', ''))
+  exe 'cd ' . s:MakeDir(fnamemodify(g:urlFilename, ':h'))
+  exe 'edit ' . MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index.md', ''))
   set modifiable
   set noreadonly
   keepjumps normal ggVGx
@@ -265,19 +268,28 @@ endfunction
 
 function GoToUrl(...)
   let url = matchstr(get(a:000, 0, ''), g:rgx.url)
-  let altEnter = get(a:000, 1, 0)
-  if altEnter
+  let jumpId = get(a:000, 1, 0)
+  let altEnter = get(a:000, 2, 0)
+  let targetFile = ''
+  if altEnter == 1
     " From https://github.com/plasticboy/vim-markdown/blob/master/ftplugin/markdown.vim
     if has('patch-7.4.567')
       call netrw#BrowseX(url, 0)
     else
       call netrw#NetrwBrowseX(url, 0)
     endif
-  elseif url != ''
-    " Save current location in the jump list
-    normal m'
-    call ReadUrl(url)
+  elseif altEnter == 2
+    call search(g:rgx.mdAnyLink, 'ce')
+    let label = substitute(MatchUnderCursor(g:rgx.mdLink)[1], '^[^.]\+$', '&.md', '')
+    let targetFile = input('Target File: ', label, 'file')
+    if CursorIsOn(g:rgx.mdLink)
+      exe 'normal vi)c' . targetFile
+    elseif CursorIsOn(g:rgx.mdLinkNoLabel)
+      exe 'normal vi>c' . targetFile
+    endif
   endif
+  normal m'
+  call ReadUrl(url, jumpId, targetFile)
 endfunction
 
 function s:GoToMarkdownLink(...)
@@ -356,7 +368,7 @@ function s:EnterHelper(...)
     if CursorIsOn(g:rgx.url)
       let link = MatchUnderCursor(g:rgx.url)[0]
       " echo "GO TO URL: " . link
-      call GoToUrl(link, altEnter)
+      call GoToUrl(link, '', altEnter)
     elseif CursorIsOn(g:rgx.mdLink)
       let [link, jumpId] = MatchUnderCursor(g:rgx.mdLink)[3:4]
       " echo "GO TO MARKDOWN LINK: " . link . (jumpId != '' ? ' -> ' . jumpId . '' : '')
@@ -746,10 +758,13 @@ autocmd BufWritePre * :call s:MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
 " 'Enter' will go to file/url/tag/definition/declaration under cursor
 map <silent> <Enter> :call <SID>EnterHelper()<CR>
 
-" ',Enter' of Alt-Enter will go to file, creating it if necessary
+" ',Enter' or Alt-Enter will go to file, creating it if necessary
 " or open URL in external web browser
 map <silent> <leader><Enter> :call <SID>EnterHelper(1)<CR>
 map <silent> <M-Enter> :call <SID>EnterHelper(1)<CR>
+
+" '\Enter' will read markdown from url and save it to file entered at prompt
+map <silent> \<Enter> :call <SID>EnterHelper(2)<CR>
 
 " 'Backspace' will go back in the jumplist
 noremap <Backspace> <C-o>
