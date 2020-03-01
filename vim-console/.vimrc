@@ -1360,18 +1360,18 @@ command! -bang -nargs=* FZFRelativeMru call <SID>FZFRelativeMru()
 " FZF mappings are all prefixed with ',/'
 map <leader>/<space>   :Files 
 map <leader>/~   :Files ~<CR>
- " 'i' for 'in' current folder (recursive)
-map <leader>/i   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
-map <leader>/b   :Buffers<CR>
+ " 'f' for current file/folder (recursive)
+map <leader>/f   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
+map <leader>/<Enter> :Buffers<CR>
 map <leader>/w   :Windows<CR>
  " '#' for color-code
 map <leader>/3   :Colors<CR>
 " lines in current buffer
 map <leader>/.   :BLines<CR>
 " lines in open buffers
-map <leader>/o   :Lines<CR>
+map <leader>/=   :Lines<CR>
 " 'l' for latest
-map <leader>/f   :History<CR>  " file history
+map <leader>/<BS> :History<CR>  " file history
 map <leader>/:   :History:<CR> " command history
 map <leader>//   :History/<CR> " search history
 " tags in current buffer
@@ -1392,34 +1392,39 @@ map <leader>/P   :GFiles<CR>
 map <leader>/d   :GFiles?<CR>
 " 'm' for most recent
 map <leader>/m   :FZFMru<CR>
-" Requires ProjectRoot plugin
-map <leader>/p   :exe 'Files ' . ProjectRootGuess()<CR>
 map <leader>/l   :FZFRelativeMru<CR> " 'l' for latest
 " Requires Fugitive plugin
 map <leader>/c   :Commits!<CR>
 map <leader>/v   :BCommits!<CR> " 'v' for versions
+
+" (Grep)
 " Requires git
 if executable('git')
-  map <leader>/g   :GGrep<CR>
-  map <leader>/G   :GGrep!<CR>
-  map <leader>/<leader> :GGrep<CR> " convenience mapping
+  map <leader>/g   :GGrep<Space>
+  map <leader>/G   :GGrep!<Space>
+  map <leader>/<leader> :GGrep<CR>
 endif
 " Requires https://github.com/ggreer/the_silver_searcher
 if executable('ag')
-  map <leader>/a   :Ag<CR>
-  map <leader>/A   :Ag!<CR>
-  map <leader>/<leader> :Ag!<CR> " convenience mapping
+  map <leader>/g   :Ag<Space>
+  map <leader>/G   :Ag!<Space>
+  map <leader>/<leader> :Ag!<CR>
 endif
 " Requires https://github.com/BurntSushi/ripgrep
 if executable('rg')
-  map <leader>/r   :Rg<CR>
-  map <leader>/R   :Rg!<CR>
-  map <leader>/<leader> :Rg!<CR> " convenience mapping
-endif
-" Requires notational-fzf plugin and ripgrep
-if exists('g:nv_search_paths')
+  map <leader>/g   :Rg<Space>
+  map <leader>/G   :Rg!<Space>
+  map <leader>/<leader> :Rg!<CR>
+
   let g:rgAny = 'rg --column --line-number --no-heading --color=always --smart-case -e "" '
-  map <leader>/n :call fzf#vim#grep(<C-r>="g:rgAny . join(map(g:nv_search_paths, 'File(v:val)'))"<CR>, 1, fzf#vim#with_preview('up:60%'), 1)<CR>
+  " Requires notational-fzf plugin and ripgrep
+  if exists('g:nv_search_paths')
+    map <leader>/n :call fzf#vim#grep(<C-r>="g:rgAny . join(map(g:nv_search_paths, 'File(v:val)'))"<CR>, 1, fzf#vim#with_preview('up:60%'), 1)<CR>
+  endif
+  " Requires ProjectRoot plugin
+  map <leader>/p :call fzf#vim#grep(ProjectRootGuess(), 1, fzf#vim#with_preview('up:60%'), 1)<CR>
+  " Recursively under current directory
+  map <leader>/r :call fzf#vim#grep(<C-r>="g:rgAny . expand('%:p:h')"<CR>, 1, fzf#vim#with_preview('up:60%'), 1)<CR>
 endif
 
 " 'Ctrl-a' prefix will setup the following custom mappings in FZF window
