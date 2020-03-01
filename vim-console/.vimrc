@@ -34,17 +34,17 @@ let g:rgx.mdUrlTarget = '(' . '\('
   \ . g:rgx.mdTargetAnchor
   \ . g:rgx.mdTargetExtra
   \ . '\)' . ')'
-let g:rgx.mdPossibleBullet = '\%([-•]\s*\)\?'
-let g:rgx.mdLink = g:rgx.mdPossibleBullet . g:rgx.mdLabel . g:rgx.mdTarget
+let g:rgx.mdLinkPre = '\%([-•#]*\s*\)\?' " Possible bullet/heading marker
+let g:rgx.mdLink = g:rgx.mdLinkPre . g:rgx.mdLabel . g:rgx.mdTarget
 let g:rgx.mdLinkNoLabel =
-  \ g:rgx.mdPossibleBullet
+  \ g:rgx.mdLinkPre
   \ . '<' . '\('
   \ . g:rgx.mdTargetName
   \ . g:rgx.mdTargetAnchor
   \ . '\)' . '>'
-let g:rgx.mdUrlLink = g:rgx.mdPossibleBullet . g:rgx.mdLabel . g:rgx.mdUrlTarget
+let g:rgx.mdUrlLink = g:rgx.mdLinkPre . g:rgx.mdLabel . g:rgx.mdUrlTarget
 let g:rgx.mdUrlLinkNoLabel =
-  \ g:rgx.mdPossibleBullet
+  \ g:rgx.mdLinkPre
   \ . '<' . '\('
   \ . g:rgx.url
   \ . g:rgx.mdTargetAnchor
