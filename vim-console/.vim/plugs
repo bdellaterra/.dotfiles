@@ -62,10 +62,10 @@ tommcdo/vim-exchange # provides an operator that swaps two regions of text
 sjl/gundo.vim # visualize the undo tree
 
 # LANGUAGE SUPPORT
-prabirshrestha/vim-lsp # async language server protocol plugin
-ryanolsonx/vim-lsp-javascript # sets up vim-lsp for JavaScript
-ryanolsonx/vim-lsp-typescript # sets up vim-lsp for TypeScript
-liuchengxu/vista.vim # viewer & finder for LSP symbols and tags
+#prabirshrestha/vim-lsp # async language server protocol plugin
+#ryanolsonx/vim-lsp-javascript # sets up vim-lsp for JavaScript
+#ryanolsonx/vim-lsp-typescript # sets up vim-lsp for TypeScript
+#liuchengxu/vista.vim # viewer & finder for LSP symbols and tags
 tpope/vim-endwise # wisely add "end" in ruby, endfunction/endif/more in vim script, etc
 rstacruz/vim-closer # auto-close paired delimeters only after pressing Enter
 
@@ -81,9 +81,9 @@ ajh17/VimCompletesMe # light-weight tab-completion plugin for Vim
 tpope/vim-characterize # display unicode metadata for character under cursor
 
 # SNIPPETS
-SirVer/ultisnips # advanced snippet engine written in python
-honza/vim-snippets # community-maintained snippets files for various programming languages
-pgilad/vim-skeletons # automatically scaffold file types using UltiSnips templates
+#SirVer/ultisnips # advanced snippet engine written in python
+#honza/vim-snippets # community-maintained snippets files for various programming languages
+#pgilad/vim-skeletons # automatically scaffold file types using UltiSnips templates
 
 # COMMENTS
 tomtom/tcomment_vim # file-type sensible comments
