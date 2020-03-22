@@ -310,7 +310,7 @@ function s:GoToMarkdownLink(...)
     if link != ''
       for f in s:FilePattern(link, ['.md', '.txt'])
         if filereadable(f)
-          call pandoc#hypertext#OpenLocal(f, g:pandoc#hypertext#edit_open_cmd)
+          call pandoc#hypertext#OpenLocal(fnameescape(f), g:pandoc#hypertext#edit_open_cmd)
           let foundFile = 1
           break
         endif
