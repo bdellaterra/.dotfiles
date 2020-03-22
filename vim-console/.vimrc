@@ -720,8 +720,8 @@ endfunction
 if has('clipboard')
   set clipboard=unnamed,unnamedplus
 else
-  autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
-  autocmd FocusGained * :call <SID>PasteFromClipboard()
+  silent! autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
+  silent! autocmd FocusGained * :call <SID>PasteFromClipboard()
 endif
 
 " 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
@@ -1489,7 +1489,7 @@ autocmd QuitPre * SaveSession
 
 " reestablish settings that can't be reloaded from session
 autocmd SessionLoadPost * ++once let b:isRestoredSession=1
-autocmd SafeState * ++once call s:OnSessionLoaded()
+silent! autocmd SafeState * ++once call s:OnSessionLoaded()
 
 
 " UNDO
