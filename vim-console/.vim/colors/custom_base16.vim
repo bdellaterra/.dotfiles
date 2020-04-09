@@ -9,11 +9,11 @@ endif
 highlight DiffAdd        ctermfg=0    ctermbg=2
 highlight DiffChange     ctermfg=0    ctermbg=3
 highlight DiffDelete     ctermfg=0    ctermbg=1
-highlight DiffText              ctermbg=11  ctermfg=16
+highlight DiffText       ctermbg=11  ctermfg=16
 
-highlight Visual         ctermfg=NONE ctermbg=0 cterm=inverse
+highlight Visual         ctermfg=15 ctermbg=6
 
-highlight Search         ctermfg=0    ctermbg=11
+highlight Search         ctermfg=11    ctermbg=0   cterm=inverse
 
 if &background == "light"
   highlight LineNr       ctermfg=7
@@ -41,32 +41,40 @@ else
   highlight StatusLineNC ctermfg=7    ctermbg=5    cterm=NONE
   highlight VertSplit    ctermfg=7    ctermbg=8    cterm=NONE
   highlight SignColumn                ctermbg=8
+  highlight Underlined   ctermfg=12                cterm=underline
 endif
 
+hi Conceal                   ctermfg=6             ctermbg=NONE
+hi CursorLine                ctermbg=0             cterm=NONE
+hi Directory                 ctermfg=10            cterm=bold
+hi ErrorMsg                  ctermfg=15 ctermbg=1
+hi WarningMsg                ctermfg=15 ctermbg=9  cterm=bold
+hi IncSearch                 ctermfg=16 ctermbg=4
+hi MoreMsg                   ctermfg=11            cterm=bold
+hi PMenuSbar                 ctermfg=15 ctermbg=7
+hi PreProc                   ctermfg=12
+hi Search                    ctermfg=16 ctermbg=14
+hi Special                   ctermfg=14            cterm=bold
+hi Statement                 ctermfg=11            cterm=NONE
+hi TabLine                   ctermfg=15 ctermbg=6  cterm=NONE
+hi Title                     ctermfg=3             cterm=bold
+hi Type                      ctermfg=10
 
-
-hi CursorLine          ctermbg=0     cterm=NONE
-hi Conceal             ctermfg=6     ctermbg=NONE
-hi ErrorMsg            ctermfg=15    ctermbg=1
-hi IncSearch           ctermfg=16     ctermbg=4
-hi Search              ctermfg=16     ctermbg=14
-hi Title               ctermfg=3     cterm=bold
+highlight StatusLine         ctermfg=4  ctermbg=15  cterm=inverse
+highlight StatusLineNC       ctermfg=14 ctermbg=0  cterm=inverse 
+highlight StatusLineTerm     ctermfg=4  ctermbg=0  cterm=inverse 
+highlight StatusLineTermNC   ctermfg=14 ctermbg=0  cterm=inverse 
+highlight BufTabLineCurrent  ctermfg=15 ctermbg=4
+highlight BufTabLineActive   ctermfg=15 ctermbg=13
+highlight BufTabLineHidden   ctermfg=13 ctermbg=5
 
 hi! link CursorColumn  CursorLine
 hi! link SignColumn    LineNr
 hi! link WildMenu      Visual
 hi! link FoldColumn    SignColumn
-hi! link WarningMsg    ErrorMsg
-hi! link MoreMsg       Title
-hi! link Question      MoreMsg
 hi! link ModeMsg       MoreMsg
 hi! link TabLineFill   StatusLineNC
 hi! link SpecialKey    NonText
 
-hi Type            ctermfg=10
-hi Statement       ctermfg=3   cterm=bold
-
-highlight BufTabLineCurrent        ctermfg=15 ctermbg=4
-highlight BufTabLineActive         ctermfg=15 ctermbg=13
-highlight BufTabLineHidden         ctermfg=13 ctermbg=5
-
+hi clear Question
+hi! link Question      MoreMsg
