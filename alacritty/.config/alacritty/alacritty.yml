@@ -175,7 +175,7 @@ colors:
   # Default colors
   primary:
     background: '#0d0908'
-    foreground: '#fffcf4'
+    foreground: '#ebeeff'
 
     # Bright and dim foreground colors
     #
@@ -207,18 +207,18 @@ colors:
     black:   '#000000'
     red:     '#ab4a36'
     green:   '#548065'
-    yellow:  '#ac9242'
+    yellow:  '#a28a3e'
     blue:    '#034569'
     magenta: '#363a56'
     cyan:    '#42515d'
-    white:   '#8d8d8d'
+    white:   '#605548'
 
   # Bright colors
   bright:
     black:   '#858d88'
-    red:     '#605548'
+    red:     '#fa9332'
     green:   '#abe4c1'
-    yellow:  '#d2c292'
+    yellow:  '#c3b486'
     blue:    '#5ca0c8'
     magenta: '#8c92b7'
     cyan:    '#728ca1'
