@@ -32,8 +32,8 @@ else
   highlight LineNr       ctermfg=8    ctermbg=0
   highlight Comment      ctermfg=8
   highlight ColorColumn  ctermfg=7    ctermbg=8
-  highlight Folded       ctermfg=13    ctermbg=0
-  highlight FoldColumn   ctermfg=7    ctermbg=8
+  highlight Folded       ctermfg=13   ctermbg=0
+  highlight FoldColumn   ctermfg=13   ctermbg=5
   highlight Pmenu        ctermfg=15   ctermbg=5
   highlight PmenuSel     ctermfg=5    ctermbg=15
   highlight SpellCap     ctermfg=7    ctermbg=8
@@ -71,7 +71,6 @@ highlight BufTabLineHidden   ctermfg=13 ctermbg=5
 hi! link CursorColumn  CursorLine
 hi! link SignColumn    LineNr
 hi! link WildMenu      Visual
-hi! link FoldColumn    SignColumn
 hi! link ModeMsg       MoreMsg
 hi! link TabLineFill   StatusLineNC
 hi! link SpecialKey    NonText
