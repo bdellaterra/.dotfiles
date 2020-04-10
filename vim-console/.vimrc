@@ -1711,6 +1711,9 @@ function! s:Focus()
   if !exists('g:limelight_conceal_ctermfg')
    let g:limelight_conceal_ctermfg = 239
   endif
+  if exists('g:colors_name')
+   let g:save_colors_name = g:colors_name
+  endif
   if has('gui_running')
     set fullscreen
   elseif exists('$TMUX')
@@ -1735,6 +1738,10 @@ endfunction
 
 " Revert focus-mode customizations
 function! s:Blur()
+  if exists('g:save_colors_name')
+   exe 'colorscheme ' . g:colors_name
+   unlet g:save_colors_name
+  endif
   if has('gui_running')
     set nofullscreen
   elseif exists('$TMUX')
@@ -1843,7 +1850,7 @@ call plug#end()
 " dark: alduin antares apprentice hybrid_material iceberg OceanicNext PaperColor
 " light: disciple earendel lightning
 " base16: noctu
-colorscheme apprentice " loading this first can improve other colorschemes
+colorscheme custom_base16
 call SetDefaultStatusModeHLGroups()
 
 " Source personal configurations, if present

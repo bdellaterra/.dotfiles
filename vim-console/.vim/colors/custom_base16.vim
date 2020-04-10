@@ -1,4 +1,3 @@
-
 set background=dark
 hi! clear
 
@@ -77,3 +76,5 @@ hi! link SpecialKey    NonText
 
 hi clear Question
 hi! link Question      MoreMsg
+
+let g:colors_name = 'custom_base16'
