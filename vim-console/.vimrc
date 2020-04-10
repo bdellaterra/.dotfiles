@@ -1693,8 +1693,8 @@ endfunction
 " Use custom expression to build statusline
 set statusline=%!MyStatus()
 
-" ',vs' will toggle verbose statusline
-map <silent> <leader>vs :call <SID>ToggleVerboseStatus()<CR>
+" ',vb' will toggle verbose statusline
+map <silent> <leader>vb :call <SID>ToggleVerboseStatus()<CR>
 
 
 " FOCUS-MODE
