@@ -1494,6 +1494,10 @@ autocmd SafeState * ++once call s:OnSessionLoaded()
 
 " UNDO
 
+if has('python3')
+  let g:gundo_prefer_python3 = 1
+endif
+
 " ',uh' will Toggle interactive undo-history
 map <leader>uh :GundoToggle<CR>
 
