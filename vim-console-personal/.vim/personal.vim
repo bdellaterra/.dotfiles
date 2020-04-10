@@ -25,11 +25,6 @@ if File(g:localComputingDictionary) != ''
   map <leader>\f :call SearchFile(g:localComputingDictionary, input('FOLDOC Search: '))<CR>
 endif
 
-" Etymology
-let g:onlineSearch = 'https://www.etymonline.com/search?q='
-map <silent> <leader>ve :exe "call ReadUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
-map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
-
 " Web Development
 let g:onlineDevSearch = 'https://developer.mozilla.org/en-US/search?q='
 map <silent> <leader>vm :exe "call ReadUrl('" . g:onlineDevSearch . input('Online Dev Search: ') . "')"<CR>

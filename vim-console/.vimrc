@@ -850,9 +850,9 @@ map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Onlin
 map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
 
 " Wiki Search
-let g:onlineWebSearch = 'https://en.wikipedia.org/wiki/'
-map <silent> <leader>vw :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Wiki Search: ') . "')"<CR>
-map <silent> <leader>VW :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Wiki Search: ') . "')"<CR>
+let g:onlineWikiSearch = 'https://en.wikipedia.org/wiki/'
+map <silent> <leader>vw :exe "call ReadUrl('" . g:onlineWikiSearch . input('Online Wiki Search: ') . "')"<CR>
+map <silent> <leader>VW :exe "call GoToUrl('" . g:onlineWikiSearch . input('Online Wiki Search: ') . "')"<CR>
 
 let g:postHtmlToMdCleanup = [
   \ ['www.thesaurus.com', s:mdHeadingJump(1)],
