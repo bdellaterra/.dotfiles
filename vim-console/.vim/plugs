@@ -79,9 +79,9 @@ ajh17/VimCompletesMe # light-weight tab-completion plugin for Vim
 tpope/vim-characterize # display unicode metadata for character under cursor
 
 # SNIPPETS
-SirVer/ultisnips # advanced snippet engine written in python
-honza/vim-snippets # community-maintained snippets files for various programming languages
-pgilad/vim-skeletons # automatically scaffold file types using UltiSnips templates
+# SirVer/ultisnips # advanced snippet engine written in python
+# honza/vim-snippets # community-maintained snippets files for various programming languages
+# pgilad/vim-skeletons # automatically scaffold file types using UltiSnips templates
 
 # COMMENTS
 tomtom/tcomment_vim # file-type sensible comments
