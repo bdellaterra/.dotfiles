@@ -106,7 +106,7 @@ junegunn/limelight.vim # hyperfocused editing
 carpetsmoker/startscreen.vim # customize Vim's start screen
 
 # COLORSCHEMES
-flazz/vim-colorschemes # large bundle of Vim colorschemes
-mhartington/oceanic-next # theme inspired by Oceanic Next for Sublime
-noahfrederick/vim-noctu # inherits restricted 16-color terminal scheme
+# flazz/vim-colorschemes # large bundle of Vim colorschemes
+# mhartington/oceanic-next # theme inspired by Oceanic Next for Sublime
+# noahfrederick/vim-noctu # inherits restricted 16-color terminal scheme
 
