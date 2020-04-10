@@ -2,7 +2,6 @@
 # STANDARDS
 tpope/vim-sensible # commonly accepted Vim settings
 tpope/vim-sleuth # automatically adjusts indentation settings
-romainl/vim-qf # tame the quickfix window
 prabirshrestha/async.vim # normalize async job control
 
 # PERFORMANCE
