@@ -98,7 +98,6 @@ dhruvasagar/vim-table-mode # automatic table creation and formatting
 # VERSION CONTROL
 tpope/vim-fugitive # A complement to command line git
 sodapopcan/vim-twiggy # Git branch management for Vim
-christoomey/vim-conflicted # Easy git merge conflict resolution in Vim
 mhinz/vim-signify # indicate added, modified and removed lines in the sign column
 
 # VISUALS
