@@ -773,9 +773,6 @@ map <silent> <M-Enter> :call <SID>EnterHelper(1)<CR>
 " '\Enter' will read markdown from url and save it to file entered at prompt
 map <silent> \<Enter> :call <SID>EnterHelper(2)<CR>
 
-" 'Backspace' will go back in the jumplist
-noremap <Backspace> <C-o>
-
 " Go count forward/backward in the list of Most Recently Used files
 let s:mruJump = 0
 let s:mruIndex = 0
@@ -1015,6 +1012,8 @@ nmap <S-Tab> =[
 nnoremap =/ :Buffers<CR>
 " '=\' will list buffers with fullscreen display
 nnoremap =\ :Buffers!<CR>
+" Alias 'Backspace'
+nmap <Backspace> =\
 
 " No editing directories (buggy integration with ranger plugin)
 autocmd BufEnter * if isdirectory(expand("%")) | silent! bwipeout! | endif
