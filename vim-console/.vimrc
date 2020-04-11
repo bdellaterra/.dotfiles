@@ -72,7 +72,7 @@ function s:MakeDir(path)
 endfunction
 
 " Create file if necessary and normalize slashes
-function MakeFile(path, ...)
+function s:MakeFile(path, ...)
   try
     let file = fnamemodify(a:path, ':t')
     let dir = s:DirSlashes(fnamemodify(a:path, ':h'))
@@ -91,7 +91,7 @@ function MakeFile(path, ...)
     elseif dir == '' && isdirectory(bufferDir)
       let targetDir = bufferDir
     endif
-    if exists('targetDir')
+    if exists('targetDir') " variable named 'targetDir' exists
       call s:MakeDir(targetDir)
       let file = targetDir . file
       if filewritable(file)
@@ -246,7 +246,7 @@ function ReadUrl(link, ...)
     endif
   endif
   exe 'cd ' . s:MakeDir(fnamemodify(g:urlFilename, ':h'))
-  exe 'edit ' . MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index.md', ''))
+  exe 'edit ' . s:MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index.md', ''))
   set modifiable
   set noreadonly
   keepjumps normal ggVGx
@@ -322,7 +322,7 @@ function s:GoToMarkdownLink(...)
         let newFile = isDirectory
               \ ? s:DirSlashes(link) . 'index.md' 
               \ : (needsExtension ? link . '.md' : link)
-        let newFile = MakeFile(input('New File: ', newFile))
+        let newFile = s:MakeFile(input('New File: ', newFile))
         call pandoc#hypertext#OpenLocal(newFile, g:pandoc#hypertext#edit_open_cmd)
         let foundFile = 1
       endif
@@ -389,7 +389,7 @@ function s:EnterHelper(...)
     else
       if altEnter
         " echo "CREATE AND GO TO FILE"
-        exe 'edit ' . MakeFile(expand('<cfile>'))
+        exe 'edit ' . s:MakeFile(expand('<cfile>'))
       else
         " echo "GO TO FILE"
         normal! gf
