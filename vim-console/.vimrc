@@ -963,6 +963,10 @@ function s:EditBufferOrReindent(...)
   if bufNum == ''
     return "="
   elseif bufNum == 0
+    if fnamemodify(expand('#'), ':p') == fnamemodify(expand('%'), ':p')
+      " fallback to most recently used filed if no alternate buffer is defined
+      return ":\<C-u>edit " . fzf_mru#mrufiles#list()[0] . "\<CR>"
+    endif
     return ":\<C-u>confirm buffer #\<CR>"
   else
     return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
@@ -970,11 +974,21 @@ function s:EditBufferOrReindent(...)
   return ""
 endfunction
 
+" Switch to alternate buffer, or if none defined switch to most recently used file
+function s:SwitchToAltBufferOrMruFile()
+  if fnamemodify(expand('#'), ':p') == fnamemodify(expand('%'), ':p')
+    exe 'edit ' . fzf_mru#mrufiles#list()[1]
+  else
+    confirm buffer #
+  endif
+endfunction
+
 " If used after a numeric count the equals key switches to that number buffer.
 " Number zero signifies the alternate buffer. (See :help alternate-file)
 " Otherwise the default re-indent behavior is used.
 noremap <expr>= <SID>EditBufferOrReindent(v:count)
-noremap 0= :<C-u>confirm buffer #<CR>  " Vim won't pass zero-counts to mappings
+" Vim won't pass zero-counts to mappings
+noremap 0= :<C-u>call <SID>SwitchToAltBufferOrMruFile()<CR>
 
 " '-=' will delete current buffer or # buffer number from command-count
 nnoremap -= :<C-u>exe (v:count ? v:count : '') . 'bdelete'<CR>
