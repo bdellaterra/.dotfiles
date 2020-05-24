@@ -137,13 +137,13 @@ function s:MaxLineWidth()
     \ - (&number ? len(line('$')) + 1 : 0)
 endfunction
 
-" Returns boolean indicating if cursor is currently over a concealed syntax region
+" Returns true if cursor is currently over a concealed syntax region
 function s:IsCursorOverConcealed()
   return synconcealed(line('.'), col('.'))[0]
 endfunction
 
 " Toggle between conceallevel 0 and 2. Pass optional boolean
-" to disable temporarily (false) or restore last on/off setting (true)
+" false to disable temporarily, or true to restore last on/off setting
 augroup ToggleConceal
   autocmd!
   autocmd FileType * call <SID>ReinforceConcealSyntax()
@@ -416,6 +416,83 @@ function s:EnterHelper(...)
   endtry
 endfunction
 
+function CleanHtmlToMarkdown(...)
+  let g:baseUrl = get(a:000, 0, '')
+  let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
+  let g:baseRegex = '\%(\%(\%(\%(\w\+:\)\?//\)\?www\.\)\?'.g:baseDomain.'[/\\]\?\)'
+
+  " Preserve ids
+  silent! keepjumps %s~{\(#[^ }]*\)\_[^}]\{-}}~[\1]~g
+
+  " Strip CSS
+  silent! keepjumps %s~\([])]\){\_[^}]\{-}}~\1~g
+  silent! keepjumps %s~:::\s*\({\_[^}]\{-}}\)\?~~g "
+
+  " Strip HTML
+  silent! keepjumps %s~<!--\_.\{-}-->~~g " html comment
+  silent! keepjumps %s~```{=[^}]*}\(\s*\n\)*```~~ " empty html code
+  silent! keepjumps %s~\_s*<\/\?div\/\?>\_s*~\r~gi " div tags
+  silent! keepjumps %s~\<\/\?span\/\?>~\r~gi " span tags
+
+  " Mark used ref ids 
+  silent! keepjumps %s~\(#\(\f\+\)\)\@>\_.*\zs\[\1\]\ze~[# \2]~g
+  " Delete unused ref ids
+  silent! keepjumps %s~\[#\S\f\+\]~~g
+  
+  " Remove unwanted line breaks
+  silent! keepjumps %s~\[\zs\([^]]*\n\_[^]]*\)\ze\]~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
+  silent! keepjumps %s~<\zs\([^>]*\n\_[^>]*\)\ze>~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
+  silent! keepjumps %s~(\zs\([^)]*\n\_[^)]*\)\ze)~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
+
+  " Extract nested links
+  silent! keepjumps %s~\[\(\[\_[^]]*\]\)\((\_[^)]\+)\)\?\]~\1\2~g
+  silent! keepjumps %s~\[\(<\_[^>]*>\)\]~\1~g
+
+  " Use alt text for labels
+  silent! keepjumps %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g
+  silent! keepjumps %s~\[.\{-}\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g
+  
+  " Convert remaining links with no label
+  silent! keepjumps %s~\[\%(!\?\[\]\)\?\](\(\_[^)]\{-}\))~<\1>~g
+  
+  " Unescape characters
+  silent! keepjumps %s~\\\?$~~g " newlines
+  silent! keepjumps %s~\\\([-'"]\)~\1~g " other characters
+
+  " Remove empty brackets
+  silent! keepjumps %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
+  silent! keepjumps %s~<\_s*[/\\#]\?\_s*>~~g
+
+  " Excessively long dividers
+  silent! keepjumps %s~^\(\(-\|=\)\{80}\)\1*~\1~
+
+  " Remove Advertisements
+  silent! keepjumps %s~\[ad\%(vertisement\)\?\]\%(([^)]*)\)\?\s*\n~~gi
+
+  " " Remove extra space around bullets
+  silent! keepjumps %s~^\s*-\_s*\ze[^-]~- ~
+
+  " Fix highlighting glitches
+  silent! keepjumps %s~^\(-\s\)\?\zs\s\+\ze[[<*-\#]~\1~g " whitespace before links/headings/bullets
+  silent! keepjumps %s~^\s*#~\r#~ " '#' headings must be at start of line and have a blank line above
+
+  " add base url to links
+  if g:baseUrl != ''
+    exe 'silent! keepjumps %s~[(<]\zs'.g:baseRegex.'\ze~'.g:baseUrl.'/~gi'
+    exe 'silent! keepjumps %s~[(<]\@>\%(#\|\w\+://\)\@!\zs[/\\]\ze~'.g:baseUrl.'/~gi'
+  endif
+
+  " Remove whitespace
+  silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
+endfunction
+
+" Join selected lines as markdown table row
+function s:JoinLinesAsTableRow()
+  '<,'>:s~\n\_s*~\|~
+  normal I|
+  normal A|
+endfunction
+
 " Move cursor through next whitespace in current column. Lands on non-whitespace
 " character after the gap. Optional boolean triggers backwards search if true
 function s:GoToNextVerticalNonBlank(...)
@@ -449,87 +526,6 @@ function! s:ListBranches(...)
    return filter(trimmed, 'v:val =~ "^'. argLead . '"') 
 endfunction
 command -complete=customlist,<SID>ListBranches -nargs=1 Gcheckout !git checkout <args>
-
-function CleanHtmlToMarkdown(...)
-  let g:baseUrl = get(a:000, 0, '')
-  let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
-  let g:baseRegex = '\%(\%(\%(\%(\w\+:\)\?//\)\?www\.\)\?'.g:baseDomain.'[/\\]\?\)'
-
-  " Preserve ids
-  silent! keepjumps %s~{\(#[^ }]*\)\_[^}]\{-}}~[\1]~g
-
-  " Strip CSS
-  silent! keepjumps %s~\([])]\){\_[^}]\{-}}~\1~g
-  silent! keepjumps %s~:::\s*\({\_[^}]\{-}}\)\?~~g "
-
-  " Strip HTML
-  silent! keepjumps %s~<!--\_.\{-}-->~~g " html comment
-  silent! keepjumps %s~```{=[^}]*}\(\s*\n\)*```~~ " empty html code
-  silent! keepjumps %s~\_s*<\/\?div\/\?>\_s*~\r~gi " div tags
-  silent! keepjumps %s~\<\/\?span\/\?>~\r~gi " span tags
-
-  " Mark used ref ids 
-  silent! keepjumps %s~\(#\(\f\+\)\)\@>\_.*\zs\[\1\]\ze~[# \2]~g
-  " Delete unused ref ids
-  silent! keepjumps %s~\[#\S\f\+\]~~g
-  
-  " Remove unwanted line breaks
-  " silent keepjumps %s~\[\zs\_s\+\(\_[^]]*\)\_s*\ze\]~\=substitute(submatch(0), '\n\_s\+', ' ', 'g')~gc
-  silent! keepjumps %s~\[\zs\([^]]*\n\_[^]]*\)\ze\]~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
-  silent! keepjumps %s~<\zs\([^>]*\n\_[^>]*\)\ze>~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
-  silent! keepjumps %s~(\zs\([^)]*\n\_[^)]*\)\ze)~\=substitute(submatch(0), '\n\_s*', ' ', 'g')~g
-
-  " Extract nested links
-  silent! keepjumps %s~\[\(\[\_[^]]*\]\)\((\_[^)]\+)\)\?\]~\1\2~g
-  " silent! keepjumps %s~\[\%(<.\{-}\([^/]\{-}\)\%(?[^>]*\)\?>\)\]~[\1]~
-  silent! keepjumps %s~\[\(<\_[^>]*>\)\]~\1~g
-
-  " Use alt text for labels
-  " silent! keepjumps %s~\[!\%(\[\_[^]]*\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~gc
-  silent! keepjumps %s~\[\%(\[\]\)\?\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g
-  silent! keepjumps %s~\[.\{-}\](\(\_[^)]\{-}\)\s*"\(\_[^"]*\)")~[\2](\1)~g
-  
-  " Convert remaining links with no label
-  silent! keepjumps %s~\[\%(!\?\[\]\)\?\](\(\_[^)]\{-}\))~<\1>~g
-  
-  " Unescape characters
-  silent! keepjumps %s~\\\?$~~g " newlines
-  silent! keepjumps %s~\\\([-'"]\)~\1~g " other characters
-
-  " Remove empty brackets
-  " silent! %s#\(```\_.\{-}\)\@<=\zs\[\]\ze\(\_.\{-}```\)#[---KEEP---]#g " mark brackets in code
-  silent! keepjumps %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
-  silent! keepjumps %s~<\_s*[/\\#]\?\_s*>~~g
-
-  " Excessively long dividers
-  silent! keepjumps %s~^\(\(-\|=\)\{80}\)\1*~\1~
-
-  " Remove Advertisements
-  silent! keepjumps %s~\[ad\%(vertisement\)\?\]\%(([^)]*)\)\?\s*\n~~gi
-
-  " " Remove extra space around bullets
-  silent! keepjumps %s~^\s*-\_s*\ze[^-]~- ~
-
-  " Fix highlighting glitches
-  silent! keepjumps %s~^\(-\s\)\?\zs\s\+\ze[[<*-\#]~\1~g " whitespace before links/headings/bullets
-  silent! keepjumps %s~^\s*#~\r#~ " '#' headings must be at start of line and have a blank line above
-
-  " add base url to links
-  if g:baseUrl != ''
-    exe 'silent! keepjumps %s~[(<]\zs'.g:baseRegex.'\ze~'.g:baseUrl.'/~gi'
-    exe 'silent! keepjumps %s~[(<]\@>\%(#\|\w\+://\)\@!\zs[/\\]\ze~'.g:baseUrl.'/~gi'
-  endif
-
-  " Remove whitespace
-  silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
-endfunction
-
-" Join selected lines as markdown table row
-function s:JoinLinesAsTableRow()
-  '<,'>:s~\n\_s*~\|~
-  normal I|
-  normal A|
-endfunction
 
 
 " *** General Configuration ***************************************************
@@ -1407,10 +1403,12 @@ map <leader>/P   :GFiles<CR>
 map <leader>/d   :GFiles?<CR>
 " 'm' for most recent
 map <leader>/m   :FZFMru<CR>
-map <leader>/l   :FZFRelativeMru<CR> " 'l' for latest
-" Requires Fugitive plugin
+" 'l' for latest
+map <leader>/l   :FZFRelativeMru<CR>
+" Requires Fugitive plugin:
 map <leader>/c   :Commits!<CR>
-map <leader>/v   :BCommits!<CR> " 'v' for versions
+" 'v' for versions
+map <leader>/v   :BCommits!<CR>
 
 " (Grep)
 " Requires git
