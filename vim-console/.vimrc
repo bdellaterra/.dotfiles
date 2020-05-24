@@ -1711,7 +1711,7 @@ map <silent> <leader>vb :call <SID>ToggleVerboseStatus()<CR>
 " FOCUS-MODE
 function s:ScrollAdjustment()
   let adjustment = (winheight(0) / 2) - s:CursorRatio()
-  if line('.') <= adjustment || (line('$') - line('.')) < (winheight(0) - adjustment)
+  if line('.') - adjustment <= adjustment || (line('$') - line('.')) <= (winheight(0) - adjustment)
     return 0
   endif
   return adjustment
