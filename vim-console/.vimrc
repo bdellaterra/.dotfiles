@@ -800,6 +800,9 @@ nnoremap + :call JumpMRU(1)<CR>
 
 " URLS
 
+" Set appropriate filetype for temporary html files converted to markdown (path matches url)
+exe  'autocmd BufRead,BufNewFile ' . s:TmpDir . 'www/* set filetype=pandoc'
+
 command! -nargs=1 VUE
       \ call ReadUrl(<q-args>)
 command! -nargs=1 VUB
