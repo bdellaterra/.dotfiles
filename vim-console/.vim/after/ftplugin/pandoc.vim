@@ -7,7 +7,14 @@ set modifiable
 set noreadonly
 
 " Mappings
-nmap <buffer> <leader>l :TOC<CR>:set ft=pandoc<CR>:set cursorline<CR> " l = list/locate sections
+
+" ,l = list/locate sections
+nmap <buffer> <leader>l :TOC<CR>:set ft=pandoc<CR>:set cursorline<CR>
+
+" \] will insert markdown link delimiters
+map \] :normal i[]()<CR><Left><Left>i
+" (around selected text in visual mode)
+vmap \] :normal `<i[<CR>:normal `>la]()<CR>i
 
 " `1 will convert line to header-level 1, `2 for level 2, etc.
 nmap <buffer> 1` :<C-u>call pandoc#keyboard#sections#ApplyHeader(1)<CR>
