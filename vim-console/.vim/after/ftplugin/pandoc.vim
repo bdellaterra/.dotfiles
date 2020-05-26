@@ -8,8 +8,19 @@ set noreadonly
 
 " Mappings
 nmap <buffer> <leader>l :TOC<CR>:set ft=pandoc<CR>:set cursorline<CR> " l = list/locate sections
-nmap <buffer> ` <Plug>(pandoc-keyboard-apply-header)
+
+" `1 will convert line to header-level 1, `2 for level 2, etc.
+nmap <buffer> 1` :<C-u>call pandoc#keyboard#sections#ApplyHeader(1)<CR>
+nmap <buffer> 2` :<C-u>call pandoc#keyboard#sections#ApplyHeader(2)<CR>
+nmap <buffer> 3` :<C-u>call pandoc#keyboard#sections#ApplyHeader(3)<CR>
+nmap <buffer> 4` :<C-u>call pandoc#keyboard#sections#ApplyHeader(4)<CR>
+nmap <buffer> 5` :<C-u>call pandoc#keyboard#sections#ApplyHeader(5)<CR>
+nmap <buffer> 6` :<C-u>call pandoc#keyboard#sections#ApplyHeader(6)<CR>
+nmap <buffer> 7` :<C-u>call pandoc#keyboard#sections#ApplyHeader(7)<CR>
+nmap <buffer> 8` :<C-u>call pandoc#keyboard#sections#ApplyHeader(8)<CR>
+nmap <buffer> 9` :<C-u>call pandoc#keyboard#sections#ApplyHeader(9)<CR>
 nmap <buffer> 0` <Plug>(pandoc-keyboard-remove-header)
+
 nmap <buffer> <leader>i <Plug>(pandoc-keyboard-toggle-emphasis)
 vmap <buffer> <leader>i <Plug>(pandoc-keyboard-toggle-emphasis)
 nmap <buffer> <leader>b <Plug>(pandoc-keyboard-toggle-strong)
