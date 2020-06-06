@@ -216,9 +216,9 @@ alias zless="$PAGER"
 # EXTENDED CONFIGURATION ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 # Source personal profile, if present.
-[[ -r ~/.personal.sh ]] && . ~/.personal.sh
+[[ -r ~/personal/.shrc ]] && . ~/personal/.shrc
 
 # Source work profile, if present.
-[[ -r ~/.work.sh ]] && . ~/.work.sh
+[[ -r ~/business/.shrc ]] && . ~/business/.shrc
 
 
