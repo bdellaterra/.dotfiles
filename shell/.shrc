@@ -165,6 +165,11 @@ export NVM_DIR="$(realpath $HOME/.nvm)"
 
 # *** Options ***
 
+# Don't store commands in history file if they start with a space
+# NOTE: Pressing up in current terminal session may still show most recent command
+HISTCONTROL=ignoreboth # bash
+[[ `type setopt 2>/dev/null` == *'builtin'* ]] && setopt histignorespace #zsh
+
 # Make Ctrl-s and Ctrl-q available for mappings
 # Prevents default behavior where they suspend and resume terminal client
 stty -ixon
