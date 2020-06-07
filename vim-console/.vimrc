@@ -1887,12 +1887,12 @@ colorscheme custom_base16
 call SetDefaultStatusModeHLGroups()
 
 " Source personal configurations, if present
-if filereadable($HOME . '/.vim/personal.vim')
-  exe 'source ' . $HOME . '/.vim/personal.vim'
+if filereadable($HOME . '/personal/.vimrc')
+  exe 'source ' . $HOME . '/personal/.vimrc'
 endif
 
 " Source work configurations, if present
-if filereadable($HOME . '/.vim/business.vim')
-  exe 'source ' . $HOME . '/.vim/business.vim'
+if filereadable($HOME . '/business/.vimrc')
+  exe 'source ' . $HOME . '/business/.vimrc'
 endif
 
