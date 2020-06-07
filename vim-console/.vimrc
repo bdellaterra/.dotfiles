@@ -416,6 +416,25 @@ function s:EnterHelper(...)
   endtry
 endfunction
 
+function CleanPDFToMarkdown()
+  " Add additional headings 
+  silent! keepjumps %s@\v^(\*\*)((\w+\s?)?[^:)])(\([^)]*\))?\.(\*\*)@####### \2\r\r@g
+  " Join headings that are split across multiple lines
+  silent! keepjumps %s@\v^(#+)(.*)\n\_S*\1(.*)@\1\2\3@g
+  " Capitalize headings
+  silent! keepjumps %g@^#\+@s/\v\W\zs(\w)((\w|[’'-_])*)/\u\1\L\2/gI
+  " Fix wonky mix of uppercase and lowercase
+  silent! keepjumps %s/\v<([a-z])((\w|[’'-_])[A-Z]+(\w|[’'-_])*)/\u\1\L\2/gI
+  silent! keepjumps %s/\v<([A-Z]+)((\w|[’'-_])[a-z](\w|[’'-_]))/\u\1\L\2/gI
+  " Preceed headings and verbatim text with a blank line
+  silent! keepjumps %s@\v(^```)\n(^```)@\1\r\r\2@g
+  silent! keepjumps %s@\v.*\S.*\n\zs\ze#+.*@\r@g
+  " Remove page numbers
+  silent! keepjumps %s@^```\_s*\d\+\_s*```\_s*@@g
+  " Just remove verbatim markers?
+  silent! keepjumps %s#^```$##
+endfunction
+
 function CleanHtmlToMarkdown(...)
   let g:baseUrl = get(a:000, 0, '')
   let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
