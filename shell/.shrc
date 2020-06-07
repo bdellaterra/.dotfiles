@@ -188,7 +188,7 @@ stty -ixon
 # *** Liquid Prompt ***
 # https://github.com/nojhan/liquidprompt
 
-source ~/liquidprompt/liquidprompt
+[[ -r ~/liquidprompt/liquidprompt ]] && source ~/liquidprompt/liquidprompt
 
 
 # *** Tmux ***
