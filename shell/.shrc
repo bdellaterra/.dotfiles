@@ -24,8 +24,8 @@ alias l='ls -lAhF'
 # v: launch Vim, or show reminder to resume if suspended
 [[ `command -v vim` ]] && alias v='jobs | grep vim && echo "Resume Vim with fg" || vim'
 # m: preferred file-manager w/ fallbacks
-[[ `command -v mc` ]] && alias m=mc
-[[ `command -v ranger` ]] && alias m="source ranger" # source embedded script to cd on exit
+[[ `command -v mc` ]] && alias fm=mc
+[[ `command -v ranger` ]] && alias fm="source ranger" # source embedded script to cd on exit
 # r: preferred grep w/ fallbacks
 # rh: include hidden files/folders
 [[ `command -v grep` ]] && alias r="grep -inr --color=auto" rh="r"
@@ -196,7 +196,7 @@ stty -ixon
 
 # Attach to existing deattached session or start a new session.
 if [[ `command -v tmux` && -z "$TMUX" ]] ;then
-    ID="`tmux ls | grep -vm1 attached | cut -d: -f1`" # get the id of a deattached session
+    ID="`tmux ls | grep -vm1 attached | cut -d: -f1`" # get id of deattached session
     if [[ -z "$ID" ]] ;then # if not available create a new one
         tmux new-session
     else
