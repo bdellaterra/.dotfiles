@@ -1,43 +1,26 @@
 ! COLORSCHEME
 
 *cursorColor: #ffffff
+*background: #0d0908
+*foreground: #ebeeff
 
-*background:   #00151c
+*color0:  #000000
+*color1:  #aa4a36
+*color2:  #477c5b
+*color3:  #938451
+*color4:  #034569
+*color5:  #363a56
+*color6:  #3c4855
+*color7:  #51483e
 
-*foreground: #dcd8d4 
-
-! black
-*color0:       #070910
-*color8:       #757877
-
-! red
-*color1:       #99202e
-*color9:       #aa3930
-
-! green
-*color2:       #107265
-*color10:      #55b39c
-
-! yellow
-*color3:       #be9360
-*color11:      #f1f3ce
-
-! blue
-*color4:       #306c95
-*color12:      #93acc9
-
-! magenta
-*color5:       #103355
-*color13:      #4d648d
-
-! cyan
-*color6:       #1087bc
-*color14:      #6ad4ff
-
-! white
-*color7:       #acbebe
-*color15:      #f5f4f9
-
+*color8:  #858d88
+*color9:  #e88324
+*color10: #abe4c1
+*color11: #cbbb8c
+*color12: #5ca0c8
+*color13: #8c92b7
+*color14: #728ca3
+*color15: #ffffff
 
 ! FONTS
 
