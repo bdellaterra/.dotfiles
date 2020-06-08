@@ -1860,13 +1860,10 @@ nmap gu <Plug>(characterize)
 
 " PLUGINS
 
-let g:options = []
-
 " Support loading plugin/options from file w/ empty lines and comments removed
 function s:Plugin(plug)
   let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*([{(].*[)}])?')[1:2]
   if len(locator)
-    let g:options += [options]
     call call('plug#', len(options) ? [locator, eval(options)] : [locator])
   end
 endfunction
