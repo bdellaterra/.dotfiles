@@ -12,6 +12,12 @@ endif
 
 " CONSTANTS
 
+if has("win64") || has("win32")
+  let g:os = matchstr(trim(system('systeminfo | findstr /B /C:"OS Name"')), '\(OS Name:\s*\)\?\zs.*')
+elseif executable('uname')
+  let g:os = trim(system('uname -s'))
+endif
+
 " Regex Patterns
 let g:rgx = {}
 let g:rgx.urlProtocol = '[a-zA-Z]*:\/\/'
@@ -108,13 +114,23 @@ function s:BufferFile(...)
   return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
 endfunction
 
+autocmd BufEnter * if &filetype == "" | silent! call feedkeys(":let &ft='" . g:GetMissingFileType() . "'\<CR>") | endif
+
+" Fix missing filetype if one can be detected from path or file content
+function g:GetMissingFileType()
+  for path in g:nv_search_paths
+    if stridx(fnamemodify(expand('%'), ':p'), fnamemodify(path, ':p')) != -1
+      return 'pandoc'
+    endif
+  endfor
+endfunction
+
 " Establish lost settings after session reload
 function s:OnSessionLoaded()
   if get(b:, 'isRestoredSession', 0)
-    if &ft == '' && exists('s:defaultFiletype')
-      let &ft = s:defaultFiletype
-    endif
-    edit
+    call SetDefaultStatusModeHLGroups()
+    " re-edit file to invoke filetype and git branch (via fugitive)
+    call feedkeys(':e')
     unlet b:isRestoredSession
   endif
 endfunction
@@ -698,14 +714,16 @@ endif
 " (Symlink executables to ~/bin path under Windows Subsystem for Linux)
 
 " Default (with no paste support) at /mnt/c/Windows/System32/clip.exe
-if executable('clip')
-  let s:clipCopy = 'clip'
-endif
+if has("win32") || has("win16")
+  if executable('clip')
+    let s:clipCopy = 'clip'
+  endif
 
-" Install from https://github.com/equalsraf/win32yank/releases
-if executable('win32yank') && executable('unix2dos')
-  let s:clipCopy = 'unix2dos | win32yank -i'
-  let s:clipPaste = 'win32yank -o | dos2unix'
+  " Install from https://github.com/equalsraf/win32yank/releases
+  if executable('win32yank') && executable('unix2dos')
+    let s:clipCopy = 'unix2dos | win32yank -i'
+    let s:clipPaste = 'win32yank -o | dos2unix'
+  endif
 endif
 
 " Share yanked text with system clipboard, even when Vim lacks 'clipboard' support
@@ -1125,9 +1143,6 @@ let g:vista#renderer#icons = {
 " MARKDOWN
 " See .vim/after/ftplugin/pandoc.vim for key mappings
 
-" Set default filetype to pandoc markdown
-let s:defaultFiletype = 'pandoc'
-
 let g:pandoc#filetypes#handled = ["pandoc", "markdown"]
 let g:pandoc#folding#fastfolds = 1
 let g:pandoc#spell#enabled = 0
@@ -1157,11 +1172,9 @@ augroup END
 " NOTES
 
 let g:nv_search_paths = ['~/notes', '~/wiki']
-let g:nv_default_extension = '.md'
-let g:nv_show_preview = 0
 
-" ',m' will make a note
-noremap <silent> <leader>m :NV<CR>
+" ',n' will make a note
+noremap <silent> <leader>n :call OpenRangerIn(g:nv_search_paths[0], 'edit ')<CR>
 
 
 " TABLES
@@ -1570,9 +1583,6 @@ map <leader>c :call ToggleConceal()<CR>
 " ',-' will toggle cursor line
 map <leader>- :set cursorline!<CR>
 
-" ',|' will toggle cursor column
-map <leader><bar> :set cursorcolumn!<CR>:call ToggleConceal(!&cursorcolumn)<CR>
-
 " ',+' will toggle both
 map <leader>+ :set cursorline! cursorcolumn!<CR>:call ToggleConceal(!&cursorcolumn)<CR>
 
@@ -1635,12 +1645,12 @@ set foldtext=MyFoldText()
 
 " Set highlight groups used in statusline
 function SetDefaultStatusModeHLGroups()
-  highlight User1 ctermfg=233 ctermbg=145
-  highlight User2 ctermfg=233 ctermbg=11
-  highlight User3 ctermfg=233 ctermbg=231
-  highlight User4 ctermfg=233 ctermbg=88
-  highlight User5 ctermfg=233 ctermbg=123
-  highlight User6 ctermfg=233 ctermbg=240
+  highlight User1 ctermfg=233 ctermbg=6
+  highlight User2 ctermfg=233 ctermbg=14
+  highlight User3 ctermfg=233 ctermbg=9
+  highlight User4 ctermfg=233 ctermbg=8
+  highlight User5 ctermfg=233 ctermbg=1
+  highlight User6 ctermfg=233 ctermbg=11
 endfunction
 
 " Set statusline highlight based on current mode
@@ -1649,7 +1659,7 @@ function! s:StatusModeHL()
   " User4 highlight for Insert/Replace mode
   " User3 Highlight when changing a readonly file
   if mode =~ '\vi|R' " '=~#' to match case
-    return &readonly ? '%4*' : '%3*'
+    return &readonly ? '%3*' : '%4*'
   " User2 highlight when in Visual mode
   elseif mode =~ '\vv|s|'
     return '%2*'
@@ -1659,13 +1669,12 @@ function! s:StatusModeHL()
     return '%6*'
   endif
   " User1 highlight for Normal mode
-  " User5 for non-modifiable bufffers
-  return !&modifiable ? '%5*' : '%1*'
+  return '%1*'
 endfunction
 
 " Generate unicode bar to represent progress through file
 let s:percentBars = ['█', '▇', '▆', '▅', '▄', '▃', '▂', '▁']
-function s:StatusPercentBar()
+function g:StatusPercentBar()
   let percent = (1.0 * line('.')) / line('$')
   let index = float2nr(round((len(s:percentBars) - 1) * percent))
   return s:percentBars[index]
@@ -1693,31 +1702,34 @@ function MyStatus()
     let corner = s:StatusModeHL()
       \ . (verbose ? bufnum : '  ')
       \ . '%#StatusLine#'
-    let line = &number && !verbose ? '' : printf('%5d', line('.'))
-    let col = printf('%3d', col('.'))
+    let line = &number && !verbose ? '' : '%5l'
+    let col = '%3c'
     let pos = line != '' ? line . ' ' . col : col
-    let mod = &modified ? '…' : ''
-    let ro = &modifiable && &readonly ? '' : ''
-    let ff = &fileformat != '' ? &fileformat : ''
-    let fe = &fileencoding != '' ? '/' . &fileencoding : ''
-    let ft = &filetype != '' ? '/' . &filetype : 'unknown'
-    let bomb = &bomb ? '※' : ''
-    let file = (verbose ? '%f' : '%t')
-      \ . (mod != '' ? mod : ' ')
-      \ . (ro != '' ? ' ' . ro : '')
-    let branch = verbose ? ' ｢' . FugitiveHead() . '｣ ' : ''
+    let mod = '%{&modified ? "…" : ""}'
+    let ro = '%{&modifiable && &readonly ? "" : " "}'
+    let file = ro . (verbose ? '%f' : '%t') . mod
+    let branch = verbose ? '%{&buftype == "" ? " ｢" . FugitiveHead() . "｣ " : ""}' : ''
     let mode = verbose ? get(s:statusModeSymbols, mode(), '') : ''
-    let conceal = verbose && &conceallevel ? '␦' : ''
-    let paste = &paste ? '⎘' : '' " ⎀ϊǐ
+    let conceal = verbose ? '%{&conceallevel ? "␦" : ""}' : ''
+    let paste = '%{&paste ? "⎘" : ""}'
     let modeInfo = mode . conceal . paste
-    let fileInfo = verbose ? ff . fe . ft . bomb . '  ⋰⋰' : ''
-    let pb = s:StatusPercentBar()
+    let pb = '%{g:StatusPercentBar()}'
     let datetime = verbose ? ' ' . strftime('%d/%b %H:%M') . ' ' : ''
-    let leftSide = ' %<' . ' ' . file . branch 
+
+    " file meta
+    let ff = &fileformat
+    let fe = &fileencoding != "" ? "/" . &fileencoding : ""
+    let ft = &filetype != "" ? "/" . &filetype : "/unknown"
+    let bomb = &bomb ? "※" : ""
+    let g:statusLineFileInfo = verbose ? ff . fe . ft . bomb . '  ⋰⋰' : ''
+
+    let leftSide = ' %<' . file . branch 
     let rightMinWidth = string(s:MaxLineWidth() - s:statusWidth)
-    let rightSide = modeInfo . '  ' . fileInfo . pos . '  ' . pb
-    return corner . leftSide . ' %= '
-      \ . '%#TabLine# ' . datetime . ' ' . rightSide
+    let rightSide = datetime . ' ' . modeInfo . '  '
+      \ . '%{&buftype == "terminal" ? g:os : g:statusLineFileInfo}' . pos . '  ' . pb
+    let g:statusline = corner . leftSide . ' %= '
+      \ . '%#TabLine# ' . rightSide
+    return g:statusline
   catch
     return v:exception
   endtry
