@@ -37,3 +37,12 @@ if [[ `command -v fd` ]] ;then
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
 
+
+# EXTENDED CONFIGURATION ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# Source personal profile, if present.
+[[ -r ~/personal/.profile ]] && . ~/personal/.profile
+
+# Source work profile, if present.
+[[ -r ~/business/.profile ]] && . ~/business/.profile
+
