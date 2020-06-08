@@ -1701,7 +1701,7 @@ function MyStatus()
     let bufnum = '%2.n'
     let corner = s:StatusModeHL()
       \ . (verbose ? bufnum : '  ')
-      \ . '%#StatusLine#'
+      \ . '%*'
     let line = &number && !verbose ? '' : '%5l'
     let col = '%3c'
     let pos = line != '' ? line . ' ' . col : col

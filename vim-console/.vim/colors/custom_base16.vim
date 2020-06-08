@@ -36,8 +36,6 @@ else
   highlight Pmenu        ctermfg=15   ctermbg=5
   highlight PmenuSel     ctermfg=5    ctermbg=15
   highlight SpellCap     ctermfg=7    ctermbg=8
-  highlight StatusLine   ctermfg=15   ctermbg=4    cterm=bold
-  highlight StatusLineNC ctermfg=7    ctermbg=5    cterm=NONE
   highlight VertSplit    ctermfg=7    ctermbg=8    cterm=NONE
   highlight SignColumn                ctermbg=8
   highlight Underlined   ctermfg=12                cterm=underline
@@ -59,10 +57,10 @@ hi TabLine                   ctermfg=15 ctermbg=6  cterm=NONE
 hi Title                     ctermfg=3             cterm=bold
 hi Type                      ctermfg=10
 
-highlight StatusLine         ctermfg=4  ctermbg=15  cterm=inverse
-highlight StatusLineNC       ctermfg=14 ctermbg=0  cterm=inverse 
-highlight StatusLineTerm     ctermfg=4  ctermbg=0  cterm=inverse 
-highlight StatusLineTermNC   ctermfg=14 ctermbg=0  cterm=inverse 
+highlight StatusLine         ctermfg=15 ctermbg=4  cterm=NONE
+highlight StatusLineNC       ctermfg=4  ctermbg=15 cterm=inverse 
+highlight StatusLineTerm     ctermfg=15 ctermbg=14 cterm=NONE 
+highlight StatusLineTermNC   ctermfg=15 ctermbg=6  cterm=NONE 
 highlight BufTabLineCurrent  ctermfg=15 ctermbg=4
 highlight BufTabLineActive   ctermfg=15 ctermbg=13
 highlight BufTabLineHidden   ctermfg=13 ctermbg=5
