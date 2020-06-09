@@ -87,7 +87,7 @@ tpope/vim-characterize # display unicode metadata for character under cursor
 tomtom/tcomment_vim # file-type sensible comments
 
 # READING
-rkitover/vimpager # pager using vim and less.vim
+# rkitover/vimpager # pager using vim and less.vim
 
 # WRITING
 vim-pandoc/vim-pandoc # pandoc integration and utilities for Vim

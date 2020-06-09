@@ -1,0 +1,1 @@
+AnsiEsc.vba: call delete('/home/smooth/.dotfiles/vim-console/.vim/bundle/AnsiEsc/plugin/AnsiEscPlugin.vim')|call delete('/home/smooth/.dotfiles/vim-console/.vim/bundle/AnsiEsc/autoload/AnsiEsc.vim')|call delete('/home/smooth/.dotfiles/vim-console/.vim/bundle/AnsiEsc/plugin/cecutil.vim')|call delete('/home/smooth/.dotfiles/vim-console/.vim/bundle/AnsiEsc/doc/AnsiEsc.txt')

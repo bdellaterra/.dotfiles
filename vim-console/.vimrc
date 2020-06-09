@@ -162,69 +162,58 @@ endfunction
 
 " Toggle between conceallevel 0 and 2. Pass optional boolean
 " false to disable temporarily, or true to restore last on/off setting
-" NOTE: disabling for VimPager mode due to conflicts
-if !exists('g:vimpager.enabled')
-  augroup ToggleConceal
-    autocmd!
-    autocmd FileType * call <SID>ReinforceConcealSyntax()
-    autocmd CursorHold * call <SID>UpdateTime()
-    autocmd CursorMoved * call <SID>RevealLine(0)
-    autocmd TextChanged * call <SID>RevealLine(1)
-    autocmd InsertLeave * call <SID>RevealLine(0)
-  augroup END
-  function s:ReinforceConcealSyntax()
-    if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
-      if &conceallevel
-        silent! exe 'source ~/.dotfiles/vim-console/.vim/after/syntax/' . &filetype . '.vim'
-      endif
+function s:ReinforceConcealSyntax()
+  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+    if &conceallevel
+      silent! exe 'source ~/.dotfiles/vim-console/.vim/after/syntax/' . &filetype . '.vim'
     endif
-  endfunction
-  function s:UpdateTime(...)
-    if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
-      let newUpdateTime = get(a:000, 0, 0)
-      if newUpdateTime && newUpdateTime != &updatetime
-        let g:restoreUpdateTime = &updatetime
-        let &updatetime = newUpdateTime
-      elseif exists('g:restoreUpdateTime')
-        let &updatetime = g:restoreUpdateTime
-        unlet g:['restoreUpdateTime']
-      endif
+  endif
+endfunction
+function s:UpdateTime(...)
+  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+    let newUpdateTime = get(a:000, 0, 0)
+    if newUpdateTime && newUpdateTime != &updatetime
+      let g:restoreUpdateTime = &updatetime
+      let &updatetime = newUpdateTime
+    elseif exists('g:restoreUpdateTime')
+      let &updatetime = g:restoreUpdateTime
+      unlet g:['restoreUpdateTime']
     endif
-  endfunction
-  function s:RevealLine(...)
-    let l:save_view = winsaveview()
-    if !exists('g:enableConcealAtCursor') || !g:enableConcealAtCursor
+  endif
+endfunction
+function s:RevealLine(...)
+  let l:save_view = winsaveview()
+  if !exists('g:enableConcealAtCursor') || !g:enableConcealAtCursor
+    set concealcursor=
+  elseif !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+    let unconcealLine = get(a:000, 0, 0)
+    if unconcealLine
       set concealcursor=
-    elseif !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
-      let unconcealLine = get(a:000, 0, 0)
-      if unconcealLine
-        set concealcursor=
-      else
-        set concealcursor=n
-      endif
+    else
+      set concealcursor=n
     endif
-    call winrestview(l:save_view)
-  endfunction
-  function ToggleConceal(...)
-    let save_lazyredraw = &lazyredraw
-    set lazyredraw
-    if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
-      let tmpToggle = get(a:000, 0, 0)
-      if !exists('b:save_conceallevel')
-        let b:save_conceallevel = &conceallevel
-      endif
-      if len(a:000)
-        let &conceallevel = tmpToggle ? b:save_conceallevel : 0
-      else
-        let &conceallevel = &conceallevel ? 0 : 2
-        let b:save_conceallevel = &conceallevel
-      endif
-      call <SID>ReinforceConcealSyntax()
+  endif
+  call winrestview(l:save_view)
+endfunction
+function ToggleConceal(...)
+  let save_lazyredraw = &lazyredraw
+  set lazyredraw
+  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
+    let tmpToggle = get(a:000, 0, 0)
+    if !exists('b:save_conceallevel')
+      let b:save_conceallevel = &conceallevel
     endif
-    let &lazyredraw = save_lazyredraw
-    redraw!
-  endfunction
-endif
+    if len(a:000)
+      let &conceallevel = tmpToggle ? b:save_conceallevel : 0
+    else
+      let &conceallevel = &conceallevel ? 0 : 2
+      let b:save_conceallevel = &conceallevel
+    endif
+    call <SID>ReinforceConcealSyntax()
+  endif
+  let &lazyredraw = save_lazyredraw
+  redraw!
+endfunction
 
 function MatchUnderCursor(regex,...)
   let outerRegex = a:regex
@@ -933,10 +922,21 @@ nnoremap \ :silent! call <SID>GoToNextVerticalNonBlank()<CR>
 nnoremap \| :silent! call <SID>GoToNextVerticalNonBlank(1)<CR>
 
 " ',m' will mark current location (VimPager plugin)
-map <Leader>m <Plug>SaveWinPosn
+" map <Leader>m <Plug>SaveWinPosn
 
 " ',j' will jump to last marked location
-map <Leader>j <Plug>RestoreWinPosn
+" map <Leader>j <Plug>RestoreWinPosn
+
+
+" PAGER
+
+function LessInitFunc()
+  let g:disableSessionManager = 1
+  let g:disableToggleConceal = 1
+  " augroup! SessionManager
+  AnsiEsc
+  au VimEnter * normal gg
+endfunction
 
 
 " SCROLLING
@@ -1533,6 +1533,8 @@ let g:signify_vcs_list = ['git']
 
 " SESSION MANAGER
 
+" NOTE: see session autocommands in .vim/after/after.vim
+
 " Set temp file location
 let g:pickMeUpSessionDir = s:MakeDir(s:TmpDir . 'sessions')
 
@@ -1544,13 +1546,6 @@ exe "map \<leader>sr :\<C-u>RestoreSession " . g:pickMeUpSessionDir
 
 " ',sd' will prompt to delete a named session
 exe "map \<leader>sd :\<C-u>DeleteSession " . g:pickMeUpSessionDir
-
-" save session on exit
-autocmd QuitPre * SaveSession
-
-" reestablish settings that can't be reloaded from session
-autocmd SessionLoadPost * ++once let b:isRestoredSession=1
-autocmd SafeState * ++once call s:OnSessionLoaded()
 
 
 " UNDO
@@ -1571,6 +1566,8 @@ inoremap õ <C-\><C-n>u
 
 
 " VISUALS
+
+" NOTE: see conceal autocommands in .vim/after/after.vim
 
 " Enable conceal syntax that would be redundant with font ligatures
 " Set to true if using a font that supports programming ligatures
