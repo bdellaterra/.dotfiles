@@ -114,15 +114,17 @@ function s:BufferFile(...)
   return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
 endfunction
 
-autocmd BufEnter * if &filetype == "" | silent! call feedkeys(":let &ft='" . g:GetMissingFileType() . "'\<CR>") | endif
-
-" Fix missing filetype if one can be detected from path or file content
-function g:GetMissingFileType()
-  for path in g:nv_search_paths
-    if stridx(fnamemodify(expand('%'), ':p'), fnamemodify(path, ':p')) != -1
-      return 'pandoc'
-    endif
-  endfor
+" If current file has no extension, add the one supplied as first argument
+function AddMissingFileExtension(ext)
+  if a:ext != '' && fnamemodify(expand("%"), ":e") == ''
+    try
+      exe 'Gmove ' . fnameescape(expand('%:p')) . a:ext
+    catch
+      exe 'saveas %' . a:ext
+      bdelete #
+      call delete(expand('%:r'))
+    endtry
+  endif
 endfunction
 
 " Establish lost settings after session reload
@@ -1176,6 +1178,16 @@ let g:nv_search_paths = ['~/notes', '~/wiki']
 " ',n' will make a note
 noremap <silent> <leader>n :call OpenRangerIn(g:nv_search_paths[0], 'edit ')<CR>
 
+" Calling this at end of script so any added paths can be captured
+function s:AutoAddMarkdownExtensionToNotes()
+  let g:nv_glob_paths = join(map(g:nv_search_paths, 'v:val . "/*/*"'), ',')
+  augroup MarkdownNotes
+    au!
+    exe 'autocmd BufEnter ' . g:nv_glob_paths . ' if &ft=="" | set ft=pandoc | endif'
+    exe 'autocmd BufWrite ' . g:nv_glob_paths . ' call AddMissingFileExtension(".md")'
+  augroup END
+endfunction
+
 
 " TABLES
 
@@ -1905,3 +1917,4 @@ if filereadable($HOME . '/business/.vimrc')
   exe 'source ' . $HOME . '/business/.vimrc'
 endif
 
+call s:AutoAddMarkdownExtensionToNotes()
