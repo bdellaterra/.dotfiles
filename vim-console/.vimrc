@@ -708,7 +708,7 @@ endif
 " (Symlink executables to ~/bin path under Windows Subsystem for Linux)
 
 " Default (with no paste support) at /mnt/c/Windows/System32/clip.exe
-if has("win32") || has("win16")
+if has("win64") || has("win32")
   if executable('clip')
     let s:clipCopy = 'clip'
   endif
