@@ -19,7 +19,8 @@ alias l='ls -lAhF'
 [[ `command -v docker-compose` ]] && alias dcom=docker-compose
 [[ `command -v git` ]] && alias g=git
 [[ `command -v kill` ]] && alias k=kill
-[[ `command -v sudo` ]] && alias s=sudo
+# s: run command as root, preserving current path (for interactive shells only)
+[[ `command -v sudo` ]] && alias s='sudo env "PATH=$PATH"'
 [[ `command -v tmux` ]] && alias t=tmux
 # v: launch Vim, or show reminder to resume if suspended
 [[ `command -v vim` ]] && alias v='jobs | grep vim && echo "Resume Vim with fg" || vim'
