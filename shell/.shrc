@@ -1,131 +1,5 @@
 # *** Common configuration for interactive shells (shared by bash/zsh) ***
 
-# ALIASES :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-# Create intermediate directories automatically w/ verbose output.
-alias mkdir="mkdir -pv"
-
-# Automatically cd to directory after it is created.
-alias mkcd='_(){ mkdir $1; cd $1; }; _'
-
-# List all files with long, human-readable info.
-alias l='ls -lAhF'
-
-# short-form for common commands
-[[ `command -v bundle` ]] && alias b=bundle
-[[ `command -v docker` ]] && alias d=docker
-[[ `command -v docker` ]] && alias i="docker image"
-[[ `command -v docker` ]] && alias c="docker container"
-[[ `command -v docker-compose` ]] && alias dcom=docker-compose
-[[ `command -v git` ]] && alias g=git
-[[ `command -v kill` ]] && alias k=kill
-[[ `command -v sudo` ]] && alias s=sudo
-[[ `command -v tmux` ]] && alias t=tmux
-# v: launch Vim, or show reminder to resume if suspended
-[[ `command -v vim` ]] && alias v='jobs | grep vim && echo "Resume Vim with fg" || vim'
-# m: preferred file-manager w/ fallbacks
-[[ `command -v mc` ]] && alias fm=mc
-[[ `command -v ranger` ]] && alias fm="source ranger" # source embedded script to cd on exit
-# r: preferred grep w/ fallbacks
-# rh: include hidden files/folders
-[[ `command -v grep` ]] && alias r="grep -inr --color=auto" rh="r"
-[[ `command -v ack` ]] && alias r="ack --smart-case -r" rh="r"
-[[ `command -v ag` ]] && alias r="ag -Sr" rh="r --hidden" # -u to search ignored files
-[[ `command -v rg` ]] && alias r="rg -S" rh="r --hidden" # -u to search ignored files
-# f: regex find w/ fallbacks
-# fh: include hidden files/folders
-# (fallbacks implemented via ~/bin/f to support reordering of parameters)
-if [[ `command -v fd` ]] ;then
-  alias f=fd
-  alias fh="f -HI"
-fi
-
-# short-form for built-in commands
-alias e=echo
-alias h=history
-alias q=exit
-alias ..='cd ../'
-alias ...='cd ../../'
-alias ....='cd ../../../'
-alias .....='cd ../../../../'
-alias ......='cd ../../../../../'
-
-
-# FUNCTIONS :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-# Convert to all lowercase characters.
-lowercase() {
-    echo "$1" | tr 'A-Z' 'a-z'
-}  
-
-# Convert to all uppercase characters.
-uppercase() {
-    echo "$1" | tr 'a-z' 'A-Z'
-}  
-
-# Remove spaces.
-nospaces() {
-    echo "${1// /}"
-}  
-
-# Convert spaces to dashes.
-dashws() {
-    echo ""${1// /-}""
-}  
-
-# Convert spaces to underscores.
-underscorews() {
-    "echo ${1// /_}"
-}  
-
-# Remove dashes.
-nodashes() {
-    echo "${1//-/}"
-}  
-
-# Remove parens.
-noparens() {
-    echo "${1//[\(\)]/}"
-}  
-
-# Remove non-alphanumeric characters.
-alphanum() {
-    echo "${1//[^ _a-zA-Z0-9]/}"
-}  
-
-# Remove non-alphanumeric characters. (Keeping dashes)
-alphanumdash() {
-    echo "${1//[^ -_a-zA-Z0-9]/}"
-}  
-
-# Convert to safe user ID string.
-userID() {
-    : `nospaces "$1"`
-    : `noparens "$_"`
-    : `alphanum "$_"`
-    : `lowercase "$_"`
-    echo "$_"
-}
-
-# Convert to safe project ID string.
-projID() {
-    : `nospaces "$1"`
-    : `noparens "$_"`
-    : `alphanumdash "$_"`
-    : `lowercase "$_"`
-    echo "$_"
-}
-
-# Convert to safe package ID string.
-pkgID() {
-    : `nospaces "$1"`
-    : `noparens "$_"`
-    : `projID "$_"`
-    : `nodashes "$_"`
-    echo "$_"
-}
-
-
 # LANGUAGE SUPPORT ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 # *** NVM (Node Version Manager) ***
@@ -152,9 +26,6 @@ export NVM_DIR="$(realpath $HOME/.nvm)"
 
 # Load RVM into a shell session *as a function*
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-
-
-###############################################################################
 
 
 # INTERACTIVE SHELL CONFIG ::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -210,7 +81,18 @@ fi
 # Override default pager
 [[ -x "$HOME/bin/pager" ]] && export PAGER="$HOME/bin/pager"
 alias less="$PAGER"
-alias zless="$PAGER"
+
+
+# *** Functions ***
+
+# Source support functions
+[[ -r ~/.functions ]] && . ~/.functions
+
+
+# *** Aliases ***
+
+# Source command aliases
+[[ -r ~/.aliases ]] && . ~/.aliases
 
 
 # EXTENDED CONFIGURATION ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

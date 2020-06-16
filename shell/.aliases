@@ -1,0 +1,52 @@
+# *** Command aliases for interactive shells (shared by bash/zsh) ***
+
+# ALIASES :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# Create intermediate directories automatically w/ verbose output.
+alias mkdir="mkdir -pv"
+
+# Automatically cd to directory after it is created.
+alias mkcd='_(){ mkdir $1; cd $1; }; _'
+
+# List all files with long, human-readable info.
+alias l='ls -lAhF'
+
+# short-form for common commands
+[[ `command -v bundle` ]] && alias b=bundle
+[[ `command -v docker` ]] && alias d=docker
+[[ `command -v docker` ]] && alias i="docker image"
+[[ `command -v docker` ]] && alias c="docker container"
+[[ `command -v docker-compose` ]] && alias dcom=docker-compose
+[[ `command -v git` ]] && alias g=git
+[[ `command -v kill` ]] && alias k=kill
+[[ `command -v sudo` ]] && alias s=sudo
+[[ `command -v tmux` ]] && alias t=tmux
+# v: launch Vim, or show reminder to resume if suspended
+[[ `command -v vim` ]] && alias v='jobs | grep vim && echo "Resume Vim with fg" || vim'
+# m: preferred file-manager w/ fallbacks
+[[ `command -v mc` ]] && alias fm=mc
+[[ `command -v ranger` ]] && alias fm="source ranger" # source embedded script to cd on exit
+# r: preferred grep w/ fallbacks
+# rh: include hidden files/folders
+[[ `command -v grep` ]] && alias r="grep -inr --color=auto" rh="r"
+[[ `command -v ack` ]] && alias r="ack --smart-case -r" rh="r"
+[[ `command -v ag` ]] && alias r="ag -Sr" rh="r --hidden" # -u to search ignored files
+[[ `command -v rg` ]] && alias r="rg -S" rh="r --hidden" # -u to search ignored files
+# f: regex find w/ fallbacks
+# fh: include hidden files/folders
+# (fallbacks implemented via ~/bin/f to support reordering of parameters)
+if [[ `command -v fd` ]] ;then
+  alias f=fd
+  alias fh="f -HI"
+fi
+
+# short-form for built-in commands
+alias e=echo
+alias h=history
+alias q=exit
+alias ..='cd ../'
+alias ...='cd ../../'
+alias ....='cd ../../../'
+alias .....='cd ../../../../'
+alias ......='cd ../../../../../'
+
