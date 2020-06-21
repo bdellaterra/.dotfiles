@@ -8,9 +8,6 @@ alias mkdir="mkdir -pv"
 # Automatically cd to directory after it is created.
 alias mkcd='_(){ mkdir $1; cd $1; }; _'
 
-# List all files with long, human-readable info.
-alias l='ls -lAhF'
-
 # short-form for common commands
 [[ `command -v bundle` ]] && alias b=bundle
 [[ `command -v docker` ]] && alias d=docker
@@ -19,6 +16,9 @@ alias l='ls -lAhF'
 [[ `command -v docker-compose` ]] && alias dcom=docker-compose
 [[ `command -v git` ]] && alias g=git
 [[ `command -v kill` ]] && alias k=kill
+# l: list all files with long, human-readable info.
+alias l='ls --color --group-directories-first -lAhFG'
+[[ `command -v exa` ]] && alias l='exa --group-directories-first -lahF'
 # s: run command as root, preserving current path (for interactive shells only)
 [[ `command -v sudo` ]] && alias s='sudo env "PATH=$PATH"'
 [[ `command -v tmux` ]] && alias t=tmux
