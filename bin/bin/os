@@ -44,14 +44,14 @@ DISTRO="$RELEASE"
 #   DISTRO_UPGRADE=''
 # fi
 
-if [[ $DISTRO =~ 'openSuse' ]]
+if [[ $DISTRO =~ 'openSUSE' ]]
 then
   REFRESH='zypper refresh'
   LIST='zypper search -is'
   SHOW='zypper info'
   SEARCH='zypper search'
-  REGEX_SEARCH='zypper search -t pattern'
-  PATH_SEARCH='zypper wp'
+  REGEX_SEARCH='zypper search'
+  PATH_SEARCH='zypper search --provides --match-exact'
   INSTALL='zypper install'
   REMOVE='zypper remove'
   UPGRADE='zypper update -t package'
@@ -174,18 +174,22 @@ while [[ $# -gt 0 ]]; do
     -l|--list)
       [[ $LIST ]] || exit 1;
       echo "LISTING INSTALLED PACKAGES..."
+      echo $LIST
       $LIST
       break
       ;;
     -w|--which|--show)
       # [[ $SHOW ]] || exit 1;
       echo "SHOWING INFO FOR PACKAGES..."
-      $SHOW
+      shift
+      echo $SHOW $@
+      $SHOW $@
       break
       ;;
     -c|--current|--refresh)
       [[ $REFRESH ]] || exit 1;
       echo "UPDATING PACKAGE LISTING..."
+      echo $REFRESH
       $REFRESH
       break
       ;;
@@ -193,6 +197,7 @@ while [[ $# -gt 0 ]]; do
       [[ $SEARCH ]] || exit 1;
       echo "SEARCHING PACKAGES..."
 	  shift
+      echo $SEARCH $@
       $SEARCH $@
       break
       ;;
@@ -200,6 +205,7 @@ while [[ $# -gt 0 ]]; do
       [[ $REGEX_SEARCH ]] || exit 1;
       echo "SEARCHING PACKAGES FOR PATTERNS..."
 	  shift
+      echo $REGEX_SEARCH $@
       $REGEX_SEARCH $@
       break
       ;;
@@ -207,6 +213,7 @@ while [[ $# -gt 0 ]]; do
       [[ $PATH_SEARCH ]] || exit 1;
       echo "SEARCHING PACKAGES FOR FILE PATHS..."
 	  shift
+      echo $PATH_SEARCH $@
       $PATH_SEARCH $@
       break
       ;;
@@ -214,6 +221,7 @@ while [[ $# -gt 0 ]]; do
       [[ $INSTALL ]] || exit 1;
       echo "INSTALLING PACKAGES..."
 	  shift
+      echo $INSTALL $@
       $INSTALL $@
       break
       ;;
@@ -221,6 +229,7 @@ while [[ $# -gt 0 ]]; do
       [[ $REMOVE ]] || exit 1;
       echo "REMOVING PACKAGES..."
 	  shift
+      echo $REMOVE $@
       $REMOVE $@
       break
       ;;
@@ -228,6 +237,7 @@ while [[ $# -gt 0 ]]; do
       [[ $UPGRADE ]] || exit 1;
       echo "UPGRADING PACKAGES..."
 	  shift
+      echo $UPGRADE $@
       $UPGRADE $@
       break
       ;;
@@ -235,6 +245,7 @@ while [[ $# -gt 0 ]]; do
       [[ $FULL_UPGRADE ]] || exit 1;
       echo "UPGRADING PACKAGES AND REMOVING OLD DEPENDENCIES..."
 	  shift
+      echo $FULL_UPGRADE $@
       $FULL_UPGRADE $@
       break
       ;;
@@ -242,6 +253,7 @@ while [[ $# -gt 0 ]]; do
       [[ $DISTRO_UPGRADE ]] || exit 1;
       echo "UPGRADING DISTRIBUTION..."
 	  shift
+      echo $DISTRO_UPGRADE $@
       $DISTRO_UPGRADE $@
       break
       ;;
