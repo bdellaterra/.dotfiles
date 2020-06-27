@@ -1557,8 +1557,9 @@ endif
 " ',uh' will Toggle interactive undo-history
 map <leader>uh :GundoToggle<CR>
 
-" Temporarily toggle conceal to fix undo behavior
-map u :silent! call ToggleConceal(0) \| silent! undo \| :silent! call ToggleConceal(1)<CR>
+" Temporarily toggle conceal to fix undo behavior (using silent to hide syntax warnings)
+map <silent> u :silent! call ToggleConceal(0) \| silent! undo \| :silent! call ToggleConceal(1)<CR>
+map <silent> <C-r> :silent! call ToggleConceal(0) \| silent! redo \| :silent! call ToggleConceal(1)<CR>
 
 " Prevent <Esc>u from accidentally inserting special character 'õ' in insert-mode
 " (Use 'Ctrl-v,245' to insert 'õ' intentionally)
