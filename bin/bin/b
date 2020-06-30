@@ -20,29 +20,21 @@ main() {
     ${EDITOR:vi} "$target"
   fi
 
-  if [ $persist ]; then
-    query=${target:+--query="$target"}
-  fi
-
   # Use parens to process results as array
-  result=$(fd --maxdepth 1 '.*' | fzf --expect='insert,left,right' --preview="cat {}" --preview-window=right:70%:wrap $query)
+  result=$(fd --maxdepth 1 '.*' | fzf --expect='insert,left,right' --preview="${VIEWER:cat} {}" --preview-window=right:70%:wrap)
   input=($result)
 
   if [ ${#input[@]} -ge 2 ]; then
     command=${input[0]}
-    target=${input[1]}
 
     # Use insert key to create a file
-    if [ "$command" = 'insert' ]; then
-      unset target
-    fi
+    # (no target, user will specify at "create file" prompt)
 
     # Use left arrow to move up a directory
-    if [ "$command" = 'left' ]; then
-      target=".."
-    fi
+    [ "$command" = 'left' ] && target=".."
 
     # Use right arrow as an alias for enter key
+    [ "$command" = 'right' ] && target=${input[1]}
   else
     # Use enter (or right arrow) to edit a file or enter a directory
     target=$input
