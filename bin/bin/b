@@ -21,7 +21,7 @@ main() {
   fi
 
   # Use parens to process results as array
-  result=$(fd --maxdepth 1 '.*' | fzf --expect='insert,left,right' --preview="${VIEWER:cat} {}" --preview-window=right:70%:wrap)
+  result=$(find . -maxdepth 1 ! -name '.' -execdir basename '{}' \; | fzf --expect='insert,left,right' --preview="cat {}" --preview-window=right:70%:wrap)
   input=($result)
 
   if [ ${#input[@]} -ge 2 ]; then
