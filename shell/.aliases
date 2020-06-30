@@ -9,7 +9,6 @@ alias mkdir="mkdir -pv"
 alias mkcd='_(){ mkdir $1; cd $1; }; _'
 
 # short-form for common commands
-[[ `command -v bundle` ]] && alias b=bundle
 [[ `command -v docker` ]] && alias d=docker
 [[ `command -v docker` ]] && alias i="docker image"
 [[ `command -v docker` ]] && alias c="docker container"

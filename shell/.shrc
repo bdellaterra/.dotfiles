@@ -36,6 +36,8 @@ export NVM_DIR="$(realpath $HOME/.nvm)"
 
 # *** Options ***
 
+export EDITOR='vim'
+
 # Don't store commands in history file if they start with a space
 # NOTE: Pressing up in current terminal session may still show most recent command
 HISTCONTROL=ignoreboth # bash
