@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Browse files using fzf
+
 set -e
 
 persist=1
@@ -9,6 +12,12 @@ main() {
   if [ -d "$target" ]; then
     cd "$target"
     unset target
+  else
+    if [ ! -r "$target" ]; then
+      read -p "Create file: " target
+      mkdir -p "$(dirname "$target")" && touch "$target"
+    fi
+    ${EDITOR:vi} "$target"
   fi
 
   if [ $persist ]; then
@@ -25,37 +34,21 @@ main() {
 
     # Use insert key to create a file
     if [ "$command" = 'insert' ]; then
-      read -p "Create file: " target
-      mkdir -p "$(dirname "$target")" && touch "$target"
-      command='edit'
+      unset target
     fi
 
     # Use left arrow to move up a directory
     if [ "$command" = 'left' ]; then
-      command='cd'
       target=".."
     fi
 
     # Use right arrow as an alias for enter key
-    if [ "$command" = 'right' ]; then
-      command='default'
-    fi
   else
     # Use enter (or right arrow) to edit a file or enter a directory
-    command='default'
     target=$input
-  fi
-
-  if [ "$command" = 'default' ]; then
-    if [ -d "$target" ]; then
-      command='cd'
-    else
-      command='edit'
-      ${EDITOR:vi} "$target"
-    fi
   fi
 
   main "$target"
 }
 
-main "${1:$PWD}"
+main "${1:-$PWD}"
