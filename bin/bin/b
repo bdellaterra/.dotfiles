@@ -18,10 +18,7 @@ main() {
     "${EDITOR:vi}" "$target"
   fi
 
-  mapfile -t input < <(find . -maxdepth 1 ! -name '.' -execdir basename '{}' \; | fzf --expect='insert,left,right' --preview="/usr/bin/bat --color always --theme Nord {}" --preview-window=right:70%:wrap)
-
-  command=${input[0]}
-  target=${input[1]}
+  { read command; read target; } < <(find . -maxdepth 1 ! -name '.' -execdir basename '{}' \; | fzf --expect='insert,left,right' --preview="/usr/bin/bat --color always --theme Nord {}" --preview-window=right:70%:wrap)
 
   if [ -n "$target" ]; then
     # Use insert key to create a file
