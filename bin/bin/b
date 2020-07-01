@@ -1,7 +1,33 @@
 #!/bin/bash
 set -e
 
-# Browse files using fzf
+LIST="find . -maxdepth 1 ! -name '.' -execdir basename '{}' \;"
+PREVIEW="/usr/bin/bat --color always --theme Nord {}"
+PREVIEW_WINDOW="right:70%:wrap"
+
+for i in "$@"; do
+  case $i in
+    -h|--help)
+      echo "b - browse files using fzf"
+      echo " "
+      echo "usage: b [options] [target file or directory]"
+      echo " "
+      echo "options:"
+      echo "-l=COMMAND, --list=COMMAND     Command to list files/directories"
+      echo "                               default: $LIST"
+      echo "-p=COMMAND, --preview=COMMAND  Command to preview highlighted line ({})"
+      echo "                               default: $PREVIEW"
+      echo "-w=OPT, --preview-window=OPT   Preview window layout"
+      echo "                               default: $PREVIEW_WINDOW"
+      echo " "
+      exit 0
+      ;;
+    -l=*|--list=*) LIST="${i#*=}"; shift ;;
+    -p=*|--preview=*) PREVIEW="${i#*=}"; shift ;;
+    -w=*|--preview-window=*) PREVIEW_WINDOW="${i#*=}"; shift ;;
+  esac
+done
+
 main() {
   target="$1"
 
@@ -18,7 +44,7 @@ main() {
     "${EDITOR:vi}" "$target"
   fi
 
-  { read command; read target; } < <(find . -maxdepth 1 ! -name '.' -execdir basename '{}' \; | fzf --expect='insert,left,right' --preview="/usr/bin/bat --color always --theme Nord {}" --preview-window=right:70%:wrap)
+  { read command; read target; } < <(bash -c "$LIST" | fzf --expect='insert,left,right' --preview="$PREVIEW" --preview-window="$PREVIEW_WINDOW")
 
   if [ -n "$target" ]; then
     # Use insert key to create a file
