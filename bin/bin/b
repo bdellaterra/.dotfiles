@@ -1,14 +1,12 @@
 #!/bin/bash
-
-# Browse files using fzf
-
 set -e
 
-persist=1
-
+# Browse files using fzf
 main() {
   target="$1"
 
+  # Edit target file, or cd to target directory
+  # Prompt to create file if no target specified
   if [ -d "$target" ]; then
     cd "$target"
     unset target
@@ -17,30 +15,28 @@ main() {
       read -p "Create file: " target
       mkdir -p "$(dirname "$target")" && touch "$target"
     fi
-    ${EDITOR:vi} "$target"
+    "${EDITOR:vi}" "$target"
   fi
 
-  # Use parens to process results as array
-  result=$(find . -maxdepth 1 ! -name '.' -execdir basename '{}' \; | fzf --expect='insert,left,right' --preview="cat {}" --preview-window=right:70%:wrap)
-  input=($result)
+  mapfile -t input < <(find . -maxdepth 1 ! -name '.' -execdir basename '{}' \; | fzf --expect='insert,left,right' --preview="/usr/bin/bat --color always --theme Nord {}" --preview-window=right:70%:wrap)
 
-  if [ ${#input[@]} -ge 2 ]; then
-    command=${input[0]}
+  command=${input[0]}
+  target=${input[1]}
 
+  if [ -n "$target" ]; then
     # Use insert key to create a file
     # (no target, user will specify at "create file" prompt)
+    [ "$command" = 'insert' ] && unset target
 
     # Use left arrow to move up a directory
     [ "$command" = 'left' ] && target=".."
 
-    # Use right arrow as an alias for enter key
-    [ "$command" = 'right' ] && target=${input[1]}
-  else
-    # Use enter (or right arrow) to edit a file or enter a directory
-    target=$input
-  fi
+    # Use enter (parsed as empty string) or right arrow for default action
+    # [ -z "$command" -o "$command" = 'right' ] && target="${input[1]}"
 
-  main "$target"
+    main "$target"
+  fi
 }
 
+# Default initial target is current directory
 main "${1:-$PWD}"
