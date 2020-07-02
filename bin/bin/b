@@ -7,18 +7,23 @@ PREVIEW_WINDOW="right:70%:wrap"
 
 usage() {
 cat <<USAGE
-b - browse files using fzf
-
 usage: b [options] [target file or directory]
+
+Browse files using fzf. If no target specified start in current directory.
+
+Keymaps are as follows:
+Enter or Right Arrow - edit file / cd to directory
+Left Arrow - move up a directory
+Insert - Create file named at prompt (End name with '/' to create a directory)
+Escape or Ctrl-c - exit file browser
 
 options:
 -l=COMMAND, --list=COMMAND     Command to list files/directories
                                default: $LIST
--p=COMMAND, --preview=COMMAND  Command to preview highlighted line ({})
+-p=COMMAND, --preview=COMMAND  Command to preview highlighted line
                                default: $PREVIEW
 -w=OPT, --preview-window=OPT   Preview window layout
                                default: $PREVIEW_WINDOW
-
 USAGE
 }
 
@@ -34,15 +39,17 @@ done
 main() {
   target="$1"
 
-  # Edit target file, or cd to target directory
-  # Prompt to create file if no target specified
   if [ -d "$target" ]; then
     cd "$target"
     unset target
   else
     if [ ! -r "$target" ]; then
-      read -p "Create file: " target
-      mkdir -p "$(dirname "$target")" && touch "$target"
+      read -p "Create file/directory: " target
+      if [ "$target" =~ '/$' ]; then
+        mkdir -p "$target"
+      else
+        mkdir -p "$(dirname "$target")" && touch "$target"
+      fi
     fi
     "${EDITOR:vi}" "$target"
   fi
