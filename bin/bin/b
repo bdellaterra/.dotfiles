@@ -33,6 +33,7 @@ for i in "$@"; do
     -l=*|--list=*) LIST="${i#*=}"; shift ;;
     -p=*|--preview=*) PREVIEW="${i#*=}"; shift ;;
     -w=*|--preview-window=*) PREVIEW_WINDOW="${i#*=}"; shift ;;
+    --*|-?) echo "unknown option: $1" >&2; exit 1 ;;
   esac
 done
 
