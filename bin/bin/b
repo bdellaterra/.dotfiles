@@ -5,23 +5,26 @@ LIST="find . -maxdepth 1 ! -name '.' -execdir basename '{}' \;"
 PREVIEW="/usr/bin/bat --color always --theme Nord {}"
 PREVIEW_WINDOW="right:70%:wrap"
 
+usage() {
+cat <<USAGE
+b - browse files using fzf
+
+usage: b [options] [target file or directory]
+
+options:
+-l=COMMAND, --list=COMMAND     Command to list files/directories
+                               default: $LIST
+-p=COMMAND, --preview=COMMAND  Command to preview highlighted line ({})
+                               default: $PREVIEW
+-w=OPT, --preview-window=OPT   Preview window layout
+                               default: $PREVIEW_WINDOW
+
+USAGE
+}
+
 for i in "$@"; do
   case $i in
-    -h|--help)
-      echo "b - browse files using fzf"
-      echo " "
-      echo "usage: b [options] [target file or directory]"
-      echo " "
-      echo "options:"
-      echo "-l=COMMAND, --list=COMMAND     Command to list files/directories"
-      echo "                               default: $LIST"
-      echo "-p=COMMAND, --preview=COMMAND  Command to preview highlighted line ({})"
-      echo "                               default: $PREVIEW"
-      echo "-w=OPT, --preview-window=OPT   Preview window layout"
-      echo "                               default: $PREVIEW_WINDOW"
-      echo " "
-      exit 0
-      ;;
+    -h|--help) usage; exit 0 ;;
     -l=*|--list=*) LIST="${i#*=}"; shift ;;
     -p=*|--preview=*) PREVIEW="${i#*=}"; shift ;;
     -w=*|--preview-window=*) PREVIEW_WINDOW="${i#*=}"; shift ;;
@@ -55,7 +58,6 @@ main() {
     [ "$command" = 'left' ] && target=".."
 
     # Use enter (parsed as empty string) or right arrow for default action
-    # [ -z "$command" -o "$command" = 'right' ] && target="${input[1]}"
 
     main "$target"
   fi
