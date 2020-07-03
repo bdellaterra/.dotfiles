@@ -42,12 +42,12 @@ done
 main() {
   target="$1"
 
-  if [ -d "$target" ]; then
+  if [[ -d "$target" ]]; then
     cd "$target"
   else
-    if [ ! -r "$target" ]; then
+    if [[ ! -r "$target" ]]; then
       read -p "Create file/directory: " target
-      if [ "$target" =~ '/$' ]; then
+      if [[ "$target" =~ '/$' ]]; then
         mkdir -p "$target"
       else
         mkdir -p "$(dirname "$target")" && touch "$target"
@@ -63,14 +63,13 @@ main() {
 
   mapfile -t targets < <(bash -c "$LIST" | fzf --multi --expect='insert,left,right,ctrl-d' --preview="$PREVIEW" --preview-window="$PREVIEW_WINDOW")
 
-  echo "${targets[@]}"
   command="${targets[0]}"
   target="${targets[1]}"
 
-  if [ -n "$target" ]; then
+  if [[ -n "$target" ]]; then
     # Use ctrl-d to toggle shallow vs. recursive find
-    if [ "$command" = 'ctrl-d' ]; then
-      if [ -z "$SHALLOW" ]; then
+    if [[ "$command" == 'ctrl-d' ]]; then
+      if [[ -z "$SHALLOW" ]]; then
         SHALLOW=1
       else
         unset SHALLOW
@@ -80,10 +79,10 @@ main() {
 
     # Use insert key to create a file
     # (no target, user will specify at "create file" prompt)
-    [ "$command" = 'insert' ] && unset target
+    [[ "$command" == 'insert' ]] && unset target
 
     # Use left arrow to move up a directory
-    [ "$command" = 'left' ] && target=".."
+    [[ "$command" == 'left' ]] && target=".."
 
     # Use enter (parsed as empty string) or right arrow for default action
 
