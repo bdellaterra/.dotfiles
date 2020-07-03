@@ -2,8 +2,8 @@
 set -e
 
 SHALLOW=1
-RECURSIVE_LIST='find . ! -name "."'
-SHALLOW_LIST='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
+RECURSIVE_FIND='find . ! -name "."'
+SHALLOW_FIND='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
 PREVIEW="/usr/bin/bat --color always --theme Nord {}"
 PREVIEW_WINDOW="right:70%:wrap"
 
@@ -20,19 +20,22 @@ Insert - Create file named at prompt (End name with '/' to create a directory)
 Escape or Ctrl-c - exit file browser
 
 options:
--l=COMMAND, --list=COMMAND     Command to list files/directories
-                               default: $LIST
--p=COMMAND, --preview=COMMAND  Command to preview highlighted line
-                               default: $PREVIEW
--w=OPT, --preview-window=OPT   Preview window layout
-                               default: $PREVIEW_WINDOW
+-s=COMMAND, --shallow-find=COMMAND    Command to list files/directories 1 level deep
+                                      default: $SHALLOW_FIND
+-r=COMMAND, --recursive-find=COMMAND  Command to list nested files/directories
+                                      default: $RECURSIVE_FIND
+-p=COMMAND, --preview=COMMAND         Command to preview highlighted line
+                                      default: $PREVIEW
+-w=OPT, --preview-window=OPT          Preview window layout
+                                      default: $PREVIEW_WINDOW
 USAGE
 }
 
 for i in "$@"; do
   case $i in
     -h|--help) usage; exit 0 ;;
-    -l=*|--list=*) LIST="${i#*=}"; shift ;;
+    -s=*|--shallow-find=*) SHALLOW_FIND="${i#*=}"; shift ;;
+    -r=*|--recursive-find=*) RECURSIVE_FIND="${i#*=}"; shift ;;
     -p=*|--preview=*) PREVIEW="${i#*=}"; shift ;;
     -w=*|--preview-window=*) PREVIEW_WINDOW="${i#*=}"; shift ;;
     --*|-?) echo "unknown option: $1" >&2; exit 1 ;;
@@ -56,9 +59,11 @@ main() {
     "${EDITOR:vi}" "$target"
   fi
 
-  [[ $SHALLOW ]] && LIST="$SHALLOW_LIST" || LIST="$RECURSIVE_LIST"
+  [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
 
-  mapfile -t targets < <(bash -c "$LIST" | fzf --multi --expect='insert,left,right,ctrl-d' --preview="$PREVIEW" --preview-window="$PREVIEW_WINDOW")
+  mapfile -t targets < <(
+    bash -c "$FIND" | fzf --multi --expect='insert,left,right,ctrl-d' --preview="$PREVIEW" --preview-window="$PREVIEW_WINDOW"
+  )
 
   command="${targets[0]}"
   target="${targets[1]}"
@@ -67,7 +72,7 @@ main() {
     # Use ctrl-d to toggle shallow vs. recursive find
     if [[ "$command" = 'ctrl-d' ]]; then
       [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
-      target='.' # NOOP
+      target='.' # cd to '.' is a NOOP
     fi
 
     # Use insert key to create a file
