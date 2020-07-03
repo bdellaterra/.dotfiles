@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-LIST="find . -maxdepth 1 ! -name '.' -execdir basename '{}' \;"
+SHALLOW=1
+RECURSIVE_LIST='find . ! -name "."'
+SHALLOW_LIST='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
 PREVIEW="/usr/bin/bat --color always --theme Nord {}"
 PREVIEW_WINDOW="right:70%:wrap"
 
@@ -42,7 +44,6 @@ main() {
 
   if [ -d "$target" ]; then
     cd "$target"
-    unset target
   else
     if [ ! -r "$target" ]; then
       read -p "Create file/directory: " target
@@ -55,9 +56,28 @@ main() {
     "${EDITOR:vi}" "$target"
   fi
 
-  { read command; read target; } < <(bash -c "$LIST" | fzf --expect='insert,left,right' --preview="$PREVIEW" --preview-window="$PREVIEW_WINDOW")
+  case "$SHALLOW" in
+    1) LIST="$SHALLOW_LIST" ;;
+    *) LIST="$RECURSIVE_LIST" ;;
+  esac
+
+  mapfile -t targets < <(bash -c "$LIST" | fzf --multi --expect='insert,left,right,ctrl-d' --preview="$PREVIEW" --preview-window="$PREVIEW_WINDOW")
+
+  echo "${targets[@]}"
+  command="${targets[0]}"
+  target="${targets[1]}"
 
   if [ -n "$target" ]; then
+    # Use ctrl-d to toggle shallow vs. recursive find
+    if [ "$command" = 'ctrl-d' ]; then
+      if [ -z "$SHALLOW" ]; then
+        SHALLOW=1
+      else
+        unset SHALLOW
+      fi
+      target='.' # NOOP
+    fi
+
     # Use insert key to create a file
     # (no target, user will specify at "create file" prompt)
     [ "$command" = 'insert' ] && unset target
