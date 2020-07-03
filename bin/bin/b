@@ -69,11 +69,10 @@ main() {
   if [[ -n "$target" ]]; then
     # Use ctrl-d to toggle shallow vs. recursive find
     if [[ "$command" == 'ctrl-d' ]]; then
-      if [[ -z "$SHALLOW" ]]; then
-        SHALLOW=1
-      else
-        unset SHALLOW
-      fi
+      case "$SHALLOW" in
+        1) unset SHALLOW ;;
+        *) SHALLOW=1 ;;
+      esac
       target='.' # NOOP
     fi
 
