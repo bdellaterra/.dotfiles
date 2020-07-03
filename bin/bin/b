@@ -68,7 +68,7 @@ main() {
 
   if [[ -n "$target" ]]; then
     # Use ctrl-d to toggle shallow vs. recursive find
-    if [[ "$command" == 'ctrl-d' ]]; then
+    if [[ "$command" = 'ctrl-d' ]]; then
       case "$SHALLOW" in
         1) unset SHALLOW ;;
         *) SHALLOW=1 ;;
@@ -78,10 +78,10 @@ main() {
 
     # Use insert key to create a file
     # (no target, user will specify at "create file" prompt)
-    [[ "$command" == 'insert' ]] && unset target
+    [[ "$command" = 'insert' ]] && unset target
 
     # Use left arrow to move up a directory
-    [[ "$command" == 'left' ]] && target=".."
+    [[ "$command" = 'left' ]] && target=".."
 
     # Use enter (parsed as empty string) or right arrow for default action
 
