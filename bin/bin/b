@@ -56,10 +56,7 @@ main() {
     "${EDITOR:vi}" "$target"
   fi
 
-  case "$SHALLOW" in
-    1) LIST="$SHALLOW_LIST" ;;
-    *) LIST="$RECURSIVE_LIST" ;;
-  esac
+  [[ $SHALLOW ]] && LIST="$SHALLOW_LIST" || LIST="$RECURSIVE_LIST"
 
   mapfile -t targets < <(bash -c "$LIST" | fzf --multi --expect='insert,left,right,ctrl-d' --preview="$PREVIEW" --preview-window="$PREVIEW_WINDOW")
 
@@ -69,10 +66,7 @@ main() {
   if [[ -n "$target" ]]; then
     # Use ctrl-d to toggle shallow vs. recursive find
     if [[ "$command" = 'ctrl-d' ]]; then
-      case "$SHALLOW" in
-        1) unset SHALLOW ;;
-        *) SHALLOW=1 ;;
-      esac
+      [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
       target='.' # NOOP
     fi
 
