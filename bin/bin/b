@@ -69,20 +69,26 @@ main() {
   target="${targets[1]}"
 
   if [[ -n "$target" ]]; then
-    # Use ctrl-d to toggle shallow vs. recursive find
-    if [[ "$command" = 'ctrl-d' ]]; then
-      [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
-      target='.' # cd to '.' is a NOOP
-    fi
+    case $command in
+      # Use ctrl-d to toggle shallow vs. recursive find
+      ctrl-d)
+        [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
+        target='.' # cd to '.' is a NOOP
+      ;;
 
-    # Use insert key to create a file
-    # (no target, user will specify at "create file" prompt)
-    [[ "$command" = 'insert' ]] && unset target
+      # Use insert key to create a file
+      # (no target, user will specify at "create file" prompt)
+      insert)
+        unset target
+      ;;
 
-    # Use left arrow to move up a directory
-    [[ "$command" = 'left' ]] && target=".."
+      # Use left arrow to move up a directory
+      left)
+        target=".."
+      ;;
 
-    # Use enter (parsed as empty string) or right arrow for default action
+      # Use enter (parsed as empty string) or right arrow for default action
+    esac
 
     main "$target"
   fi
