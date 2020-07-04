@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+SHALLOW=1
+
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
   RECURSIVE_FIND='fd --hidden'
@@ -9,16 +11,6 @@ else
   RECURSIVE_FIND='find . ! -name "." | sed "s:^\./::"'
   SHALLOW_FIND='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
 fi
-
-# Prefer bat over cat for syntax highlighting
-if command -v bat &>/dev/null; then
-  PREVIEW="/usr/bin/bat --color always --theme Nord {}"
-else
-  PREVIEW="cat"
-fi
-
-SHALLOW=1
-PREVIEW_WINDOW="right:70%:wrap"
 
 usage() {
 cat <<USAGE
@@ -30,28 +22,26 @@ Keymaps are as follows:
 Enter or Right Arrow - edit file / cd to directory
 Left Arrow - move up a directory
 Insert - Create file named at prompt (End name with '/' to create a directory)
+Ctrl-d - toggle between top-level and nested file/directory listings
 Escape or Ctrl-c - exit file browser
 
 options:
--s=COMMAND, --shallow-find=COMMAND    Command to list files/directories 1 level deep
-                                      default: $SHALLOW_FIND
--r=COMMAND, --recursive-find=COMMAND  Command to list nested files/directories
-                                      default: $RECURSIVE_FIND
--p=COMMAND, --preview=COMMAND         Command to preview highlighted line
-                                      default: $PREVIEW
--w=OPT, --preview-window=OPT          Preview window layout
-                                      default: $PREVIEW_WINDOW
+--shallow-find=COMMAND    Command to list only top-level files/directories
+                          default: $SHALLOW_FIND
+--recursive-find=COMMAND  Command to list nested files/directories
+                          default: $RECURSIVE_FIND
+
+Any additional options will be passed to fzf.
 USAGE
 }
 
 for i in "$@"; do
   case $i in
     -h|--help) usage; exit 0 ;;
-    -s=*|--shallow-find=*) SHALLOW_FIND="${i#*=}"; shift ;;
-    -r=*|--recursive-find=*) RECURSIVE_FIND="${i#*=}"; shift ;;
-    -p=*|--preview=*) PREVIEW="${i#*=}"; shift ;;
-    -w=*|--preview-window=*) PREVIEW_WINDOW="${i#*=}"; shift ;;
-    --*|-?) echo "unknown option: $1" >&2; exit 1 ;;
+    --shallow-find=*) SHALLOW_FIND="${i#*=}"; shift ;;
+    --recursive-find=*) RECURSIVE_FIND="${i#*=}"; shift ;;
+    # Preserve remaining options for fzf with quoting preserved
+    -*) OPTS+=("${i%%=*}=\"${i#*=}\""); shift ;;
   esac
 done
 
@@ -59,6 +49,7 @@ main() {
   target="$1"
 
   if [[ -d "$target" ]]; then
+    # NOTE: cd to '.' is used as a NOOP
     cd "$target"
   else
     if [[ ! -r "$target" ]]; then
@@ -73,10 +64,9 @@ main() {
   fi
 
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
+  FZF="fzf --multi --expect='insert,left,right,ctrl-d' ${OPTS[@]}"
 
-  mapfile -t targets < <(
-    bash -c "$FIND" | fzf --multi --expect='insert,left,right,ctrl-d' --preview="$PREVIEW" --preview-window="$PREVIEW_WINDOW"
-  )
+  mapfile -t targets < <(bash -c "$FIND" | bash -c "$FZF")
 
   command="${targets[0]}"
   target="${targets[1]}"
@@ -86,11 +76,11 @@ main() {
       # Use ctrl-d to toggle shallow vs. recursive find
       ctrl-d)
         [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
-        target='.' # cd to '.' is a NOOP
+        target='.'
       ;;
 
       # Use insert key to create a file
-      # (no target, user will specify at "create file" prompt)
+      # (no target, user will specify at "Create file/directory" prompt)
       insert)
         unset target
       ;;
