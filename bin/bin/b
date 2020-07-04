@@ -35,13 +35,13 @@ Any additional options will be passed to fzf.
 USAGE
 }
 
-for i in "$@"; do
-  case $i in
+for arg in "$@"; do
+  case $arg in
     -h|--help) usage; exit 0 ;;
-    --shallow-find=*) SHALLOW_FIND="${i#*=}"; shift ;;
-    --recursive-find=*) RECURSIVE_FIND="${i#*=}"; shift ;;
+    --shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
+    --recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
     # Preserve remaining options for fzf with quoting preserved
-    -*) OPTS+=("${i%%=*}=\"${i#*=}\""); shift ;;
+    -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
   esac
 done
 
