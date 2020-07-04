@@ -1,9 +1,16 @@
 #!/bin/bash
 set -e
 
+# Prefer fd over find so ignored files are not listed
+if command -v fd &>/dev/null; then
+  RECURSIVE_FIND='fd --hidden'
+  SHALLOW_FIND='fd --hidden --max-depth 1 --exec echo {/}'
+else
+  RECURSIVE_FIND='find . ! -name "." | sed "s:^\./::"'
+  SHALLOW_FIND='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
+fi
+
 SHALLOW=1
-RECURSIVE_FIND='find . ! -name "."'
-SHALLOW_FIND='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
 PREVIEW="/usr/bin/bat --color always --theme Nord {}"
 PREVIEW_WINDOW="right:70%:wrap"
 
