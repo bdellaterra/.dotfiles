@@ -10,8 +10,14 @@ else
   SHALLOW_FIND='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
 fi
 
+# Prefer bat over cat for syntax highlighting
+if command -v bat &>/dev/null; then
+  PREVIEW="/usr/bin/bat --color always --theme Nord {}"
+else
+  PREVIEW="cat"
+fi
+
 SHALLOW=1
-PREVIEW="/usr/bin/bat --color always --theme Nord {}"
 PREVIEW_WINDOW="right:70%:wrap"
 
 usage() {
