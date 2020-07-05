@@ -46,55 +46,62 @@ for arg in "$@"; do
 done
 
 main() {
-  target="$1"
-
-  if [[ -d "$target" ]]; then
-    # NOTE: cd to '.' is used as a NOOP
-    cd "$target"
-  else
-    if [[ ! -r "$target" ]]; then
-      read -p "Create file/directory: " target
-      if [[ "$target" =~ '/$' ]]; then
-        mkdir -p "$target"
-      else
-        mkdir -p "$(dirname "$target")" && touch "$target"
+  if [[ $# -eq 1 ]]; then
+    target="$1"
+    if [[ -d "$target" ]]; then
+      # NOTE: cd to '.' is used as a NOOP
+      cd "$target"
+    else
+      if [[ ! -r "$target" ]]; then
+        read -p "Create file/directory: " target
+        if [[ "$target" =~ '/$' ]]; then
+          mkdir -p "$target"
+        else
+          mkdir -p "$(dirname "$target")" && touch "$target"
+        fi
       fi
+      [[ -n "$target" ]] && "${EDITOR:vi}" "$target"
     fi
-    "${EDITOR:vi}" "$target"
+  elif [[ $# -gt 1 ]]; then
+    EDIT="${EDITOR:vi}"
+    for f in "$@"; do
+      EDIT="$EDIT \"$f\""
+    done
+    bash -c "$EDIT"
+  else
+    exit 0
   fi
 
+  # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
   FZF="fzf --multi --expect='insert,left,right,ctrl-d' ${OPTS[@]}"
+  { read command; mapfile -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
 
-  mapfile -t targets < <(bash -c "$FIND" | bash -c "$FZF")
+  # Use Escape or ctrl-c to exit
+  [[ "${#targets[@]}" -eq 0 ]] && break
 
-  command="${targets[0]}"
-  target="${targets[1]}"
+  case $command in
+    # Use ctrl-d to toggle shallow vs. recursive find
+    ctrl-d)
+      [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
+      targets=('.')
+    ;;
 
-  if [[ -n "$target" ]]; then
-    case $command in
-      # Use ctrl-d to toggle shallow vs. recursive find
-      ctrl-d)
-        [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
-        target='.'
-      ;;
+    # Use insert key to create a file
+    # (no target, user will specify at "Create file/directory" prompt)
+    insert)
+      targets=()
+    ;;
 
-      # Use insert key to create a file
-      # (no target, user will specify at "Create file/directory" prompt)
-      insert)
-        unset target
-      ;;
+    # Use left arrow to move up a directory
+    left)
+      targets=("..")
+    ;;
 
-      # Use left arrow to move up a directory
-      left)
-        target=".."
-      ;;
+    # Use enter (parsed as empty string) or right arrow for default action
+  esac
 
-      # Use enter (parsed as empty string) or right arrow for default action
-    esac
-
-    main "$target"
-  fi
+  main "${targets[@]}"
 }
 
 # Default initial target is current directory
