@@ -40,13 +40,13 @@ for arg in "$@"; do
     -h|--help) usage; exit 0 ;;
     --shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
     --recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
-    # Preserve remaining options for fzf with quoting preserved
+    # Save remaining options for fzf with quoting preserved
     -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
   esac
 done
 
 main() {
-  if [[ $# -eq 1 ]]; then
+  if [[ $# -le 1 ]]; then
     target="$1"
     if [[ -d "$target" ]]; then
       # NOTE: cd to '.' is used as a NOOP
@@ -68,8 +68,6 @@ main() {
       EDIT="$EDIT \"$f\""
     done
     bash -c "$EDIT"
-  else
-    exit 0
   fi
 
   # CYCLE INTO FZF
