@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+START_DIR="${1:-$PWD}"  # Target current directory if no argument given
+SHALLOW=1               # Start with only top-level files/directories displayed
+
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
   RECURSIVE_FIND='fd --hidden'
@@ -60,9 +63,6 @@ for arg in "$@"; do
     -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
   esac
 done
-
-SHALLOW=1               # Start with only top-level files/directories shown
-START_DIR="${1:-$PWD}"  # Default initial target is current directory
 
 main() {
   if [[ $# -eq 1 ]]; then
