@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-SHALLOW=1 # Start with only top-level files/directories displayed
+# Start with only top-level files/directories displayed
+SHALLOW=1
 
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
@@ -15,12 +16,16 @@ fi
 declare -A KEYMAP
 KEYMAP['right']="enter directory or edit file"
 KEYMAP['left']="cd to parent directory"
-KEYMAP['ctrl-r']="move targets"
+KEYMAP['ctrl-r']="move targets to directory named at prompt"
 KEYMAP['alt-r']="rename targets"
-KEYMAP['ctrl-d']="delete targets"
-KEYMAP['alt-d']="move and rename targets"
-KEYMAP['ctrl-s']="copy targets"
-KEYMAP['alt-s']="copy and rename targets"
+KEYMAP['ctrl-x']="delete selected targets"
+KEYMAP['alt-x']="move and rename selected targets"
+KEYMAP['ctrl-s']="copy selected targets to directory named at prompt"
+KEYMAP['alt-s']="copy and rename selected targets"
+KEYMAP['ctrl-d']="Enter directory named at prompt, creating it if necessary"
+KEYMAP['alt-d']="create directory without entering it"
+KEYMAP['ctrl-f']="Edit file named at prompt, creating it if necessary"
+KEYMAP['alt-f']="create file without editing it"
 KEYMAP['ctrl-b']="set base directory"
 KEYMAP['alt-b']="set alternate directory"
 KEYMAP['ctrl-/']="cd to deeper path using cached information"
@@ -126,15 +131,15 @@ main() {
       targets=()
     ;;
 
-    # Use ctrl-d to delete targets
-    ctrl-d)
+    # Use ctrl-x to delete targets
+    ctrl-x)
       REMOVE="rm -rI ${targets[@]}"
       bash -c "$REMOVE"
       targets=()
     ;;
 
-    # Use alt-d to move and rename targets
-    alt-d)
+    # Use alt-x to move and rename targets
+    alt-x)
       read -ep 'Move/Rename to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
@@ -168,25 +173,25 @@ main() {
       targets=()
     ;;
 
-    # Use ctrl-d to create a directory
-    # Use alt-d to create a directory and cd to it immediately
+    # Use ctrl-d to create and enter directory
+    # Use alt-d to create a directories without changing current directory
     ctrl-d|alt-d)
       targets=()
       read -p "Create directory: " target
       if [[ -n "$target" ]]; then
         mkdir -p "$target"
-        [[ "$command" = 'alt-d' ]] && targets=("$target")
+        [[ "$command" = 'ctrl-d' ]] && targets=("$target")
       fi
     ;;
 
-    # Use ctrl-f to create a file
-    # Use alt-f to create a file and edit it immediately
+    # Use ctrl-f to create a file and edit it immediately
+    # Use alt-f to create files without editing
     ctrl-f|alt-f)
       targets=()
       read -p "Create file: " target
       if [[ -n "$target" ]]; then
         mkdir -p "$(dirname "$target")" && touch "$target"
-        [[ "$command" = 'alt-f' ]] && targets=("$target")
+        [[ "$command" = 'ctrl-f' ]] && targets=("$target")
       fi
     ;;
 
