@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-BASE_DIR="${1:-$PWD}"  # Target current directory if no argument given
-SHALLOW=1              # Start with only top-level files/directories displayed
+SHALLOW=1 # Start with only top-level files/directories displayed
 
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
@@ -24,8 +23,8 @@ KEYMAP['ctrl-s']="copy targets"
 KEYMAP['alt-s']="copy and rename targets"
 KEYMAP['ctrl-b']="set base directory"
 KEYMAP['alt-b']="set alternate directory"
-KEYMAP['ctrl-\']="cd to alternate directory"
-KEYMAP['ctrl-/']="cd to deeper directory using cache"
+KEYMAP['ctrl-/']="cd to deeper path using cached information"
+KEYMAP['alt-/']="cd to alternate directory"
 KEYMAP['alt-h']="toggle display of hidden files"
 KEYMAP['alt-i']="toggle display of ignored files"
 KEYMAP['alt-a']="toggle all nested vs. only top-level files"
@@ -63,6 +62,9 @@ for arg in "$@"; do
     -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
   esac
 done
+
+BASE_DIR="${1:-$PWD}"  # Target current directory if no argument given
+# ALT_DIR="${2:-$PWD}"  # Alternate directory is 2nd arg
 
 main() {
   if [[ $# -eq 1 ]]; then
@@ -178,11 +180,32 @@ main() {
       fi
     ;;
 
+    # Use ctrl-b to set base directory
+    ctrl-b)
+      read -ep "Set base directory: " -i "$BASE_DIR" DIR
+      [[ -d "$DIR" ]] && BASE_DIR="$DIR"
+      targets=()
+    ;;
+
+    # Use alt-b to set alternate directory
+    # Use alt-/ to enter alternate directory, or go back
+    # to previous directory if already in alternate directory
+    alt-b|alt-/)
+    echo "$command $ALT_DIR"
+      if [[ "$command" = 'alt-b' || ! -d "$ALT_DIR" ]]; then
+        read -ep "Set alternate directory: " -i "$PWD" DIR
+        [[ -d "$DIR" ]] && ALT_DIR="$DIR" || echo "Not a directory"
+      fi
+      if [[ "$command" = 'alt-/' && -d "$ALT_DIR" ]]; then
+        [[ "$PWD" = "$ALT_DIR" ]] && cd "$OLDPWD" || cd "$ALT_DIR"
+      fi
+      targets=()
+    ;;
+
     # Use left arrow to move up a directory (not past initial directory)
     left)
-      echo "$PWD"
-      targets=()
-      [[ "$PWD" != "$BASE_DIR" ]] && targets=("..")
+      echo "$PWD $BASE_DIR" $(test "$PWD" != "$BASE_DIR" && echo -n '!=' || echo -n '==')
+      [[ "$PWD" != "$BASE_DIR" ]] && targets=("..") || targets=('.')
     ;;
 
     # Use enter (parsed as empty string) or right arrow for default action
