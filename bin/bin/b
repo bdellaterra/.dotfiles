@@ -82,8 +82,7 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
-  PROMPT="${#saved_targets[@]}> "
-  FZF="fzf --prompt='$PROMPT' --multi --expect='$KEYS' ${OPTS[@]}"
+  FZF="fzf --multi --expect='$KEYS' ${OPTS[@]}"
   { read command; mapfile -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
 
   # Use Escape or ctrl-c to exit
@@ -91,16 +90,34 @@ main() {
 
   case $command in
     # Use alt-a to toggle showing "all" nested files/directories
-    # below current directory vs. only those at top-level
+    # vs. only those at top-level
     alt-a)
       [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
       targets=()
     ;;
 
-    # Use del to delete targets
-    del)
+    # Use ctrl-d to delete targets
+    ctrl-d)
       REMOVE="rm -rI ${targets[@]}"
       bash -c "$REMOVE"
+      targets=()
+    ;;
+
+    # Use ctrl-r to move targets
+    ctrl-r)
+      read -ep 'Target Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      [[ -n "$DIR" ]] && mv -i "${targets[@]}" "$DIR"
+      targets=()
+    ;;
+
+    # Use alt-r to rename targets
+    alt-r)
+      for t in "${targets[@]}"; do
+        if [[ -r "$t" ]]; then
+          read -ep 'Move/Rename File: ' -i "mv $t ${ALT_DIR:-.}/$t" RENAME
+          [[ -n "$RENAME" ]] && bash -c "$RENAME"
+        fi
+      done
       targets=()
     ;;
 
