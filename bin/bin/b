@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-START_DIR="${1:-$PWD}"  # Target current directory if no argument given
-SHALLOW=1               # Start with only top-level files/directories displayed
+BASE_DIR="${1:-$PWD}"  # Target current directory if no argument given
+SHALLOW=1              # Start with only top-level files/directories displayed
 
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
@@ -98,7 +98,7 @@ main() {
 
     # Use ctrl-r to move targets
     ctrl-r)
-      read -ep 'Move to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      read -ep 'Move to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       [[ -n "$DIR" ]] && mv -i "${targets[@]}" "$DIR"
       targets=()
     ;;
@@ -123,7 +123,7 @@ main() {
 
     # Use alt-d to move and rename targets
     alt-d)
-      read -ep 'Move/Rename to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      read -ep 'Move/Rename to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
           if [[ -r "$t" ]]; then
@@ -137,14 +137,14 @@ main() {
 
     # Use ctrl-s to copy/save targets
     ctrl-s)
-      read -ep 'Copy to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      read -ep 'Copy to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       [[ -n "$DIR" ]] && cp -ir "${targets[@]}" "$DIR"
       targets=()
     ;;
 
     # Use alt-s to copy and rename targets
     alt-s)
-      read -ep 'Copy/Rename to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      read -ep 'Copy/Rename to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
           if [[ -r "$t" ]]; then
@@ -182,7 +182,7 @@ main() {
     left)
       echo "$PWD"
       targets=()
-      [[ "$PWD" != "$START_DIR" ]] && targets=("..")
+      [[ "$PWD" != "$BASE_DIR" ]] && targets=("..")
     ;;
 
     # Use enter (parsed as empty string) or right arrow for default action
@@ -192,4 +192,4 @@ main() {
 }
 
 # Default initial target is current directory
-main "$START_DIR"
+main "$BASE_DIR"
