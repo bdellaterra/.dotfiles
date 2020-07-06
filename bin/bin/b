@@ -98,7 +98,7 @@ main() {
 
     # Use ctrl-r to move targets
     ctrl-r)
-      read -ep 'Target Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      read -ep 'Move to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
       [[ -n "$DIR" ]] && mv -i "${targets[@]}" "$DIR"
       targets=()
     ;;
@@ -121,26 +121,38 @@ main() {
       targets=()
     ;;
 
-    # Use alt-d to move then rename targets
+    # Use alt-d to move and rename targets
     alt-d)
-      read -ep 'Target Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      read -ep 'Move to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
           if [[ -r "$t" ]]; then
-            read -ep 'Move/Rename File: ' -i "mv $PWD/$t ${DIR:-.}/$t" RENAME
-            [[ -n "$RENAME" ]] && bash -c "$RENAME"
+            read -ep 'Move/Rename File: ' -i "mv $PWD/$t $DIR/$t" MVRENAME
+            [[ -n "$MVRENAME" ]] && bash -c "$MVRENAME"
           fi
         done
       fi
       targets=()
     ;;
 
-    # Use ctrl-s to save targets
+    # Use ctrl-s to copy/save targets
     ctrl-s)
-      for t in "${targets[@]}"; do
-        saved_targets=("${saved_targets[@]}" $(readlink -f "$t"))
-      done
-      echo "${saved_targets[@]}"
+      read -ep 'Copy to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      [[ -n "$DIR" ]] && cp -ir "${targets[@]}" "$DIR"
+      targets=()
+    ;;
+
+    # Use alt-s to copy and rename targets
+    alt-s)
+      read -ep 'Copy to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      if [[ -n "$DIR" ]]; then
+        for t in "${targets[@]}"; do
+          if [[ -r "$t" ]]; then
+            read -ep 'Copy/Rename File: ' -i "cp $PWD/$t $DIR/$t" RENAME
+            [[ -n "$COPY" ]] && bash -c "$COPY"
+          fi
+        done
+      fi
       targets=()
     ;;
 
