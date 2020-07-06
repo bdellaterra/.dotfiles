@@ -10,6 +10,26 @@ else
   SHALLOW_FIND='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
 fi
 
+declare -A KEYMAP
+KEYMAP['right']="enter directory or edit file"
+KEYMAP['left']="cd to parent directory"
+KEYMAP['ctrl-r']="move targets"
+KEYMAP['alt-r']="rename targets"
+KEYMAP['ctrl-d']="delete targets"
+KEYMAP['alt-d']="move and rename targets"
+KEYMAP['ctrl-s']="copy targets"
+KEYMAP['alt-s']="copy and rename targets"
+KEYMAP['ctrl-b']="set base directory"
+KEYMAP['alt-b']="set alternate directory"
+KEYMAP['ctrl-\']="cd to alternate directory"
+KEYMAP['ctrl-/']="cd to deeper directory using cache"
+KEYMAP['alt-h']="toggle hidden files"
+KEYMAP['alt-n']="toggle nested files"
+KEYMAP['alt-i']="toggle ignore files"
+
+KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
+KEY_USAGE="$(for k in "${!KEYMAP[@]}"; do echo "$k - ${KEYMAP[$k]}"; done)"
+
 usage() {
 cat <<USAGE
 usage: b [options] [target file or directory]
@@ -17,11 +37,9 @@ usage: b [options] [target file or directory]
 Browse files using fzf. If no target specified start in current directory.
 
 Keymaps are as follows:
-Enter or Right Arrow - edit file / cd to directory
-Left Arrow - move up a directory
-Insert - Create file named at prompt (End name with '/' to create a directory)
-Ctrl-d - toggle between top-level and nested file/directory listings
-Escape or Ctrl-c - exit file browser
+escape or ctrl-c - exit file browser
+enter - enter directory or edit file
+$KEY_USAGE
 
 options:
 --shallow-find=COMMAND    Command to list only top-level files/directories
@@ -64,7 +82,6 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
-  KEYS='insert,del,left,right,ctrl-a,ctrl-d,alt-d,ctrl-f,alt-f,ctrl-v,ctrl-s,ctrl-n'
   PROMPT="${#saved_targets[@]}> "
   FZF="fzf --prompt='$PROMPT' --multi --expect='$KEYS' ${OPTS[@]}"
   { read command; mapfile -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
