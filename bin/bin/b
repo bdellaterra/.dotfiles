@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-SHALLOW=1
-
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
   RECURSIVE_FIND='fd --hidden'
@@ -44,6 +42,9 @@ for arg in "$@"; do
     -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
   esac
 done
+
+SHALLOW=1               # Start with only top-level files/directories shown
+START_DIR="${1:-$PWD}"  # Default initial target is current directory
 
 main() {
   if [[ $# -eq 1 ]]; then
@@ -88,7 +89,7 @@ main() {
     # Use ctrl-s to save targets
     ctrl-s)
       saved_targets=("${saved_targets[@]}" "${targets[@]}")
-      echo "${saved_targets[@]}"
+      targets=()
     ;;
 
     # Use ctrl-d to create a directory
@@ -113,9 +114,11 @@ main() {
       fi
     ;;
 
-    # Use left arrow to move up a directory
+    # Use left arrow to move up a directory (not past initial directory)
     left)
-      targets=("..")
+      echo "$PWD"
+      targets=()
+      [[ "$PWD" != "$START_DIR" ]] && targets=("..")
     ;;
 
     # Use enter (parsed as empty string) or right arrow for default action
@@ -125,4 +128,4 @@ main() {
 }
 
 # Default initial target is current directory
-main "${1:-$PWD}"
+main "$START_DIR"
