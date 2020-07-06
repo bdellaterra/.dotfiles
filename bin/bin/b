@@ -123,7 +123,7 @@ main() {
 
     # Use alt-d to move and rename targets
     alt-d)
-      read -ep 'Move to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      read -ep 'Move/Rename to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
           if [[ -r "$t" ]]; then
@@ -144,7 +144,7 @@ main() {
 
     # Use alt-s to copy and rename targets
     alt-s)
-      read -ep 'Copy to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      read -ep 'Copy/Rename to Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
           if [[ -r "$t" ]]; then
@@ -153,20 +153,6 @@ main() {
           fi
         done
       fi
-      targets=()
-    ;;
-
-    # Use insert to copy saved targets to current directory
-    insert)
-      COPY="cp -ri ${saved_targets[@]} $PWD/"
-      bash -c "$COPY"
-      targets=()
-    ;;
-
-    # Use ctrl-v to move saved targets to current directory
-    ctrl-v)
-      MOVE="mv -i ${saved_targets[@]} $PWD/"
-      bash -c "$MOVE"
       targets=()
     ;;
 
