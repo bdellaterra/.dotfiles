@@ -96,13 +96,6 @@ main() {
       targets=()
     ;;
 
-    # Use ctrl-d to delete targets
-    ctrl-d)
-      REMOVE="rm -rI ${targets[@]}"
-      bash -c "$REMOVE"
-      targets=()
-    ;;
-
     # Use ctrl-r to move targets
     ctrl-r)
       read -ep 'Target Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
@@ -118,6 +111,27 @@ main() {
           [[ -n "$RENAME" ]] && bash -c "$RENAME"
         fi
       done
+      targets=()
+    ;;
+
+    # Use ctrl-d to delete targets
+    ctrl-d)
+      REMOVE="rm -rI ${targets[@]}"
+      bash -c "$REMOVE"
+      targets=()
+    ;;
+
+    # Use alt-d to move then rename targets
+    alt-d)
+      read -ep 'Target Directory: ' -i "${ALT_DIR:-$START_DIR}" DIR
+      if [[ -n "$DIR" ]]; then
+        for t in "${targets[@]}"; do
+          if [[ -r "$t" ]]; then
+            read -ep 'Move/Rename File: ' -i "mv $PWD/$t ${DIR:-.}/$t" RENAME
+            [[ -n "$RENAME" ]] && bash -c "$RENAME"
+          fi
+        done
+      fi
       targets=()
     ;;
 
