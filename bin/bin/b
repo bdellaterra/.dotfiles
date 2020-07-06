@@ -23,9 +23,9 @@ KEYMAP['ctrl-b']="set base directory"
 KEYMAP['alt-b']="set alternate directory"
 KEYMAP['ctrl-\']="cd to alternate directory"
 KEYMAP['ctrl-/']="cd to deeper directory using cache"
-KEYMAP['alt-h']="toggle hidden files"
-KEYMAP['alt-n']="toggle nested files"
-KEYMAP['alt-i']="toggle ignore files"
+KEYMAP['alt-h']="toggle display of hidden files"
+KEYMAP['alt-i']="toggle display of ignored files"
+KEYMAP['alt-a']="toggle all nested vs. only top-level files"
 
 KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
 KEY_USAGE="$(for k in "${!KEYMAP[@]}"; do echo "$k - ${KEYMAP[$k]}"; done)"
@@ -39,7 +39,7 @@ Browse files using fzf. If no target specified start in current directory.
 Keymaps are as follows:
 escape or ctrl-c - exit file browser
 enter - enter directory or edit file
-$KEY_USAGE
+$(echo "$KEY_USAGE" | sort)
 
 options:
 --shallow-find=COMMAND    Command to list only top-level files/directories
@@ -90,9 +90,9 @@ main() {
   [[ "${#targets[@]}" -eq 0 ]] && break
 
   case $command in
-    # Use ctrl-a to toggle showing "all" nested files/directories
+    # Use alt-a to toggle showing "all" nested files/directories
     # below current directory vs. only those at top-level
-    ctrl-a)
+    alt-a)
       [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
       targets=()
     ;;
