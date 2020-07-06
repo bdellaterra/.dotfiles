@@ -46,20 +46,11 @@ for arg in "$@"; do
 done
 
 main() {
-  if [[ $# -le 1 ]]; then
+  if [[ $# -eq 1 ]]; then
     target="$1"
     if [[ -d "$target" ]]; then
-      # NOTE: cd to '.' is used as a NOOP
       cd "$target"
     else
-      if [[ ! -r "$target" ]]; then
-        read -p "Create file/directory: " target
-        if [[ "$target" =~ '/$' ]]; then
-          mkdir -p "$target"
-        else
-          mkdir -p "$(dirname "$target")" && touch "$target"
-        fi
-      fi
       [[ -n "$target" ]] && "${EDITOR:vi}" "$target"
     fi
   elif [[ $# -gt 1 ]]; then
@@ -72,37 +63,54 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
-  FZF="fzf --multi --expect='insert,del,left,right,ctrl-d,ctrl-s,ctrl-n' ${OPTS[@]}"
+  KEYS='insert,del,left,right,ctrl-a,ctrl-d,alt-d,ctrl-f,alt-f,ctrl-s,ctrl-n'
+  FZF="fzf --multi --expect='$KEYS' ${OPTS[@]}"
   { read command; mapfile -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
 
   # Use Escape or ctrl-c to exit
   [[ "${#targets[@]}" -eq 0 ]] && break
 
   case $command in
-    # Use ctrl-d to toggle shallow vs. recursive find
-    ctrl-d)
+    # Use ctrl-a to toggle showing "all" nested files/directories
+    # below current directory vs. only those at top-level
+    ctrl-a)
       [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
-      targets=('.')
+      targets=()
     ;;
 
     # Use del to delete targets
     del)
       REMOVE="rm -rI ${targets[@]}"
       bash -c "$REMOVE"
-      targets=('.')
+      targets=()
     ;;
 
     # Use ctrl-s to save targets
     ctrl-s)
       saved_targets=("${saved_targets[@]}" "${targets[@]}")
       echo "${saved_targets[@]}"
-      targets=('.')
     ;;
 
-    # Use insert key to create a file
-    # (no target, user will specify at "Create file/directory" prompt)
-    ctrl-n)
+    # Use ctrl-d to create a directory
+    # Use alt-d to create a directory and cd to it immediately
+    ctrl-d|alt-d)
       targets=()
+      read -p "Create directory: " target
+      if [[ -n "$target" ]]; then
+        mkdir -p "$target"
+        [[ "$command" = 'alt-d' ]] && targets=("$target")
+      fi
+    ;;
+
+    # Use ctrl-f to create a file
+    # Use alt-f to create a file and edit it immediately
+    ctrl-f|alt-f)
+      targets=()
+      read -p "Create file: " target
+      if [[ -n "$target" ]]; then
+        mkdir -p "$(dirname "$target")" && touch "$target"
+        [[ "$command" = 'alt-f' ]] && targets=("$target")
+      fi
     ;;
 
     # Use left arrow to move up a directory
