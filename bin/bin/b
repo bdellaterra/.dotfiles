@@ -44,10 +44,14 @@ enter - enter directory or edit file
 $(echo "$KEY_USAGE" | sort)
 
 options:
---shallow-find=COMMAND    Command to list only top-level files/directories
-                          default: $SHALLOW_FIND
---recursive-find=COMMAND  Command to list nested files/directories
-                          default: $RECURSIVE_FIND
+--help                                Show this help text
+--recursive,-r                        Show all nest files/direcories at start
+--shallow-find=COMMAND,-sf=COMMAND    Command to list only top-level files/directories
+                                      default: $SHALLOW_FIND
+--recursive-find=COMMAND,-rf=COMMAND  Command to list nested files/directories
+                                      default: $RECURSIVE_FIND
+--base-directory=DIR,-bd=DIR          Specify a base directory instead of deriving it from target
+--alternate-directory=DIR,-ad=DIR     Initialize alternate directory at start
 
 Any additional options will be passed to fzf.
 USAGE
@@ -56,15 +60,21 @@ USAGE
 for arg in "$@"; do
   case $arg in
     -h|--help) usage; exit 0 ;;
-    --shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
-    --recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
+    -r|--recursive) SHALLOW=0; shift ;;
+    -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
+    -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
+    -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
+    -ad=*|--alt-dir=*|--alternate-directory=*) ALT_DIR="${arg#*=}"; shift ;;
     # Save remaining options for fzf with quoting preserved
     -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
   esac
 done
 
-BASE_DIR="${1:-$PWD}"  # Target current directory if no argument given
-# ALT_DIR="${2:-$PWD}"  # Alternate directory is 2nd arg
+# Derive base directory from target argument,
+# or use current directory if none given
+if [[ -z "$BASE_DIR" ]]; then
+  [[ -d "$1" ]] && BASE_DIR="$1" || BASE_DIR="$(dirname "${1:-$PWD/.}")"
+fi
 
 main() {
   if [[ $# -eq 1 ]]; then
