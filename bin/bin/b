@@ -64,8 +64,9 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
-  KEYS='insert,del,left,right,ctrl-a,ctrl-d,alt-d,ctrl-f,alt-f,ctrl-s,ctrl-n'
-  FZF="fzf --multi --expect='$KEYS' ${OPTS[@]}"
+  KEYS='insert,del,left,right,ctrl-a,ctrl-d,alt-d,ctrl-f,alt-f,ctrl-v,ctrl-s,ctrl-n'
+  PROMPT="${#saved_targets[@]}> "
+  FZF="fzf --prompt='$PROMPT' --multi --expect='$KEYS' ${OPTS[@]}"
   { read command; mapfile -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
 
   # Use Escape or ctrl-c to exit
@@ -99,6 +100,13 @@ main() {
     insert)
       COPY="cp -ri ${saved_targets[@]} $PWD/"
       bash -c "$COPY"
+      targets=()
+    ;;
+
+    # Use ctrl-v to move saved targets to current directory
+    ctrl-v)
+      MOVE="mv -i ${saved_targets[@]} $PWD/"
+      bash -c "$MOVE"
       targets=()
     ;;
 
