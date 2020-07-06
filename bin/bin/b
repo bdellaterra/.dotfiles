@@ -88,7 +88,17 @@ main() {
 
     # Use ctrl-s to save targets
     ctrl-s)
-      saved_targets=("${saved_targets[@]}" "${targets[@]}")
+      for t in "${targets[@]}"; do
+        saved_targets=("${saved_targets[@]}" $(readlink -f "$t"))
+      done
+      echo "${saved_targets[@]}"
+      targets=()
+    ;;
+
+    # Use insert to copy saved targets to current directory
+    insert)
+      COPY="cp -ri ${saved_targets[@]} $PWD/"
+      bash -c "$COPY"
       targets=()
     ;;
 
