@@ -72,7 +72,7 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
-  FZF="fzf --multi --expect='insert,left,right,ctrl-d' ${OPTS[@]}"
+  FZF="fzf --multi --expect='insert,del,left,right,ctrl-d,ctrl-s,ctrl-n' ${OPTS[@]}"
   { read command; mapfile -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
 
   # Use Escape or ctrl-c to exit
@@ -85,9 +85,23 @@ main() {
       targets=('.')
     ;;
 
+    # Use del to delete targets
+    del)
+      REMOVE="rm -rI ${targets[@]}"
+      bash -c "$REMOVE"
+      targets=('.')
+    ;;
+
+    # Use ctrl-s to save targets
+    ctrl-s)
+      saved_targets=("${saved_targets[@]}" "${targets[@]}")
+      echo "${saved_targets[@]}"
+      targets=('.')
+    ;;
+
     # Use insert key to create a file
     # (no target, user will specify at "Create file/directory" prompt)
-    insert)
+    ctrl-n)
       targets=()
     ;;
 
