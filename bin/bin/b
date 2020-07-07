@@ -26,6 +26,12 @@ KEYMAP['ctrl-d']="Enter directory named at prompt, creating it if necessary"
 KEYMAP['alt-d']="create directory without entering it"
 KEYMAP['ctrl-f']="Edit file named at prompt, creating it if necessary"
 KEYMAP['alt-f']="create file without editing it"
+KEYMAP['alt-b']="bookmark current directory"
+KEYMAP['alt-u']="un-bookmark current directory and go to next bookmark"
+KEYMAP['alt-right']="go to next bookmarked directory"
+KEYMAP['alt-left']="go to previous bookmarked directory"
+KEYMAP['alt-up']="select and enter bookmarked directory"
+KEYMAP['alt-b']="bookmark current directory"
 KEYMAP['ctrl-space']="set base directory"
 KEYMAP['alt-space']="set alternate directory"
 KEYMAP['ctrl-/']="cd to deeper path using cached information"
@@ -34,7 +40,7 @@ KEYMAP['alt-h']="toggle display of hidden files"
 KEYMAP['alt-i']="toggle display of ignored files"
 KEYMAP['alt-a']="toggle all nested vs. only top-level files"
 
-KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
+KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)" # comma-separated list for fzf
 KEY_USAGE="$(for k in "${!KEYMAP[@]}"; do echo "$k - ${KEYMAP[$k]}"; done)"
 
 usage() {
@@ -80,6 +86,7 @@ done
 if [[ -z "$BASE_DIR" ]]; then
   [[ -d "$1" ]] && BASE_DIR="$1" || BASE_DIR="$(dirname "${1:-$PWD/.}")"
 fi
+pushd "$BASE_DIR" && pushd +1 >/dev/null
 
 main() {
   if [[ $# -eq 1 ]]; then
@@ -99,7 +106,7 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
-  FZF="fzf --multi --expect='$KEYS' ${OPTS[@]}"
+  FZF="fzf --multi --layout='reverse' --expect='$KEYS' --prompt='${PWD#$BASE_DIR}>' ${OPTS[@]}"
   { read command; mapfile -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
 
   # Use Escape or ctrl-c to exit
@@ -206,7 +213,6 @@ main() {
     # Use alt-/ to enter alternate directory, or go back
     # to previous directory if already in alternate directory
     alt-space|alt-/)
-    echo "$command $ALT_DIR"
       if [[ "$command" = 'alt-space' || ! -d "$ALT_DIR" ]]; then
         read -ep "Set alternate directory: " -i "$PWD" DIR
         [[ -d "$DIR" ]] && ALT_DIR="$DIR" || echo "Not a directory"
@@ -217,9 +223,48 @@ main() {
       targets=()
     ;;
 
+    # Use alt-b to bookmark current directory
+    alt-b)
+      DIR="$PWD"
+      for b in "${targets[@]}"; do
+        cd "$DIR/$b"
+        [[ ! "$(dirs -l)" =~ " $PWD" ]] && pushd "$PWD" >/dev/null
+      done
+      targets=()
+    ;;
+
+    # Use alt-u to un-bookmark current directory
+    alt-u)
+      mapfile -t DIRS < <(dirs -p -l)
+      for i in "${!DIRS[@]}"; do
+        [[ $i -ge 1 && "${DIRS[$i]}" = "$PWD" ]] && popd +$i >/dev/null
+      done
+      targets=()
+    ;;
+
+    # Use alt-up to select bookmarked directory
+    alt-up)
+      mapfile -d ' ' -t DIRS < <(dirs -l | tr -d '\n')
+      target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
+      targets=("$target")
+    ;;
+
+    # Use alt-right to go to next bookmarked directory
+    alt-right)
+      cd "$(dirs -l +1)"
+      pushd +1 >/dev/null 
+      targets=()
+    ;;
+
+    # Use alt-left to go to previous bookmarked directory
+    alt-left)
+      cd "$(dirs -l -0)"
+      pushd -0 >/dev/null 
+      targets=()
+    ;;
+
     # Use left arrow to move up a directory (not past initial directory)
     left)
-      echo "$PWD $BASE_DIR" $(test "$PWD" != "$BASE_DIR" && echo -n '!=' || echo -n '==')
       [[ "$PWD" != "$BASE_DIR" ]] && targets=("..") || targets=('.')
     ;;
 
