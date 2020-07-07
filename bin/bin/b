@@ -50,7 +50,7 @@ $(echo "$KEY_USAGE" | sort)
 
 options:
 --help                                Show this help text
---recursive,-r                        Show all nest files/direcories at start
+--recursive,-r                        Show nested files/direcories at start
 --shallow-find=COMMAND,-sf=COMMAND    Command to list only top-level files/directories
                                       default: $SHALLOW_FIND
 --recursive-find=COMMAND,-rf=COMMAND  Command to list nested files/directories
@@ -65,7 +65,7 @@ USAGE
 for arg in "$@"; do
   case $arg in
     -h|--help) usage; exit 0 ;;
-    -r|--recursive) SHALLOW=0; shift ;;
+    -r|--recursive) unset SHALLOW; shift ;;
     -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
     -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
     -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
