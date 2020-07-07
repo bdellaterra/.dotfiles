@@ -181,7 +181,7 @@ main() {
     ;;
 
     # Use ctrl-d to create and enter directory
-    # Use alt-d to create a directories without changing current directory
+    # Use alt-d to create a directory without changing current directory
     ctrl-d|alt-d)
       targets=()
       read -p "Create directory: " target
@@ -192,7 +192,7 @@ main() {
     ;;
 
     # Use ctrl-f to create a file and edit it immediately
-    # Use alt-f to create files without editing
+    # Use alt-f to create a file without editing
     ctrl-f|alt-f)
       targets=()
       read -p "Create file: " target
@@ -223,7 +223,7 @@ main() {
       targets=()
     ;;
 
-    # Use alt-b to bookmark current directory
+    # Use alt-b to bookmark targets
     alt-b)
       DIR="$PWD"
       for b in "${targets[@]}"; do
@@ -242,7 +242,7 @@ main() {
       targets=()
     ;;
 
-    # Use alt-up to select bookmarked directory
+    # Use alt-up to select bookmarked directory using fzf
     alt-up)
       mapfile -d ' ' -t DIRS < <(dirs -l | tr -d '\n')
       target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
@@ -263,7 +263,7 @@ main() {
       targets=()
     ;;
 
-    # Use left arrow to move up a directory (not past initial directory)
+    # Use left arrow to move up a directory (not above base directory)
     left)
       [[ "$PWD" != "$BASE_DIR" ]] && targets=("..") || targets=('.')
     ;;
