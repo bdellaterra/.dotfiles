@@ -26,8 +26,8 @@ KEYMAP['ctrl-d']="Enter directory named at prompt, creating it if necessary"
 KEYMAP['alt-d']="create directory without entering it"
 KEYMAP['ctrl-f']="Edit file named at prompt, creating it if necessary"
 KEYMAP['alt-f']="create file without editing it"
-KEYMAP['ctrl-b']="set base directory"
-KEYMAP['alt-b']="set alternate directory"
+KEYMAP['ctrl-space']="set base directory"
+KEYMAP['alt-space']="set alternate directory"
 KEYMAP['ctrl-/']="cd to deeper path using cached information"
 KEYMAP['alt-/']="cd to alternate directory"
 KEYMAP['alt-h']="toggle display of hidden files"
@@ -195,19 +195,19 @@ main() {
       fi
     ;;
 
-    # Use ctrl-b to set base directory
-    ctrl-b)
+    # Use ctrl-space to set base directory
+    ctrl-space)
       read -ep "Set base directory: " -i "$BASE_DIR" DIR
       [[ -d "$DIR" ]] && BASE_DIR="$DIR"
       targets=()
     ;;
 
-    # Use alt-b to set alternate directory
+    # Use alt-space to set alternate directory
     # Use alt-/ to enter alternate directory, or go back
     # to previous directory if already in alternate directory
-    alt-b|alt-/)
+    alt-space|alt-/)
     echo "$command $ALT_DIR"
-      if [[ "$command" = 'alt-b' || ! -d "$ALT_DIR" ]]; then
+      if [[ "$command" = 'alt-space' || ! -d "$ALT_DIR" ]]; then
         read -ep "Set alternate directory: " -i "$PWD" DIR
         [[ -d "$DIR" ]] && ALT_DIR="$DIR" || echo "Not a directory"
       fi
