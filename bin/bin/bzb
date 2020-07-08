@@ -45,7 +45,7 @@ KEY_USAGE="$(for k in "${!KEYMAP[@]}"; do echo "$k - ${KEYMAP[$k]}"; done)"
 
 usage() {
 cat <<USAGE
-usage: b [options] [target file or directory]
+usage: $(basename "$0") [options] [target file or directory]
 
 Browse files using fzf. If no target specified start in current directory.
 
