@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Stay in browser after editing files
+PERSIST=1
+
 # Start with only top-level files/directories displayed
 SHALLOW=1
 
@@ -75,6 +78,7 @@ for arg in "$@"; do
   case $arg in
     -h|--help) usage; exit 0 ;;
     -r|--recursive) unset SHALLOW; shift ;;
+    -s|--single-run) unset PERSIST; shift ;;
     -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
     -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
     -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
@@ -98,6 +102,7 @@ main() {
       cd "$target"
     else
       [[ -n "$target" ]] && "${EDITOR:vi}" "$target"
+      [[ ! $PERSIST ]] && exit 0
     fi
   elif [[ $# -gt 1 ]]; then
     EDIT="${EDITOR:vi}"
@@ -105,6 +110,7 @@ main() {
       EDIT="$EDIT \"$f\""
     done
     bash -c "$EDIT"
+    [[ ! $PERSIST ]] && exit 0
   fi
 
   # CYCLE INTO FZF
@@ -113,7 +119,7 @@ main() {
   { read command; readarray -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
 
   # Use Escape or ctrl-c to exit
-  [[ "${#targets[@]}" -eq 0 ]] && break
+  [[ "${#targets[@]}" -eq 0 ]] && exit 0
 
   case $command in
     # Use alt-a to toggle showing "all" nested files/directories
