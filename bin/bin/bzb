@@ -63,6 +63,7 @@ $(echo "$KEY_USAGE" | sort)
 options:
 --help                                Show this help text
 --recursive,-r                        Show nested files/direcories at start
+--single-run,-s                       Exit browser after editing a file
 --shallow-find=COMMAND,-sf=COMMAND    Command to list only top-level files/directories
                                       default: $SHALLOW_FIND
 --recursive-find=COMMAND,-rf=COMMAND  Command to list nested files/directories
