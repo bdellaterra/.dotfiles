@@ -37,10 +37,11 @@ KEYMAP['ctrl-/']="set new base directory at prompt, then go to it"
 KEYMAP['alt-/']="cd to base directory"
 KEYMAP['ctrl-q']="set alternate directory"
 KEYMAP['alt-q']="cd to alternate directory"
-KEYMAP['ctrl-/']="cd to deeper path using cached information"
-KEYMAP['alt-h']="toggle display of hidden files"
-KEYMAP['alt-i']="toggle display of ignored files"
 KEYMAP['alt-a']="toggle all nested vs. only top-level files"
+# TODO:
+# KEYMAP['ctrl-/']="cd to deeper path using cached information"
+# KEYMAP['alt-h']="toggle display of hidden files"
+# KEYMAP['alt-i']="toggle display of ignored files"
 
 KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)" # comma-separated list for fzf
 KEY_USAGE="$(for k in "${!KEYMAP[@]}"; do echo "$k - ${KEYMAP[$k]}"; done)"
