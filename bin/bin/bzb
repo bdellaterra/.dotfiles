@@ -223,14 +223,14 @@ main() {
 
     # Use ctrl-u to un-bookmark targets
     ctrl-u)
-      DIR="$PWD"
-      readarray -t DIRS < <(dirs -p -l)
       for b in "${targets[@]}"; do
+        readarray -t DIRS < <(dirs -p -l)
         for i in "${!DIRS[@]}"; do
-          [[ $i -ge 1 && "${DIRS[$i]}" = "$PWD" ]] && popd +$i >/dev/null
+          if [[ $i -ge 1 && "${DIRS[$i]}" = "$PWD/$b" ]]; then
+            popd +$i >/dev/null
+          fi
         done
       done
-      cd "$DIR"
       targets=()
     ;;
 
