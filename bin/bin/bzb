@@ -120,7 +120,7 @@ main() {
   { read command; readarray -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
 
   # Use Escape or ctrl-c to exit
-  [[ "${#targets[@]}" -eq 0 ]] && exit 0
+  [[ -z "$command" && "${#targets[@]}" -eq 0 ]] && exit 0
 
   case $command in
     # Use alt-a to toggle showing "all" nested files/directories
