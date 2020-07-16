@@ -97,15 +97,9 @@ fi
 pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
 
 main() {
-  if [[ $# -eq 1 ]]; then
-    target="$1"
-    if [[ -d "$target" ]]; then
-      cd "$target"
-    else
-      [[ -n "$target" ]] && "${EDITOR:vi}" "$target"
-      [[ ! $PERSIST ]] && exit 0
-    fi
-  elif [[ $# -gt 1 ]]; then
+  if [[ $# -eq 1 && -d "$1" ]]; then
+    cd "$1"
+  elif [[ $# -ge 1 ]]; then
     EDIT="${EDITOR:vi}"
     for f in "$@"; do
       EDIT="$EDIT \"$f\""
@@ -117,7 +111,7 @@ main() {
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
   FZF="fzf --multi --layout='reverse' --expect='$KEYS' --prompt='${PWD#$BASE_DIR}>' ${OPTS[@]}"
-  { read command; readarray -t targets; } < <(bash -c "$FIND" | bash -c "$FZF")
+  { read command; readarray -t targets; } < <(bash -c "$FIND | $FZF")
 
   # Use Escape or ctrl-c to exit
   [[ -z "$command" && "${#targets[@]}" -eq 0 ]] && exit 0
