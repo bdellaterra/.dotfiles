@@ -94,7 +94,7 @@ done
 if [[ -z "$BASE_DIR" ]]; then
   [[ -d "$1" ]] && BASE_DIR="$1" || BASE_DIR="$(dirname "${1:-$PWD/.}")"
 fi
-pushd "$BASE_DIR" && pushd +1 >/dev/null
+pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
 
 main() {
   if [[ $# -eq 1 ]]; then
