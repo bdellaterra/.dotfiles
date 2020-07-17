@@ -100,6 +100,14 @@ for arg in "$@"; do
   esac
 done
 
+RecursiveFind() {
+  echo "$RECURSIVE_FIND";
+}
+
+ShallowFind() {
+  echo "$SHALLOW_FIND";
+}
+
 # Derive base directory from target argument,
 # or use current directory if none given
 if [[ -z "$BASE_DIR" ]]; then
@@ -120,7 +128,7 @@ main() {
   fi
 
   # CYCLE INTO FZF
-  [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
+  [[ $SHALLOW ]] && FIND=$(ShallowFind) || FIND=$(RecursiveFind)
   FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' ${OPTS[@]}"
   { read command; readarray -t targets; } < <(bash -c "$FIND | $FZF")
 
