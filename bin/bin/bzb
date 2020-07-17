@@ -7,13 +7,16 @@ PERSIST=1
 # Start with only top-level files/directories displayed
 SHALLOW=1
 
+# Don't show hidden files by default
+export HIDDEN=''
+
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
-  RECURSIVE_FIND='fd --hidden'
-  SHALLOW_FIND='fd --hidden --max-depth 1 --exec echo {/}'
+  RECURSIVE_FIND='fd ${HIDDEN:+--hidden}'
+  SHALLOW_FIND='fd ${HIDDEN:+--hidden} --max-depth 1 --exec echo {/}'
 else
-  RECURSIVE_FIND='find . ! -name "." | sed "s:^\./::"'
-  SHALLOW_FIND='find . -maxdepth 1 ! -name "." -execdir basename "{}" \;'
+  RECURSIVE_FIND='find . ${HIDDEN:+! -name "."} | sed "s:^\./::"'
+  SHALLOW_FIND='find . -maxdepth 1 ${HIDDEN:+! -name "."} -execdir basename "{}" \;'
 fi
 
 declare -A KEYMAP
@@ -45,10 +48,10 @@ declareKeymap 'alt-/'     "go to base directory"
 declareKeymap 'ctrl-q'    "set alternate directory"
 declareKeymap 'alt-q'     "cd to alternate directory"
 declareKeymap 'alt-a'     "toggle all nested vs. only top-level files"
+declareKeymap 'alt-h'     "toggle display of hidden files"
 
 # TODO:
 # KEYMAP['ctrl-/']="cd to deeper path using cached information"
-# KEYMAP['alt-h']="toggle display of hidden files"
 # KEYMAP['alt-g']="toggle display of ignored files"
 
 # comma-separated list for fzf
@@ -90,6 +93,7 @@ for arg in "$@"; do
   case $arg in
     -h|--help) usage; exit 0 ;;
     -r|--recursive) unset SHALLOW; shift ;;
+    -H|--hidden) export HIDDEN=1; shift ;;
     -s|--single-run) unset PERSIST; shift ;;
     -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
     -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
@@ -101,11 +105,11 @@ for arg in "$@"; do
 done
 
 RecursiveFind() {
-  echo "$RECURSIVE_FIND";
+  bash -c "echo \"$RECURSIVE_FIND\"";
 }
 
 ShallowFind() {
-  echo "$SHALLOW_FIND";
+  bash -c "echo \"$SHALLOW_FIND\"";
 }
 
 # Derive base directory from target argument,
@@ -140,6 +144,12 @@ main() {
     # vs. only those at top-level
     alt-a)
       [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
+      targets=()
+    ;;
+
+    # Use alt-h to toggle showing hidden files/directories
+    alt-h)
+      [[ $HIDDEN ]] && unset HIDDEN || export HIDDEN=1
       targets=()
     ;;
 
