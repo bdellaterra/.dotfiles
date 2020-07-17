@@ -17,37 +17,50 @@ else
 fi
 
 declare -A KEYMAP
-KEYMAP['right']="enter directory or edit file"
-KEYMAP['left']="cd to parent directory"
-KEYMAP['ctrl-r']="move/rename selected targets to directory named at prompt"
-KEYMAP['alt-r']="rename targets"
-KEYMAP['ctrl-x']="move targets to directory named at prompt"
-KEYMAP['alt-x']="delete selected targets"
-KEYMAP['ctrl-s']="copy/rename selected targets to directory named at prompt"
-KEYMAP['alt-s']="copy selected targets to directory named at prompt"
-KEYMAP['ctrl-d']="enter directory named at prompt, creating it if necessary"
-KEYMAP['alt-d']="create directory without entering"
-KEYMAP['ctrl-f']="edit files named at prompt, creating them if necessary"
-KEYMAP['alt-f']="create file without editing"
-KEYMAP['ctrl-b']="bookmark directories named at prompt"
-KEYMAP['alt-b']="bookmark current directory"
-KEYMAP['ctrl-u']="un-bookmark directories named at prompt"
-KEYMAP['alt-u']="un-bookmark current directory"
-KEYMAP['alt-right']="go to next bookmarked directory"
-KEYMAP['alt-left']="go to previous bookmarked directory"
-KEYMAP['alt-up']="select and enter bookmarked directory"
-KEYMAP['ctrl-/']="set new base directory at prompt, then go to it"
-KEYMAP['alt-/']="cd to base directory"
-KEYMAP['ctrl-q']="set alternate directory"
-KEYMAP['alt-q']="cd to alternate directory"
-KEYMAP['alt-a']="toggle all nested vs. only top-level files"
+declareKeymap() {
+  KEYS[${#KEYS[@]}]="$1" && KEYMAP["$1"]="$2"
+}
+
+declareKeymap 'right'     "enter directory or edit file"
+declareKeymap 'left'      "go to parent directory (not moving past base directory)"
+declareKeymap 'ctrl-r'    "move/rename targets to directory named at prompt"
+declareKeymap 'alt-r'     "rename targets in current directory"
+declareKeymap 'ctrl-x'    "move targets to directory named at prompt"
+declareKeymap 'alt-x'     "delete targets"
+declareKeymap 'ctrl-s'    "copy/rename targets to directory named at prompt"
+declareKeymap 'alt-s'     "copy targets to directory named at prompt"
+declareKeymap 'ctrl-d'    "enter directory named at prompt, creating it if necessary"
+declareKeymap 'alt-d'     "create directory without entering"
+declareKeymap 'ctrl-f'    "edit file named at prompt, creating it if necessary"
+declareKeymap 'alt-f'     "create file without editing"
+declareKeymap 'ctrl-b'    "bookmark target directories"
+declareKeymap 'alt-b'     "bookmark current directory"
+declareKeymap 'ctrl-u'    "un-bookmark target directories"
+declareKeymap 'alt-u'     "un-bookmark current directory"
+declareKeymap 'alt-right' "go to next bookmarked directory"
+declareKeymap 'alt-left'  "go to previous bookmarked directory"
+declareKeymap 'alt-up'    "select and enter bookmarked directory"
+declareKeymap 'ctrl-/'    "set new base directory at prompt, then go to it"
+declareKeymap 'alt-/'     "go to base directory"
+declareKeymap 'ctrl-q'    "set alternate directory"
+declareKeymap 'alt-q'     "cd to alternate directory"
+declareKeymap 'alt-a'     "toggle all nested vs. only top-level files"
+
 # TODO:
 # KEYMAP['ctrl-/']="cd to deeper path using cached information"
 # KEYMAP['alt-h']="toggle display of hidden files"
-# KEYMAP['alt-i']="toggle display of ignored files"
+# KEYMAP['alt-g']="toggle display of ignored files"
 
-KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)" # comma-separated list for fzf
-KEY_USAGE="$(for k in "${!KEYMAP[@]}"; do echo "$k - ${KEYMAP[$k]}"; done)"
+# comma-separated list for fzf
+FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
+
+KEY_USAGE=$(cat <<KEYMAPS
+escape:exit file browser
+ctrl-c:exit file browser
+enter:enter directory or edit file
+$(for k in "${!KEYS[@]}"; do echo "${KEYS[$k]}:${KEYMAP[${KEYS[$k]}]}"; done)
+KEYMAPS
+)
 
 usage() {
 cat <<USAGE
@@ -56,9 +69,7 @@ usage: $(basename "$0") [options] [target file or directory]
 Browse files using fzf. If no target specified start in current directory.
 
 Keymaps are as follows:
-escape or ctrl-c - exit file browser
-enter - enter directory or edit file
-$(echo "$KEY_USAGE" | sort)
+$(echo "$KEY_USAGE" | column -t -s ':')
 
 options:
 --help                                Show this help text
@@ -110,7 +121,7 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND="$SHALLOW_FIND" || FIND="$RECURSIVE_FIND"
-  FZF="fzf --multi --layout='reverse' --expect='$KEYS' --prompt='${PWD#$BASE_DIR}>' ${OPTS[@]}"
+  FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' ${OPTS[@]}"
   { read command; readarray -t targets; } < <(bash -c "$FIND | $FZF")
 
   # Use Escape or ctrl-c to exit
