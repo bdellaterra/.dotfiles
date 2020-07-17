@@ -10,10 +10,13 @@ SHALLOW=1
 # Don't show hidden files by default
 export HIDDEN=''
 
+# Don't show ignored files by default
+export NO_IGNORE=''
+
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
-  RECURSIVE_FIND='fd ${HIDDEN:+--hidden}'
-  SHALLOW_FIND='fd ${HIDDEN:+--hidden} --max-depth 1 --exec echo {/}'
+  RECURSIVE_FIND='fd ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore}'
+  SHALLOW_FIND='fd --max-depth 1 ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} --exec echo {/}'
 else
   RECURSIVE_FIND='find . ${HIDDEN:+! -name "."} | sed "s:^\./::"'
   SHALLOW_FIND='find . -maxdepth 1 ${HIDDEN:+! -name "."} -execdir basename "{}" \;'
@@ -49,10 +52,7 @@ declareKeymap 'ctrl-q'    "set alternate directory"
 declareKeymap 'alt-q'     "cd to alternate directory"
 declareKeymap 'alt-a'     "toggle all nested vs. only top-level files"
 declareKeymap 'alt-h'     "toggle display of hidden files"
-
-# TODO:
-# KEYMAP['ctrl-/']="cd to deeper path using cached information"
-# KEYMAP['alt-g']="toggle display of ignored files"
+declareKeymap 'alt-g'     "toggle display of ignored files (requires `fd` command)"
 
 # comma-separated list for fzf
 FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
@@ -77,6 +77,8 @@ $(echo "$KEY_USAGE" | column -t -s ':')
 options:
 --help                                Show this help text
 --recursive,-r                        Show nested files/direcories at start
+--hidden,-H                           Show hidden files/direcories at start
+--no-ignore,-I                        Show ignored files/direcories at start
 --single-run,-s                       Exit browser after editing a file
 --shallow-find=COMMAND,-sf=COMMAND    Command to list only top-level files/directories
                                       default: $SHALLOW_FIND
@@ -94,6 +96,7 @@ for arg in "$@"; do
     -h|--help) usage; exit 0 ;;
     -r|--recursive) unset SHALLOW; shift ;;
     -H|--hidden) export HIDDEN=1; shift ;;
+    -I|--no-ignore) export NO_IGNORE=1; shift ;;
     -s|--single-run) unset PERSIST; shift ;;
     -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
     -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
@@ -150,6 +153,12 @@ main() {
     # Use alt-h to toggle showing hidden files/directories
     alt-h)
       [[ $HIDDEN ]] && unset HIDDEN || export HIDDEN=1
+      targets=()
+    ;;
+
+    # Use alt-g to toggle showing ignored files/directories
+    alt-g)
+      [[ $NO_IGNORE ]] && unset NO_IGNORE || export NO_IGNORE=1
       targets=()
     ;;
 
