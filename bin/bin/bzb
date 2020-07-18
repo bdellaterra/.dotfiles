@@ -181,8 +181,8 @@ main() {
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
           if [[ -r "$t" ]]; then
-            read -ep 'Move/Rename File: ' -i "mv '$PWD/$t' '${DIR%/}/$t'" COMMAND
-            [[ -n "$COMMAND" ]] && bash -c "$COMMAND"
+            read -ep 'Move/Rename File: ' -i "mv '$PWD/$t' '${DIR%/}/$t'" CMD
+            [[ -n "$CMD" ]] && bash -c "$CMD"
           fi
         done
       fi
@@ -192,8 +192,8 @@ main() {
     alt-r)
       for t in "${targets[@]}"; do
         if [[ -r "$t" ]]; then
-          read -ep 'Move/Rename File: ' -i "mv \"$t\" \"${ALT_DIR:-.}/$t\"" COMMAND
-          [[ -n "$COMMAND" ]] && bash -c "$COMMAND"
+          read -ep 'Move/Rename File: ' -i "mv \"$t\" \"${ALT_DIR:-.}/$t\"" CMD
+          [[ -n "$CMD" ]] && bash -c "$CMD"
         fi
       done
     ;;
@@ -215,8 +215,8 @@ main() {
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
           if [[ -r "$t" ]]; then
-            read -ep 'Copy/Rename File: ' -i "cp -ir '$PWD/$t' '$DIR/$t'" COMMAND
-            [[ -n "$COMMAND" ]] && bash -c "$COMMAND"
+            read -ep 'Copy/Rename File: ' -i "cp -ir '$PWD/$t' '$DIR/$t'" CMD
+            [[ -n "$CMD" ]] && bash -c "$CMD"
           fi
         done
       fi
