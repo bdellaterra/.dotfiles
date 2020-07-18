@@ -301,15 +301,13 @@ main() {
     # Use alt-up to select bookmarked directory using fzf
     alt-up)
       readarray -t DIRS < <(dirs -p -l | LC_ALL=C sort -u)
-      target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
-      next_targets=("$target")
+      next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
     # Use alt-down to select bookmarked directory under current directory using fzf
     alt-down)
       readarray -t DIRS < <(dirs -p -l | grep "$PWD" | LC_ALL=C sort -u)
-      target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
-      next_targets=("$target")
+      next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
     # Use ctrl-/ to set base directory
