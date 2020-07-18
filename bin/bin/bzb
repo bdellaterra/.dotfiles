@@ -35,9 +35,9 @@ declareKeymap 'ctrl-x'     "move targets to directory named at prompt"
 declareKeymap 'alt-x'      "delete targets"
 declareKeymap 'ctrl-s'     "copy/rename targets to directory named at prompt"
 declareKeymap 'alt-s'      "copy targets to directory named at prompt"
-declareKeymap 'ctrl-d'     "enter directory named at prompt, creating it if necessary"
+declareKeymap 'ctrl-d'     "create/enter directory named at prompt"
 declareKeymap 'alt-d'      "create directory without entering"
-declareKeymap 'ctrl-f'     "edit file named at prompt, creating it if necessary"
+declareKeymap 'ctrl-f'     "create/edit file named at prompt"
 declareKeymap 'alt-f'      "create file without editing"
 declareKeymap 'alt-b'      "bookmark target directories"
 declareKeymap 'alt-u'      "un-bookmark target directories"
@@ -50,7 +50,8 @@ declareKeymap 'alt-down'   "select and enter bookmarked directory under current 
 declareKeymap 'ctrl-/'     "set new base directory at prompt, then go to it"
 declareKeymap 'alt-/'      "go to base directory"
 declareKeymap 'ctrl-q'     "set alternate directory"
-declareKeymap 'alt-q'      "cd to alternate directory"
+declareKeymap 'alt-q'      "go to alternate directory"
+declareKeymap 'alt-p'      "go to previous directory"
 declareKeymap 'alt-a'      "toggle all nested vs. only top-level files"
 declareKeymap 'alt-h'      "toggle display of hidden files"
 declareKeymap 'alt-g'      "toggle display of ignored files (requires 'fd' command)"
@@ -315,7 +316,7 @@ main() {
     ;;
 
     # Use ctrl-/ to set base directory
-    # Use alt-/ to enter base directory, or go back
+    # Use alt-/ to go to base directory, or go back
     # to previous directory if already in base directory
     ctrl-/|alt-/)
       if [[ "$command" = 'ctrl-/' || ! -d "$BASE_DIR" ]]; then
@@ -329,7 +330,7 @@ main() {
     ;;
 
     # Use ctrl-\ to set alternate directory
-    # Use alt-\ to enter alternate directory, or go back
+    # Use alt-\ to go to alternate directory, or go back
     # to previous directory if already in alternate directory
     ctrl-q|alt-q)
       if [[ "$command" = 'ctrl-q' || ! -d "$ALT_DIR" ]]; then
@@ -339,6 +340,12 @@ main() {
       if [[ "$command" = 'alt-q' && -d "$DIR" ]]; then
         [[ "$PWD" = "$ALT_DIR" ]] && cd "$OLDPWD" || cd "$ALT_DIR"
       fi
+      targets=()
+    ;;
+
+    # Use alt-p to go to previous directory
+    alt-p)
+      cd "$OLDPWD"
       targets=()
     ;;
 
