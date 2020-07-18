@@ -144,7 +144,7 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND=$(ShallowFind) || FIND=$(RecursiveFind)
-  [[ $REVERSE ]] && SORT='LC_ALL=C sort -ur' || SORT='LC_ALL=C sort -u'
+  SORT="LC_ALL=C sort ${REVERSE:+'-r'} -u"
   FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' ${OPTS[@]}"
   { read command; readarray -t targets; } < <(bash -c "$FIND | $SORT | $FZF")
 
