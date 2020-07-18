@@ -152,30 +152,27 @@ main() {
   # Use Escape or ctrl-c to exit
   [[ -z "$command" && "${#targets[@]}" -eq 0 ]] && exit 0
 
+  next_targets=()
   case $command in
     # Use alt-a to toggle showing "all" nested files/directories
     # vs. only those at top-level
     alt-a)
       [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
-      targets=()
     ;;
 
     # Use alt-h to toggle showing hidden files/directories
     alt-h)
       [[ $HIDDEN ]] && unset HIDDEN || export HIDDEN=1
-      targets=()
     ;;
 
     # Use alt-g to toggle showing ignored files/directories
     alt-g)
       [[ $NO_IGNORE ]] && unset NO_IGNORE || export NO_IGNORE=1
-      targets=()
     ;;
 
     # Use alt-o to toggle between normal and reverse sort order
     alt-o)
       [[ $REVERSE ]] && unset REVERSE || REVERSE=1
-      targets=()
     ;;
 
     # Use alt-x to move and rename targets
@@ -189,7 +186,6 @@ main() {
           fi
         done
       fi
-      targets=()
     ;;
 
     # Use alt-r to rename targets in current directory
@@ -200,21 +196,18 @@ main() {
           [[ -n "$RENAME" ]] && bash -c "$RENAME"
         fi
       done
-      targets=()
     ;;
 
     # Use ctrl-x to move targets
     ctrl-x)
       read -ep 'Move to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       [[ -n "$DIR" ]] && mv -i "${targets[@]}" "$DIR"
-      targets=()
     ;;
 
     # Use alt-x to delete targets
     alt-x)
       REMOVE="rm -rI ${targets[@]}"
       bash -c "$REMOVE"
-      targets=()
     ;;
 
     # Use ctrl-s to copy and rename targets
@@ -228,35 +221,31 @@ main() {
           fi
         done
       fi
-      targets=()
     ;;
 
     # Use alt-s to copy targets
     alt-s)
       read -ep 'Copy to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       [[ -n "$DIR" ]] && cp -ir "${targets[@]}" "$DIR"
-      targets=()
     ;;
 
     # Use ctrl-d to create and enter directory
     # Use alt-d to create a directory without changing current directory
     ctrl-d|alt-d)
-      targets=()
       read -p "Create directory: " target
       if [[ -n "$target" ]]; then
         mkdir -p "$target"
-        [[ "$command" = 'ctrl-d' ]] && targets=("$target")
+        [[ "$command" = 'ctrl-d' ]] && next_targets=("$target")
       fi
     ;;
 
     # Use ctrl-f to create a file and edit it immediately
     # Use alt-f to create a file without editing
     ctrl-f|alt-f)
-      targets=()
       read -p "Create file: " target
       if [[ -n "$target" ]]; then
         mkdir -p "$(dirname "$target")" && touch "$target"
-        [[ "$command" = 'ctrl-f' ]] && targets=("$target")
+        [[ "$command" = 'ctrl-f' ]] && next_targets=("$target")
       fi
     ;;
 
@@ -269,7 +258,6 @@ main() {
         [[ ! "$(dirs -l)" =~ " $PWD" ]] && pushd "$PWD" >/dev/null
       done
       cd "$DIR"
-      targets=()
     ;;
 
     # Use alt-u to un-bookmark select targets
@@ -283,13 +271,11 @@ main() {
           fi
         done
       done
-      targets=()
     ;;
 
     # Use alt-enter to bookmark current directory
     alt-enter)
       [[ ! "$(dirs -l)" =~ " $PWD" ]] && pushd "$PWD" >/dev/null
-      targets=()
     ;;
 
     # Use alt-bspace to un-bookmark current directory
@@ -298,35 +284,32 @@ main() {
       for i in "${!DIRS[@]}"; do
         [[ $i -ge 1 && "${DIRS[$i]}" = "$PWD" ]] && popd +$i >/dev/null
       done
-      targets=()
     ;;
 
     # Use alt-right to go to next bookmarked directory
     alt-right)
       cd "$(dirs -l +1)"
       pushd +1 >/dev/null 
-      targets=()
     ;;
 
     # Use alt-left to go to previous bookmarked directory
     alt-left)
       cd "$(dirs -l -0)"
       pushd -0 >/dev/null 
-      targets=()
     ;;
 
     # Use alt-up to select bookmarked directory using fzf
     alt-up)
       readarray -t DIRS < <(dirs -p -l | LC_ALL=C sort -u)
       target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
-      [[ -n "$targets" ]] && targets=("$target") || targets=()
+      next_targets=("$target")
     ;;
 
     # Use alt-down to select bookmarked directory under current directory using fzf
     alt-down)
       readarray -t DIRS < <(dirs -p -l | grep "$PWD" | LC_ALL=C sort -u)
       target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
-      [[ -n "$targets" ]] && targets=("$target") || targets=()
+      next_targets=("$target")
     ;;
 
     # Use ctrl-/ to set base directory
@@ -340,7 +323,6 @@ main() {
       if [[ "$command" = 'alt-/' && -d "$DIR" ]]; then
         [[ "$PWD" = "$BASE_DIR" ]] && cd "$OLDPWD" || cd "$BASE_DIR"
       fi
-      targets=()
     ;;
 
     # Use ctrl-\ to set alternate directory
@@ -354,24 +336,25 @@ main() {
       if [[ "$command" = 'alt-q' && -d "$DIR" ]]; then
         [[ "$PWD" = "$ALT_DIR" ]] && cd "$OLDPWD" || cd "$ALT_DIR"
       fi
-      targets=()
     ;;
 
     # Use alt-p to go to previous directory
     alt-p)
       cd "$OLDPWD"
-      targets=()
     ;;
 
     # Use left arrow to move up a directory (not above base directory)
     left)
-      [[ "$PWD" != "$BASE_DIR" ]] && targets=("..") || targets=('.')
+      [[ "$PWD" != "$BASE_DIR" ]] && next_targets=("..") || next_targets=('.')
     ;;
 
     # Use enter (parsed as empty string) or right arrow for default action
+    *)
+      next_targets=("$targets")
+    ;;
   esac
 
-  main "${targets[@]}"
+  main "${next_targets[@]}"
 }
 
 # Default initial target is current directory
