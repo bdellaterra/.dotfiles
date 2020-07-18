@@ -137,7 +137,7 @@ main() {
   elif [[ $# -ge 1 ]]; then
     EDIT="${EDITOR:vi}"
     for f in "$@"; do
-      EDIT="$EDIT \"$f\""
+      EDIT="$EDIT '$f'"
     done
     bash -c "$EDIT"
     [[ ! $PERSIST ]] && exit 0
@@ -347,7 +347,7 @@ main() {
 
     # Use enter (parsed as empty string) or right arrow for default action
     *)
-      next_targets=("$targets")
+      next_targets=("${targets[@]}")
     ;;
   esac
 
