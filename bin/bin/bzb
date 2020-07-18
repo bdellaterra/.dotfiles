@@ -15,11 +15,11 @@ export NO_IGNORE=''
 
 # Prefer fd over find so ignored files are not listed
 if command -v fd &>/dev/null; then
-  RECURSIVE_FIND='fd ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore}'
-  SHALLOW_FIND='fd --max-depth 1 ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} --exec echo {/}'
+  RECURSIVE_FIND='fd ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} | LC_ALL=C sort -u'
+  SHALLOW_FIND='fd --max-depth 1 ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} --exec echo {/} | LC_ALL=C sort -u'
 else
-  RECURSIVE_FIND='find . ${HIDDEN:+! -name "."} | sed "s:^\./::"'
-  SHALLOW_FIND='find . -maxdepth 1 ${HIDDEN:+! -name "."} -execdir basename "{}" \;'
+  RECURSIVE_FIND='find . ${HIDDEN:+! -name "."} | sed "s:^\./::" | LC_ALL=C sort -u'
+  SHALLOW_FIND='find . -maxdepth 1 ${HIDDEN:+! -name "."} -execdir basename "{}" \; | LC_ALL=C sort -u'
 fi
 
 declare -A KEYMAP
@@ -304,13 +304,13 @@ main() {
     # Use alt-up to select bookmarked directory using fzf
     alt-up)
       readarray -t DIRS < <(dirs -p -l)
-      target="$(printf '%s\n' "${DIRS[@]}" | fzf | sort | uniq)"
+      target="$(printf '%s\n' "${DIRS[@]}" | fzf | LC_ALL=C sort -u)"
       [[ -n "$targets" ]] && targets=("$target") || targets=()
     ;;
 
     # Use alt-down to select bookmarked directory under current directory using fzf
     alt-down)
-      readarray -t DIRS < <(dirs -p -l | grep "$PWD" | sort | uniq)
+      readarray -t DIRS < <(dirs -p -l | grep "$PWD" | LC_ALL=C sort -u)
       target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
       [[ -n "$targets" ]] && targets=("$target") || targets=()
     ;;
