@@ -46,6 +46,7 @@ declareKeymap 'alt-bspace' "un-bookmark current directory"
 declareKeymap 'alt-right'  "go to next bookmarked directory"
 declareKeymap 'alt-left'   "go to previous bookmarked directory"
 declareKeymap 'alt-up'     "select and enter bookmarked directory"
+declareKeymap 'alt-down'   "select and enter bookmarked directory under current directory"
 declareKeymap 'ctrl-/'     "set new base directory at prompt, then go to it"
 declareKeymap 'alt-/'      "go to base directory"
 declareKeymap 'ctrl-q'     "set alternate directory"
@@ -301,9 +302,16 @@ main() {
 
     # Use alt-up to select bookmarked directory using fzf
     alt-up)
-      readarray -d ' ' -t DIRS < <(dirs -l | tr -d '\n')
+      readarray -t DIRS < <(dirs -p -l)
       target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
-      targets=("$target")
+      [[ -n "$targets" ]] && targets=("$target") || targets=()
+    ;;
+
+    # Use alt-down to select bookmarked directory under current directory using fzf
+    alt-down)
+      readarray -t DIRS < <(dirs -p -l | grep "$PWD")
+      target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
+      [[ -n "$targets" ]] && targets=("$target") || targets=()
     ;;
 
     # Use ctrl-/ to set base directory
