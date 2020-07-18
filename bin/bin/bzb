@@ -303,13 +303,13 @@ main() {
     # Use alt-up to select bookmarked directory using fzf
     alt-up)
       readarray -t DIRS < <(dirs -p -l)
-      target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
+      target="$(printf '%s\n' "${DIRS[@]}" | fzf | sort | uniq)"
       [[ -n "$targets" ]] && targets=("$target") || targets=()
     ;;
 
     # Use alt-down to select bookmarked directory under current directory using fzf
     alt-down)
-      readarray -t DIRS < <(dirs -p -l | grep "$PWD")
+      readarray -t DIRS < <(dirs -p -l | grep "$PWD" | sort | uniq)
       target="$(printf '%s\n' "${DIRS[@]}" | fzf)"
       [[ -n "$targets" ]] && targets=("$target") || targets=()
     ;;
