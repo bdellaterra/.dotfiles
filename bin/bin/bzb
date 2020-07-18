@@ -252,8 +252,10 @@ main() {
     alt-b)
       DIR="$PWD"
       for b in "${targets[@]}"; do
-        cd "$DIR/$b"
-        [[ ! "$(dirs -l)" =~ " $PWD" ]] && pushd "$PWD" >/dev/null
+        if [[ -d "$DIR/$b" ]]; then
+          cd "$DIR/$b"
+          [[ ! "$(dirs -l)" =~ " $PWD" ]] && pushd "$PWD" >/dev/null
+        fi
       done
       cd "$DIR"
     ;;
@@ -263,7 +265,7 @@ main() {
       for b in "${targets[@]}"; do
         readarray -t DIRS < <(dirs -p -l)
         for i in "${!DIRS[@]}"; do
-          if [[ $i -ge 1 && "${DIRS[$i]}" = "$PWD/$b" ]]; then
+          if [[ $i -ge 1 && -d "${DIRS[$i]}" && "${DIRS[$i]}" = "$PWD/$b" ]]; then
             popd +$i >/dev/null
           fi
         done
