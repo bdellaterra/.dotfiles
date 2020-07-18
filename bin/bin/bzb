@@ -52,7 +52,7 @@ declareKeymap 'ctrl-q'    "set alternate directory"
 declareKeymap 'alt-q'     "cd to alternate directory"
 declareKeymap 'alt-a'     "toggle all nested vs. only top-level files"
 declareKeymap 'alt-h'     "toggle display of hidden files"
-declareKeymap 'alt-g'     "toggle display of ignored files (requires `fd` command)"
+declareKeymap 'alt-g'     "toggle display of ignored files (requires 'fd' command)"
 
 # comma-separated list for fzf
 FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
