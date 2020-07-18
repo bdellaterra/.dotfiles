@@ -124,8 +124,7 @@ ShallowFind() {
   bash -c "echo \"$SHALLOW_FIND\"";
 }
 
-# Derive base directory from target argument,
-# or use current directory if none given
+# Derive base directory from target, or use current directory if none given
 if [[ -z "$BASE_DIR" ]]; then
   [[ -d "$1" ]] && BASE_DIR="$1" || BASE_DIR="$(dirname "${1:-$PWD/.}")"
 fi
@@ -154,8 +153,7 @@ main() {
 
   next_targets=()
   case $command in
-    # Use alt-a to toggle showing "all" nested files/directories
-    # vs. only those at top-level
+    # Use alt-a to toggle showing all nested vs only top-level files/directories
     alt-a)
       [[ $SHALLOW ]] && unset SHALLOW || SHALLOW=1
     ;;
@@ -303,7 +301,7 @@ main() {
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
-    # Use alt-down to select bookmarked directory under current directory using fzf
+    # Use alt-down to select bookmarked directory under current directory
     alt-down)
       readarray -t DIRS < <(dirs -p -l | grep "$PWD" | LC_ALL=C sort -u)
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
@@ -322,8 +320,8 @@ main() {
       fi
     ;;
 
-    # Use ctrl-\ to set alternate directory
-    # Use alt-\ to go to alternate directory, or go back
+    # Use ctrl-q to set alternate directory
+    # Use alt-q to go to alternate directory, or go back
     # to previous directory if already in alternate directory
     ctrl-q|alt-q)
       if [[ "$command" = 'ctrl-q' || ! -d "$ALT_DIR" ]]; then
