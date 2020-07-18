@@ -24,7 +24,7 @@ alias l='ls --color --group-directories-first -lAhFG'
 # v: launch Vim, or show reminder to resume if suspended
 [[ `command -v vim` ]] && alias v='jobs | grep vim && echo "Resume Vim with fg" || vim'
 # b: preferred file-browser
-[[ `command -v bzb` ]] && alias b="bzb --preview='echo;bat --style 'full' --color always --theme Nord {}' --preview-window='right:62%:wrap'"
+[[ `command -v bzb` ]] && alias b="bzb --preview='echo;[ -d {} ] && exa --color always --group-directories-first -lahF {} || bat --style 'full' --color always --theme Nord {}' --preview-window='right:62%:wrap'"
 # m: preferred file-manager w/ fallbacks
 [[ `command -v mc` ]] && alias fm=mc
 [[ `command -v ranger` ]] && alias fm="source ranger" # source embedded script to cd on exit
