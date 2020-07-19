@@ -27,21 +27,9 @@ fi
 
 # Preview enabled by derfault
 NO_PREVIEW=''
+FILE_PREVIEW='cat {}'
+DIRECTORY_PREVIEW='ls --color=always -lah {}'
 PREVIEW_WINDOW='right:62%:wrap'
-
-# Prefer 'bat' over 'cat' for syntax highlighting
-if command -v bat &>/dev/null; then
-  FILE_PREVIEW='bat --color always {}'
-else
-  FILE_PREVIEW='cat {}'
-fi
-
-# Prefer 'exa' over 'ls' for color and formatting
-if command -v exa &>/dev/null; then
-  DIRECTORY_PREVIEW='exa --color always --group-directories-first -lahF {}'
-else
-  DIRECTORY_PREVIEW='ls --color=always -lah {}'
-fi
 
 declare -A KEYMAP
 declareKeymap() {
