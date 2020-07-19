@@ -142,22 +142,6 @@ for arg in "$@"; do
   esac
 done
 
-RecursiveFind() {
-  bash -c "echo \"$RECURSIVE_FIND\"";
-}
-
-ShallowFind() {
-  bash -c "echo \"$SHALLOW_FIND\"";
-}
-
-Sort() {
-  bash -c "echo \"$SORT\"";
-}
-
-Preview() {
-  bash -c "echo \"$PREVIEW\"";
-}
-
 echo "$FILE_PREVIEW"
 echo "$(Preview)"
 
@@ -180,10 +164,10 @@ main() {
   fi
 
   # CYCLE INTO FZF
-  [[ $SHALLOW ]] && FIND=$(ShallowFind) || FIND=$(RecursiveFind)
+  [[ $SHALLOW ]] && FIND=$(echo "$SHALLOW_FIND") || FIND=$(echo "$RECURSIVE_FIND")
   SORT="LC_ALL=C sort ${REVERSE:+'-r'} -u"
   [[ $NO_SORT ]] && SORT_PIPE='' || SORT_PIPE="| $SORT"
-  [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(Preview)' --preview-window='$PREVIEW_WINDOW'"
+  [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(echo "$PREVIEW")' --preview-window='$PREVIEW_WINDOW'"
   FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' $PREVIEW_OPTS"
   { read command; readarray -t targets; } < <(bash -c "$FIND $SORT_PIPE | $FZF ${OPTS[@]}")
 
