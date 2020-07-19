@@ -16,13 +16,31 @@ export NO_IGNORE=''
 # Sort ascending
 REVERSE=''
 
-# Prefer fd over find so ignored files are not listed
+# Prefer 'fd' over 'find' so ignored files are not listed
 if command -v fd &>/dev/null; then
-  RECURSIVE_FIND='fd ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore}'
-  SHALLOW_FIND='fd --max-depth 1 ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} --exec echo {/}'
+  RECURSIVE_FIND='fd --color always ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore}'
+  SHALLOW_FIND='fd --color always --max-depth 1 ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} --exec echo {/}'
 else
   RECURSIVE_FIND='find . ${HIDDEN:+! -name "."} | sed "s:^\./::"'
   SHALLOW_FIND='find . -maxdepth 1 ${HIDDEN:+! -name "."} -execdir basename "{}" \;'
+fi
+
+# Preview enabled by derfault
+NO_PREVIEW=''
+PREVIEW_WINDOW='right:62%:wrap'
+
+# Prefer 'bat' over 'cat' for syntax highlighting
+if command -v bat &>/dev/null; then
+  FILE_PREVIEW='bat --color always {}'
+else
+  FILE_PREVIEW='cat {}'
+fi
+
+# Prefer 'exa' over 'ls' for color and formatting
+if command -v exa &>/dev/null; then
+  DIRECTORY_PREVIEW='exa --color always --group-directories-first -lahF {}'
+else
+  DIRECTORY_PREVIEW='ls --color=always -lah {}'
 fi
 
 declare -A KEYMAP
@@ -58,6 +76,7 @@ declareKeymap 'alt-p'      "go to previous directory"
 declareKeymap 'alt-a'      "toggle all nested vs. only top-level files"
 declareKeymap 'alt-h'      "toggle display of hidden files"
 declareKeymap 'alt-g'      "toggle display of ignored files (if supported by 'find' command)"
+declareKeymap 'alt-v'      "toggle display of preview pane"
 declareKeymap 'alt-o'      "toggle sort order"
 
 # comma-separated list for fzf
@@ -81,18 +100,23 @@ Key mappings are as follows:
 $(echo "$KEY_USAGE" | column -t -s ':')
 
 options:
---help                                Show this help text
---recursive,-r                        Show nested files/direcories at start
---hidden,-H                           Show hidden files/direcories at start
---no-ignore,-I                        Show ignored files/direcories at start
---reverse-sort,-R                     Reverse the normal sort order
---single-run,-s                       Exit browser after editing a file
---shallow-find=COMMAND,-sf=COMMAND    Command to list only top-level files/directories
-                                      default: $SHALLOW_FIND
---recursive-find=COMMAND,-rf=COMMAND  Command to list nested files/directories
-                                      default: $RECURSIVE_FIND
---base-directory=DIR,-bd=DIR          Specify a base directory instead of deriving it from target
---alternate-directory=DIR,-ad=DIR     Initialize alternate directory at start
+--help                             Show this help text
+--recursive,-r                     Show nested files/direcories at start
+--hidden,-H                        Show hidden files/direcories at start
+--no-ignore,-I                     Show ignored files/direcories at start
+--no-preview,-P                    Disable preview pane showing file/directory contents
+--reverse-sort,-R                  Reverse the normal sort order
+--single-run,-s                    Exit browser after editing a file
+--base-directory=DIR,-bd=DIR       Specify a base directory instead of deriving it from target
+--alternate-directory=DIR,-ad=DIR  Initialize alternate directory at start
+--shallow-find=CMD,-sf=CMD         Command to list only top-level files/directories
+                                   default: $SHALLOW_FIND
+--recursive-find=CMD,-rf=CMD       Command to list nested files/directories
+                                   default: $RECURSIVE_FIND
+--file-preview=CMD,-fp=CMD         Command to preview currently focused file
+                                   default: $FILE_PREVIEW
+--directory-preview=CMD,-dp=CMD    Command to preview currently focused directory
+                                   default: $DIRECTORY_PREVIEW
 
 Any additional options will be passed to fzf.
 USAGE
@@ -104,12 +128,15 @@ for arg in "$@"; do
     -r|--recursive) unset SHALLOW; shift ;;
     -H|--hidden) export HIDDEN=1; shift ;;
     -I|--no-ignore) export NO_IGNORE=1; shift ;;
+    -P|--no-preview) export NO_PREVIEW=1; shift ;;
     -R|--reverse-sort) REVERSE=1; shift ;;
     -s|--single-run) unset PERSIST; shift ;;
-    -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
-    -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
     -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
     -ad=*|--alt-dir=*|--alternate-directory=*) ALT_DIR="${arg#*=}"; shift ;;
+    -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
+    -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
+    -fp=*|--file-preview=*) FILE_PREVIEW="${arg#*=}"; shift ;;
+    -dp=*|--directory-preview=*) DIRECTORY_PREVIEW="${arg#*=}"; shift ;;
     # Save remaining options for fzf with quoting preserved
     # TODO: Capture non '=' style arguments 
     -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
@@ -123,6 +150,12 @@ RecursiveFind() {
 ShallowFind() {
   bash -c "echo \"$SHALLOW_FIND\"";
 }
+
+Preview() {
+  bash -c "echo \"echo;[ -d {} ] && $DIRECTORY_PREVIEW || $FILE_PREVIEW\"";
+}
+echo "$FILE_PREVIEW"
+echo "$(Preview)"
 
 # Derive base directory from target, or use current directory if none given
 if [[ -z "$BASE_DIR" ]]; then
@@ -144,9 +177,10 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND=$(ShallowFind) || FIND=$(RecursiveFind)
+  [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(Preview)' --preview-window='$PREVIEW_WINDOW'"
   SORT="LC_ALL=C sort ${REVERSE:+'-r'} -u"
-  FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' ${OPTS[@]}"
-  { read command; readarray -t targets; } < <(bash -c "$FIND | $SORT | $FZF")
+  FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' $PREVIEW_OPTS"
+  { read command; readarray -t targets; } < <(bash -c "$FIND | $SORT | $FZF ${OPTS[@]}")
 
   # Use Escape or ctrl-c to exit
   [[ -z "$command" && "${#targets[@]}" -eq 0 ]] && exit 0
@@ -166,6 +200,11 @@ main() {
     # Use alt-g to toggle showing ignored files/directories
     alt-g)
       [[ $NO_IGNORE ]] && unset NO_IGNORE || export NO_IGNORE=1
+    ;;
+
+    # Use alt-v to toggle showing preview pane
+    alt-v)
+      [[ $NO_PREVIEW ]] && unset NO_PREVIEW || export NO_PREVIEW=1
     ;;
 
     # Use alt-o to toggle between normal and reverse sort order
