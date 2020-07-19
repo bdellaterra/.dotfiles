@@ -222,7 +222,7 @@ main() {
     alt-r)
       for t in "${targets[@]}"; do
         if [[ -r "$t" ]]; then
-          read -ep 'Move/Rename File: ' -i "mv \"$t\" \"${ALT_DIR:-.}/$t\"" CMD
+          read -ep 'Move/Rename File: ' -i "mv \"$t\" \"$t\"" CMD
           [[ -n "$CMD" ]] && bash -c "$CMD"
         fi
       done
