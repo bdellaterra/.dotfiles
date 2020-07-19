@@ -7,19 +7,14 @@ PERSIST=1
 # Start with only top-level files/directories displayed
 SHALLOW=1
 
-# No color output by default
+# No color output by
 export COLOR=''
 
-# Don't show hidden files by default
+# Don't show hidden files
 export HIDDEN=''
 
-# Don't show ignored files by default
+# Don't show ignored files
 export NO_IGNORE=''
-
-# Sort ascending
-NO_SORT=''
-REVERSE=''
-SORT='LC_ALL=C sort ${REVERSE:+'-r'} -u'
 
 # Prefer 'fd' over 'find' so ignored files are not listed
 if command -v fd &>/dev/null; then
@@ -30,7 +25,12 @@ else
   SHALLOW_FIND='find . -maxdepth 1 ${HIDDEN:+! -name "."} -execdir basename "{}" \;'
 fi
 
-# Preview enabled by derfault
+# Sort ascending
+NO_SORT=''
+export REVERSE=''
+export SORT='LC_ALL=C sort ${REVERSE:+-r} -fiu'
+
+# Display preview pane
 NO_PREVIEW=''
 FILE_PREVIEW='cat {}'
 DIRECTORY_PREVIEW='ls ${COLOR:+--color=always} ${HIDDEN:+-a} -lh {}'
@@ -48,8 +48,8 @@ declareKeymap 'ctrl-r'     "move/rename targets to directory named at prompt"
 declareKeymap 'alt-r'      "rename targets in current directory"
 declareKeymap 'ctrl-x'     "move targets to directory named at prompt"
 declareKeymap 'alt-x'      "delete targets"
-declareKeymap 'ctrl-s'     "copy/rename targets to directory named at prompt"
-declareKeymap 'alt-s'      "copy targets to directory named at prompt"
+declareKeymap 'ctrl-s'     "save/rename targets to directory named at prompt"
+declareKeymap 'alt-s'      "save targets to directory named at prompt"
 declareKeymap 'ctrl-d'     "create/enter directory named at prompt"
 declareKeymap 'alt-d'      "create directory without entering"
 declareKeymap 'ctrl-f'     "create/edit file named at prompt"
@@ -64,15 +64,15 @@ declareKeymap 'alt-up'     "select and enter bookmarked directory"
 declareKeymap 'alt-down'   "select and enter bookmarked directory under current directory"
 declareKeymap 'ctrl-/'     "set new base directory at prompt, then go to it"
 declareKeymap 'alt-/'      "go to base directory"
-declareKeymap 'ctrl-q'     "set alternate directory"
+declareKeymap 'ctrl-q'     "set alternate directory (default for save/move prompts)"
 declareKeymap 'alt-q'      "go to alternate directory"
 declareKeymap 'alt-p'      "go to previous directory"
-declareKeymap 'alt-a'      "toggle all nested vs. only top-level files"
+declareKeymap 'alt-a'      "toggle listing all nested vs. only top-level files"
 declareKeymap 'alt-h'      "toggle display of hidden files"
 declareKeymap 'alt-g'      "toggle display of ignored files (if supported by 'find' command)"
 declareKeymap 'alt-v'      "toggle display of preview pane"
 declareKeymap 'alt-o'      "toggle sort order"
-declareKeymap 'ctrl-o'     "toggle whether sorting is enabled/disabled"
+declareKeymap 'ctrl-o'     "toggle whether sorting is enabled/disabled (affects performance)"
 
 # comma-separated list for fzf
 FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
@@ -96,16 +96,16 @@ $(echo "$KEY_USAGE" | column -t -s ':')
 
 options:
 --help                             Show this help text
---recursive,-r                     Show nested files/direcories at start
+--once,-o                          Exit browser after editing a file
 --color,-c                         Show colorized output
+--recursive,-r                     Show nested files/direcories at start
 --hidden,-H                        Show hidden files/direcories at start
 --no-ignore,-I                     Show ignored files/direcories at start
---no-preview,-P                    Disable preview pane showing file/directory contents
+--no-preview,-P                    Disable preview pane that shows file/directory contents
 --no-sort,-S                       Disable sorting of files/directories
 --reverse-sort,-R                  Reverse the normal sort order
---single-run,-s                    Exit browser after editing a file
---base-directory=DIR,-bd=DIR       Specify a base directory instead of deriving it from target
---alternate-directory=DIR,-ad=DIR  Initialize alternate directory at start
+--sort=CMD,-so=CMD                 Command to sort files/directories
+                                   default: $SORT
 --shallow-find=CMD,-sf=CMD         Command to list only top-level files/directories
                                    default: $SHALLOW_FIND
 --recursive-find=CMD,-rf=CMD       Command to list nested files/directories
@@ -114,6 +114,8 @@ options:
                                    default: $FILE_PREVIEW
 --directory-preview=CMD,-dp=CMD    Command to preview currently focused directory
                                    default: $DIRECTORY_PREVIEW
+--base-directory=DIR,-bd=DIR       Specify a base directory instead of deriving it from target
+--alternate-directory=DIR,-ad=DIR  Initialize alternate directory at start
 
 Any additional options will be passed to fzf.
 USAGE
@@ -122,28 +124,26 @@ USAGE
 for arg in "$@"; do
   case $arg in
     -h|--help) usage; exit 0 ;;
-    -r|--recursive) unset SHALLOW; shift ;;
+    -o|--once) unset PERSIST; shift ;;
     -c|--color) export COLOR=1; shift ;;
-    -s|--single-run) unset PERSIST; shift ;;
+    -r|--recursive) unset SHALLOW; shift ;;
     -H|--hidden) export HIDDEN=1; shift ;;
     -I|--no-ignore) export NO_IGNORE=1; shift ;;
     -P|--no-preview) export NO_PREVIEW=1; shift ;;
     -S|--no-sort) export NO_PREVIEW=1; shift ;;
-    -R|--reverse-sort) REVERSE=1; shift ;;
-    -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
-    -ad=*|--alt-dir=*|--alternate-directory=*) ALT_DIR="${arg#*=}"; shift ;;
+    -R|--reverse-sort) export REVERSE=1; shift ;;
+    -so=*|--sort=*) export SORT="${arg#*=}"; shift ;;
     -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
     -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
     -fp=*|--file-preview=*) FILE_PREVIEW="${arg#*=}"; shift ;;
     -dp=*|--directory-preview=*) DIRECTORY_PREVIEW="${arg#*=}"; shift ;;
+    -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
+    -ad=*|--alt-dir=*|--alternate-directory=*) ALT_DIR="${arg#*=}"; shift ;;
     # Save remaining options for fzf with quoting preserved
     # TODO: Capture non '=' style arguments 
     -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
   esac
 done
-
-echo "$FILE_PREVIEW"
-echo "$(Preview)"
 
 # Derive base directory from target, or use current directory if none given
 if [[ -z "$BASE_DIR" ]]; then
@@ -165,8 +165,7 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND=$(echo "$SHALLOW_FIND") || FIND=$(echo "$RECURSIVE_FIND")
-  SORT="LC_ALL=C sort ${REVERSE:+'-r'} -u"
-  [[ $NO_SORT ]] && SORT_PIPE='' || SORT_PIPE="| $SORT"
+  [[ $NO_SORT ]] && unset SORT_PIPE || SORT_PIPE=$(bash -c "echo \"| $SORT\"")
   [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(echo "$PREVIEW")' --preview-window='$PREVIEW_WINDOW'"
   FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' $PREVIEW_OPTS"
   { read command; readarray -t targets; } < <(bash -c "$FIND $SORT_PIPE | $FZF ${OPTS[@]}")
@@ -198,7 +197,7 @@ main() {
 
     # Use alt-o to toggle between normal and reverse sort order
     alt-o)
-      [[ $REVERSE ]] && unset REVERSE || REVERSE=1
+      [[ $REVERSE ]] && unset REVERSE || export REVERSE=1
     ;;
 
     # Use ctrl-o to enable/disable sorting
