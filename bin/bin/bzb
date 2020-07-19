@@ -28,7 +28,7 @@ fi
 # Sort ascending
 NO_SORT=''
 export REVERSE=''
-export SORT='LC_ALL=C sort ${REVERSE:+-r} -fiu'
+SORT='LC_ALL=C sort ${REVERSE:+-r} -fiu'
 
 # Display preview pane
 NO_PREVIEW=''
@@ -132,7 +132,7 @@ for arg in "$@"; do
     -P|--no-preview) export NO_PREVIEW=1; shift ;;
     -S|--no-sort) export NO_PREVIEW=1; shift ;;
     -R|--reverse-sort) export REVERSE=1; shift ;;
-    -so=*|--sort=*) export SORT="${arg#*=}"; shift ;;
+    -so=*|--sort=*) SORT="${arg#*=}"; shift ;;
     -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
     -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
     -fp=*|--file-preview=*) FILE_PREVIEW="${arg#*=}"; shift ;;
