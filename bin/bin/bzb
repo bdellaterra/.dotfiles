@@ -7,6 +7,9 @@ PERSIST=1
 # Start with only top-level files/directories displayed
 SHALLOW=1
 
+# No color output by default
+export COLOR=''
+
 # Don't show hidden files by default
 export HIDDEN=''
 
@@ -18,8 +21,8 @@ REVERSE=''
 
 # Prefer 'fd' over 'find' so ignored files are not listed
 if command -v fd &>/dev/null; then
-  RECURSIVE_FIND='fd --color always ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore}'
-  SHALLOW_FIND='fd --color always --max-depth 1 ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} --exec echo {/}'
+  RECURSIVE_FIND='fd ${COLOR:+--color always} ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore}'
+  SHALLOW_FIND='fd ${COLOR:+--color always} --max-depth 1 ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} --exec echo {/}'
 else
   RECURSIVE_FIND='find . ${HIDDEN:+! -name "."} | sed "s:^\./::"'
   SHALLOW_FIND='find . -maxdepth 1 ${HIDDEN:+! -name "."} -execdir basename "{}" \;'
@@ -28,7 +31,7 @@ fi
 # Preview enabled by derfault
 NO_PREVIEW=''
 FILE_PREVIEW='cat {}'
-DIRECTORY_PREVIEW='ls --color=always -lah {}'
+DIRECTORY_PREVIEW='ls ${COLOR:+--color=always} ${HIDDEN:+-a} -lh {}'
 PREVIEW_WINDOW='right:62%:wrap'
 
 declare -A KEYMAP
@@ -90,6 +93,7 @@ $(echo "$KEY_USAGE" | column -t -s ':')
 options:
 --help                             Show this help text
 --recursive,-r                     Show nested files/direcories at start
+--color,-c                         Show colorized output
 --hidden,-H                        Show hidden files/direcories at start
 --no-ignore,-I                     Show ignored files/direcories at start
 --no-preview,-P                    Disable preview pane showing file/directory contents
@@ -114,6 +118,7 @@ for arg in "$@"; do
   case $arg in
     -h|--help) usage; exit 0 ;;
     -r|--recursive) unset SHALLOW; shift ;;
+    -c|--color) export COLOR=1; shift ;;
     -H|--hidden) export HIDDEN=1; shift ;;
     -I|--no-ignore) export NO_IGNORE=1; shift ;;
     -P|--no-preview) export NO_PREVIEW=1; shift ;;
