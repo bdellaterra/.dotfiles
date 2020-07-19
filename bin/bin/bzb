@@ -17,7 +17,9 @@ export HIDDEN=''
 export NO_IGNORE=''
 
 # Sort ascending
+NO_SORT=''
 REVERSE=''
+SORT='LC_ALL=C sort ${REVERSE:+'-r'} -u'
 
 # Prefer 'fd' over 'find' so ignored files are not listed
 if command -v fd &>/dev/null; then
@@ -32,6 +34,7 @@ fi
 NO_PREVIEW=''
 FILE_PREVIEW='cat {}'
 DIRECTORY_PREVIEW='ls ${COLOR:+--color=always} ${HIDDEN:+-a} -lh {}'
+PREVIEW="echo;[ -d {} ] && $DIRECTORY_PREVIEW || $FILE_PREVIEW"
 PREVIEW_WINDOW='right:62%:wrap'
 
 declare -A KEYMAP
@@ -69,6 +72,7 @@ declareKeymap 'alt-h'      "toggle display of hidden files"
 declareKeymap 'alt-g'      "toggle display of ignored files (if supported by 'find' command)"
 declareKeymap 'alt-v'      "toggle display of preview pane"
 declareKeymap 'alt-o'      "toggle sort order"
+declareKeymap 'ctrl-o'     "toggle whether sorting is enabled/disabled"
 
 # comma-separated list for fzf
 FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
@@ -97,6 +101,7 @@ options:
 --hidden,-H                        Show hidden files/direcories at start
 --no-ignore,-I                     Show ignored files/direcories at start
 --no-preview,-P                    Disable preview pane showing file/directory contents
+--no-sort,-S                       Disable sorting of files/directories
 --reverse-sort,-R                  Reverse the normal sort order
 --single-run,-s                    Exit browser after editing a file
 --base-directory=DIR,-bd=DIR       Specify a base directory instead of deriving it from target
@@ -119,11 +124,12 @@ for arg in "$@"; do
     -h|--help) usage; exit 0 ;;
     -r|--recursive) unset SHALLOW; shift ;;
     -c|--color) export COLOR=1; shift ;;
+    -s|--single-run) unset PERSIST; shift ;;
     -H|--hidden) export HIDDEN=1; shift ;;
     -I|--no-ignore) export NO_IGNORE=1; shift ;;
     -P|--no-preview) export NO_PREVIEW=1; shift ;;
+    -S|--no-sort) export NO_PREVIEW=1; shift ;;
     -R|--reverse-sort) REVERSE=1; shift ;;
-    -s|--single-run) unset PERSIST; shift ;;
     -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
     -ad=*|--alt-dir=*|--alternate-directory=*) ALT_DIR="${arg#*=}"; shift ;;
     -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
@@ -144,9 +150,14 @@ ShallowFind() {
   bash -c "echo \"$SHALLOW_FIND\"";
 }
 
-Preview() {
-  bash -c "echo \"echo;[ -d {} ] && $DIRECTORY_PREVIEW || $FILE_PREVIEW\"";
+Sort() {
+  bash -c "echo \"$SORT\"";
 }
+
+Preview() {
+  bash -c "echo \"$PREVIEW\"";
+}
+
 echo "$FILE_PREVIEW"
 echo "$(Preview)"
 
@@ -170,10 +181,11 @@ main() {
 
   # CYCLE INTO FZF
   [[ $SHALLOW ]] && FIND=$(ShallowFind) || FIND=$(RecursiveFind)
-  [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(Preview)' --preview-window='$PREVIEW_WINDOW'"
   SORT="LC_ALL=C sort ${REVERSE:+'-r'} -u"
+  [[ $NO_SORT ]] && SORT_PIPE='' || SORT_PIPE="| $SORT"
+  [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(Preview)' --preview-window='$PREVIEW_WINDOW'"
   FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' $PREVIEW_OPTS"
-  { read command; readarray -t targets; } < <(bash -c "$FIND | $SORT | $FZF ${OPTS[@]}")
+  { read command; readarray -t targets; } < <(bash -c "$FIND $SORT_PIPE | $FZF ${OPTS[@]}")
 
   # Use Escape or ctrl-c to exit
   [[ -z "$command" && "${#targets[@]}" -eq 0 ]] && exit 0
@@ -203,6 +215,11 @@ main() {
     # Use alt-o to toggle between normal and reverse sort order
     alt-o)
       [[ $REVERSE ]] && unset REVERSE || REVERSE=1
+    ;;
+
+    # Use ctrl-o to enable/disable sorting
+    ctrl-o)
+      [[ $NO_SORT ]] && unset NO_SORT || NO_SORT=1
     ;;
 
     # Use ctrl-r to move and rename targets
