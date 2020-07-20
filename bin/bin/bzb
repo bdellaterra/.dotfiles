@@ -34,7 +34,6 @@ SORT='LC_ALL=C sort ${REVERSE:+-r} -fiu'
 NO_PREVIEW=''
 FILE_PREVIEW='cat {}'
 DIRECTORY_PREVIEW='ls ${COLOR:+--color=always} ${HIDDEN:+-a} -lh {}'
-PREVIEW="echo;[ -d {} ] && $DIRECTORY_PREVIEW || $FILE_PREVIEW"
 PREVIEW_WINDOW='right:62%:wrap'
 
 declare -A KEYMAP
@@ -150,6 +149,9 @@ if [[ -z "$BASE_DIR" ]]; then
   [[ -d "$1" ]] && BASE_DIR="$1" || BASE_DIR="$(dirname "${1:-$PWD/.}")"
 fi
 pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
+
+# Setup conditional preview for files vs directories
+PREVIEW="echo;[ -d {} ] && $DIRECTORY_PREVIEW || $FILE_PREVIEW"
 
 main() {
   if [[ $# -eq 1 && -d "$1" ]]; then
