@@ -56,3 +56,13 @@ alias ......='cd ../../../../../'
 alias .......='cd ../../../../../../'
 alias ........='cd ../../../../../../../'
 
+# go up to nearest parent directory whose path contains specified string (case insensitive)
+# If no argument is specified, go back one level
+function bd() {
+  if [[ -z "$1" ]]; then
+    cd ..
+  else
+    cd "$(echo "$PWD" | grep -io '^.*'"$1"'[^/]*')"
+  fi
+}
+
