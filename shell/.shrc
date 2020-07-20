@@ -81,8 +81,8 @@ fi
 # *** Pager ***
 
 # Override default pager
-[[ -x "$HOME/bin/pager" ]] && export PAGER="$HOME/bin/pager"
-alias less="$PAGER"
+# [[ -x "$HOME/bin/pager" ]] && export PAGER="$HOME/bin/pager"
+# alias less="$PAGER"
 
 
 # *** Functions ***
