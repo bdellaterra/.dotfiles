@@ -8,13 +8,13 @@ PERSIST=1
 SHALLOW=1
 
 # No color output by
-export COLOR=''
+COLOR=''
 
 # Don't show hidden files
-export HIDDEN=''
+HIDDEN=''
 
 # Don't show ignored files
-export NO_IGNORE=''
+NO_IGNORE=''
 
 # Prefer 'fd' over 'find' so ignored files are not listed
 if command -v fd &>/dev/null; then
@@ -27,7 +27,7 @@ fi
 
 # Sort ascending
 NO_SORT=''
-export REVERSE=''
+REVERSE=''
 SORT='LC_ALL=C sort ${REVERSE:+-r} -fiu'
 
 # Display preview pane
@@ -124,13 +124,13 @@ for arg in "$@"; do
   case $arg in
     -h|--help) usage; exit 0 ;;
     -o|--once) unset PERSIST; shift ;;
-    -c|--color) export COLOR=1; shift ;;
+    -c|--color) COLOR=1; shift ;;
     -r|--recursive) unset SHALLOW; shift ;;
-    -H|--hidden) export HIDDEN=1; shift ;;
-    -I|--no-ignore) export NO_IGNORE=1; shift ;;
-    -P|--no-preview) export NO_PREVIEW=1; shift ;;
-    -S|--no-sort) export NO_PREVIEW=1; shift ;;
-    -R|--reverse-sort) export REVERSE=1; shift ;;
+    -H|--hidden) HIDDEN=1; shift ;;
+    -I|--no-ignore) NO_IGNORE=1; shift ;;
+    -P|--no-preview) NO_PREVIEW=1; shift ;;
+    -S|--no-sort) NO_PREVIEW=1; shift ;;
+    -R|--reverse-sort) REVERSE=1; shift ;;
     -so=*|--sort=*) SORT="${arg#*=}"; shift ;;
     -sf=*|--shallow-find=*) SHALLOW_FIND="${arg#*=}"; shift ;;
     -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
@@ -166,6 +166,7 @@ main() {
   fi
 
   # CYCLE INTO FZF
+  export COLOR HIDDEN NO_IGNORE NO_PREVIEW REVERSE
   [[ $SHALLOW ]] && FIND=$(echo "$SHALLOW_FIND") || FIND=$(echo "$RECURSIVE_FIND")
   [[ $NO_SORT ]] && unset SORT_PIPE || SORT_PIPE=$(bash -c "echo \"| $SORT\"")
   [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(echo "$PREVIEW")' --preview-window='$PREVIEW_WINDOW'"
@@ -184,22 +185,22 @@ main() {
 
     # Use alt-h to toggle showing hidden files/directories
     alt-h)
-      [[ $HIDDEN ]] && unset HIDDEN || export HIDDEN=1
+      [[ $HIDDEN ]] && unset HIDDEN || HIDDEN=1
     ;;
 
     # Use alt-g to toggle showing ignored files/directories
     alt-g)
-      [[ $NO_IGNORE ]] && unset NO_IGNORE || export NO_IGNORE=1
+      [[ $NO_IGNORE ]] && unset NO_IGNORE || NO_IGNORE=1
     ;;
 
     # Use alt-v to toggle showing preview pane
     alt-v)
-      [[ $NO_PREVIEW ]] && unset NO_PREVIEW || export NO_PREVIEW=1
+      [[ $NO_PREVIEW ]] && unset NO_PREVIEW || NO_PREVIEW=1
     ;;
 
     # Use alt-o to toggle between normal and reverse sort order
     alt-o)
-      [[ $REVERSE ]] && unset REVERSE || export REVERSE=1
+      [[ $REVERSE ]] && unset REVERSE || REVERSE=1
     ;;
 
     # Use ctrl-o to enable/disable sorting
