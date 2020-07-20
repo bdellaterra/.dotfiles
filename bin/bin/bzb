@@ -18,22 +18,22 @@ NO_IGNORE=''
 
 # Prefer 'fd' over 'find' so ignored files are not listed
 if command -v fd &>/dev/null; then
-  RECURSIVE_FIND='fd ${COLOR:+--color always} ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore}'
-  SHALLOW_FIND='fd ${COLOR:+--color always} --max-depth 1 ${HIDDEN:+--hidden} ${NO_IGNORE:+--no-ignore} --exec echo {/}'
+  RECURSIVE_FIND='fd ${BZB_COLOR:+--color always} ${BZB_HIDDEN:+--hidden} ${BZB_NO_IGNORE:+--no-ignore}'
+  SHALLOW_FIND='fd ${BZB_COLOR:+--color always} --max-depth 1 ${BZB_HIDDEN:+--hidden} ${BZB_NO_IGNORE:+--no-ignore} --exec echo {/}'
 else
-  RECURSIVE_FIND='find . ${HIDDEN:+! -name "."} | sed "s:^\./::"'
-  SHALLOW_FIND='find . -maxdepth 1 ${HIDDEN:+! -name "."} -execdir basename "{}" \;'
+  RECURSIVE_FIND='find . ${BZB_HIDDEN:+! -name "."} | sed "s:^\./::"'
+  SHALLOW_FIND='find . -maxdepth 1 ${BZB_HIDDEN:+! -name "."} -execdir basename "{}" \;'
 fi
 
 # Sort ascending
 NO_SORT=''
 REVERSE=''
-SORT='LC_ALL=C sort ${REVERSE:+-r} -fiu'
+SORT='LC_ALL=C sort ${BZB_REVERSE:+-r} -fiu'
 
 # Display preview pane
 NO_PREVIEW=''
 FILE_PREVIEW='cat {}'
-DIRECTORY_PREVIEW='ls ${COLOR:+--color=always} ${HIDDEN:+-a} -lh {}'
+DIRECTORY_PREVIEW='ls ${BZB_COLOR:+--color=always} ${BZB_HIDDEN:+-a} -lh {}'
 PREVIEW_WINDOW='right:62%:wrap'
 
 declare -A KEYMAP
@@ -166,7 +166,11 @@ main() {
   fi
 
   # CYCLE INTO FZF
-  export COLOR HIDDEN NO_IGNORE NO_PREVIEW REVERSE
+  export BZB_COLOR="$COLOR"
+  export BZB_HIDDEN="$HIDDEN"
+  export BZB_NO_IGNORE="$NO_IGNORE"
+  export BZB_NO_PREVIEW="$NO_PREVIEW"
+  export BZB_REVERSE="$REVERSE"
   [[ $SHALLOW ]] && FIND=$(echo "$SHALLOW_FIND") || FIND=$(echo "$RECURSIVE_FIND")
   [[ $NO_SORT ]] && unset SORT_PIPE || SORT_PIPE=$(bash -c "echo \"| $SORT\"")
   [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(echo "$PREVIEW")' --preview-window='$PREVIEW_WINDOW'"
