@@ -7,7 +7,7 @@ PERSIST=1
 # Start with only top-level files/directories displayed
 SHALLOW=1
 
-# No color output by
+# No color output
 COLOR=''
 
 # Don't show hidden files
@@ -19,7 +19,7 @@ NO_IGNORE=''
 # Prefer 'fd' over 'find' so ignored files are not listed
 if command -v fd &>/dev/null; then
   RECURSIVE_FIND='fd ${BZB_COLOR:+--color always} ${BZB_HIDDEN:+--hidden} ${BZB_NO_IGNORE:+--no-ignore}'
-  SHALLOW_FIND='fd ${BZB_COLOR:+--color always} --max-depth 1 ${BZB_HIDDEN:+--hidden} ${BZB_NO_IGNORE:+--no-ignore} --exec echo {/}'
+  SHALLOW_FIND='fd --max-depth 1 ${BZB_COLOR:+--color always} ${BZB_HIDDEN:+--hidden} ${BZB_NO_IGNORE:+--no-ignore} --exec echo {/}'
 else
   RECURSIVE_FIND='find . ${BZB_HIDDEN:+! -name "."} | sed "s:^\./::"'
   SHALLOW_FIND='find . -maxdepth 1 ${BZB_HIDDEN:+! -name "."} -execdir basename "{}" \;'
@@ -172,7 +172,7 @@ main() {
   export BZB_NO_PREVIEW="$NO_PREVIEW"
   export BZB_REVERSE="$REVERSE"
   [[ $SHALLOW ]] && FIND=$(echo "$SHALLOW_FIND") || FIND=$(echo "$RECURSIVE_FIND")
-  [[ $NO_SORT ]] && unset SORT_PIPE || SORT_PIPE=$(bash -c "echo \"| $SORT\"")
+  [[ $NO_SORT ]] && SORT_PIPE='' || SORT_PIPE=$(bash -c "echo \"| $SORT\"")
   [[ $NO_PREVIEW ]] && PREVIEW_OPTS='' || PREVIEW_OPTS="--preview='$(echo "$PREVIEW")' --preview-window='$PREVIEW_WINDOW'"
   FZF="fzf --multi --layout='reverse' --expect='$FZF_KEYS' --prompt='${PWD#$BASE_DIR}>' $PREVIEW_OPTS"
   { read command; readarray -t targets; } < <(bash -c "$FIND $SORT_PIPE | $FZF ${OPTS[@]}")
