@@ -151,7 +151,7 @@ fi
 pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
 
 # Setup conditional preview for files vs directories
-PREVIEW="echo;[ -d {} ] && $DIRECTORY_PREVIEW || $FILE_PREVIEW"
+PREVIEW="[ -d {} ] && $DIRECTORY_PREVIEW || $FILE_PREVIEW"
 
 main() {
   if [[ $# -eq 1 && -d "$1" ]]; then
