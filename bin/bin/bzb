@@ -39,6 +39,10 @@ FILE_PREVIEW='cat {}'
 DIRECTORY_PREVIEW='ls ${BZB_COLOR:+--color=always} ${BZB_HIDDEN:+-a} -lh {}'
 PREVIEW_WINDOW='right:62%:wrap'
 
+# Write/Load sessions manually
+AUTOWRITE_SESSION=''
+AUTOLOAD_SESSION=''
+
 declare -A KEYMAP
 declareKeymap() {
   KEYS[${#KEYS[@]}]="$1" && KEYMAP["$1"]="$2"
@@ -154,6 +158,40 @@ if [[ -z "$BASE_DIR" ]]; then
   [[ -d "$1" ]] && BASE_DIR="$1" || BASE_DIR="$(dirname "${1:-$PWD/.}")"
 fi
 pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
+
+function write_session() {
+  mkdir -p "$(dirname $SESSION)" && touch "$SESSION"
+  readarray -t BOOKMARKS < <(dirs -p -l)
+  if [[ -w "$SESSION" ]]; then
+    declare -p PWD >> "$SESSION"
+    [[ "$BASE_DIR" ]] && declare -p BASE_DIR >> "$SESSION"
+    [[ "$ALT_DIR" ]] && declare -p ALT_DIR >> "$SESSION"
+    declare -p BOOKMARKS > "$SESSION"
+    declare -p SHALLOW >> "$SESSION"
+    declare -p HIDDEN >> "$SESSION"
+    declare -p NO_IGNORE >> "$SESSION"
+    declare -p NO_SORT >> "$SESSION"
+    declare -p REVERSE >> "$SESSION"
+    declare -p NO_PREVIEW >> "$SESSION"
+  fi
+}
+
+function load_session() {
+  dirs -c
+  pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
+  for b in "${BOOKMARKS[@]}"; do
+    [[ -d "$b" ]] && pushd "$b" >/dev/null
+  done
+  cd "$BASE_DIR"
+}
+
+if [[ "$AUTOLOAD_SESSION" ]]; then
+  SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
+  if [[ -r "$SESSION" ]]; then
+    . -- "$SESSION"
+    load_session;
+  fi
+fi
 
 # Setup conditional preview for files vs directories
 PREVIEW="[ -d {} ] && $DIRECTORY_PREVIEW || $FILE_PREVIEW"
@@ -382,20 +420,7 @@ main() {
       SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
       read -ep "Save session: " -i "$SESSION" SESSION
       if [[ -n "$SESSION" ]]; then
-        mkdir -p "$(dirname $SESSION)" && touch "$SESSION"
-        readarray -t BOOKMARKS < <(dirs -p -l)
-        if [[ -w "$SESSION" ]]; then
-          declare -p PWD >> "$SESSION"
-          declare -p BASE_DIR >> "$SESSION"
-          declare -p ALT_DIR >> "$SESSION"
-          declare -p BOOKMARKS > "$SESSION"
-          declare -p SHALLOW >> "$SESSION"
-          declare -p HIDDEN >> "$SESSION"
-          declare -p NO_IGNORE >> "$SESSION"
-          declare -p NO_SORT >> "$SESSION"
-          declare -p REVERSE >> "$SESSION"
-          declare -p NO_PREVIEW >> "$SESSION"
-        fi
+        write_session
       fi
     ;;
 
@@ -405,12 +430,7 @@ main() {
       read -ep "Load session: " -i "$SESSION" SESSION
       if [[ -r "$SESSION" ]]; then
         . -- "$SESSION"
-        dirs -c
-        pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
-        for b in "${BOOKMARKS[@]}"; do
-          [[ -d "$b" ]] && pushd "$b" >/dev/null
-        done
-        cd "$BASE_DIR"
+        load_session
       fi
     ;;
 
@@ -429,6 +449,13 @@ main() {
       next_targets=("${targets[@]}")
     ;;
   esac
+
+  if [[ "$AUTOWRITE_SESSION" ]]; then
+    SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
+    if [[ -n "$SESSION" ]]; then
+      write_session
+    fi
+  fi
 
   main "${next_targets[@]}"
 }
