@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Directory where data for loading/restoring sessions is saved (optional)
+BZB_DIR="$HOME/.bzb"
+
 # Stay in browser after editing files
 PERSIST=1
 
@@ -72,6 +75,8 @@ declareKeymap 'alt-g'      "toggle display of ignored files (if supported by 'fi
 declareKeymap 'alt-v'      "toggle display of preview pane"
 declareKeymap 'alt-o'      "toggle sort order"
 declareKeymap 'ctrl-o'     "toggle whether sorting is enabled/disabled (affects performance)"
+declareKeymap 'ctrl-w'     "Write session to file named at prompt"
+declareKeymap 'alt-l'      "Load session from file named at prompt"
 
 # comma-separated list for fzf
 FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
@@ -372,9 +377,46 @@ main() {
       fi
     ;;
 
-    # Use alt-p to go to previous directory
-    alt-p)
-      cd "$OLDPWD"
+    # Use ctrl-w to save session
+    ctrl-w)
+      SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
+      read -ep "Save session: " -i "$SESSION" SESSION
+      if [[ -n "$SESSION" ]]; then
+        mkdir -p "$(dirname $SESSION)" && touch "$SESSION"
+        readarray -t BOOKMARKS < <(dirs -p -l)
+        if [[ -w "$SESSION" ]]; then
+          declare -p BOOKMARKS > "$SESSION"
+          declare -p PWD >> "$SESSION"
+          [[ "$BASE_DIR" ]] && declare -p BASE_DIR >> "$SESSION"
+          [[ "$ALT_DIR" ]] && declare -p ALT_DIR >> "$SESSION"
+          [[ "$SHALLOW" ]] && declare -p SHALLOW >> "$SESSION"
+          [[ "$HIDDEN" ]] && declare -p HIDDEN >> "$SESSION"
+          [[ "$NO_IGNORE" ]] && declare -p NO_IGNORE >> "$SESSION"
+          [[ "$NO_SORT" ]] && declare -p NO_SORT >> "$SESSION"
+          [[ "$REVERSE" ]] && declare -p REVERSE >> "$SESSION"
+          [[ "$NO_PREVIEW" ]] && declare -p NO_PREVIEW >> "$SESSION"
+        fi
+      fi
+    ;;
+
+    # Use alt-l to load session
+    alt-l)
+      SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
+      read -ep "Load session: " -i "$SESSION" SESSION
+      if [[ -r "$SESSION" ]]; then
+        . -- "$SESSION"
+        dirs -c
+        pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
+        for b in "${BOOKMARKS[@]}"; do
+          [[ -d "$b" ]] && pushd "$b" >/dev/null
+        done
+        cd "$BASE_DIR"
+      fi
+    ;;
+
+    alt-down)
+      readarray -t DIRS < <(dirs -p -l | grep "$PWD" | LC_ALL=C sort -u)
+      next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
     # Use left arrow to move up a directory (not above base directory)
