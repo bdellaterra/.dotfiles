@@ -104,20 +104,20 @@ fi
 #   DISTRO_UPGRADE='pkg upgrade'
 # fi
 
-# if [[ $DISTRO =~ 'Arch' ]]
-# then
-#   REFRESH='pacman -Sy'
-#   LIST='pacman -Q'
-#   SHOW=''
-#   SEARCH='pacman -Ss'
-#   REGEX_SEARCH='pacman -Ss'
-#   PATH_SEARCH='pacman -Qo'
-#   INSTALL='pacman -S'
-#   REMOVE='pacman -R'
-#   UPGRADE='pacman -S'
-#   FULL_UPGRADE=''
-#   DISTRO_UPGRADE='pacman -Su'
-# fi
+if [[ $DISTRO =~ 'Arch' ]]
+then
+  REFRESH='pacman -Sy'
+  LIST='pacman -Q'
+  SHOW=''
+  SEARCH='pacman -Ss'
+  REGEX_SEARCH='pacman -Ss'
+  PATH_SEARCH='pacman -Qo'
+  INSTALL='pacman -S'
+  REMOVE='pacman -R'
+  UPGRADE='pacman -S'
+  FULL_UPGRADE=''
+  DISTRO_UPGRADE='pacman -Su'
+fi
 
 if [[ $DISTRO =~ 'Alpine' ]]
 then
