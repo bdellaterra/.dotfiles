@@ -11,6 +11,10 @@ if [[ $DISTRO =~ 'Debian' || $DISTRO =~ 'Ubuntu'  ]]; then
   sudo $OS --install apt-file && sudo apt-file update
 fi
 
+# sudo $OS --install docker docker-compose
+# sudo systemctl enable docker
+# sudo usermod -G docker -s "$USER"
+
 sudo $OS --install git
 sudo $OS --install stow
 
