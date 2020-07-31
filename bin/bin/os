@@ -28,21 +28,21 @@ DISTRO="$RELEASE"
 #   FULL_UPGRADE=''
 #   DISTRO_UPGRADE=''
 # fi
-#
-# if [[ $DISTRO =~ 'Debian|Ubuntu' ]]
-# then
-#   REFRESH='apt-get update'
-#   LIST='cat /etc/apt/sources.list'
-#   SHOW='apt-cache show'
-#   SEARCH='apt-cache search'
-#   REGEX_SEARCH='apt-cache search'
-#   PATH_SEARCH='apt-file search'
-#   INSTALL='apt-get install'
-#   REMOVE='apt-get remove'
-#   UPGRADE='apt-get upgrade'
-#   FULL_UPGRADE=''
-#   DISTRO_UPGRADE=''
-# fi
+
+if [[ $DISTRO =~ 'Debian' || $DISTRO =~ 'Ubuntu'  ]]
+then
+  REFRESH='apt-get update; [[ `command -v apt-file` ]] && apt-file update'
+  LIST='dpkg -l'
+  SHOW='apt-cache show'
+  SEARCH='apt-cache search'
+  REGEX_SEARCH='apt-cache search'
+  PATH_SEARCH='[[ ! `command -v apt-file` ]] && apt-file search || echo "To use path-search you must first install package \"apt-file\""'
+  INSTALL='apt-get install'
+  REMOVE='apt-get remove'
+  UPGRADE='apt-get upgrade'
+  FULL_UPGRADE=''
+  DISTRO_UPGRADE=''
+fi
 
 if [[ $DISTRO =~ 'openSUSE' ]]
 then
@@ -179,7 +179,7 @@ while [[ $# -gt 0 ]]; do
       break
       ;;
     -w|--which|--show)
-      # [[ $SHOW ]] || exit 1;
+      [[ $SHOW ]] || exit 1;
       echo "SHOWING INFO FOR PACKAGES..."
       shift
       echo $SHOW $@
@@ -214,7 +214,7 @@ while [[ $# -gt 0 ]]; do
       echo "SEARCHING PACKAGES FOR FILE PATHS..."
 	  shift
       echo $PATH_SEARCH $@
-      $PATH_SEARCH $@
+      bash -c "$PATH_SEARCH $@"
       break
       ;;
     -i|--install)
