@@ -1,7 +1,7 @@
 Brian Dellaterra's personal dotfiles
 ====================================
 
-- Clone to ~/.dotfiles
+- Clone to ~/.dotfiles using the --recurse-submodules flag
 - Install GNU stow
 - Use it to setup dotfile symlinks in home dir
 
