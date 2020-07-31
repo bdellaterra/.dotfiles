@@ -59,7 +59,7 @@ then
   DISTRO_UPGRADE='zypper dup --no-allow-vendor-change'
 fi
 
-# if [[ $DISTRO =~ 'Mandriva|Mageia' ]]
+# if [[ $DISTRO =~ 'Mandriva' || $DISTRO =~ 'Mageia' ]]
 # then
 #   REFRESH='urpmi.update -a'
 #   LIST='rpm -qa'
@@ -119,20 +119,20 @@ fi
 #   DISTRO_UPGRADE='pacman -Su'
 # fi
 
-# if [[ $DISTRO =~ 'Alpine' ]]
-# then
-#   REFRESH='apk update'
-#   LIST='apk info'
-#   SHOW=''
-#   SEARCH='apk search'
-#   REGEX_SEARCH='apk search'
-#   PATH_SEARCH=''
-#   INSTALL='apk add'
-#   REMOVE='apk del'
-#   UPGRADE='apk upgrade'
-#   FULL_UPGRADE=''
-#   DISTRO_UPGRADE=''
-# fi
+if [[ $DISTRO =~ 'Alpine' ]]
+then
+  REFRESH='apk update'
+  LIST='apk info'
+  SHOW=''
+  SEARCH='apk search'
+  REGEX_SEARCH='apk search'
+  PATH_SEARCH=''
+  INSTALL='apk add'
+  REMOVE='apk del'
+  UPGRADE='apk upgrade'
+  FULL_UPGRADE=''
+  DISTRO_UPGRADE=''
+fi
 
 if [[ $# -eq 0 ]]
 then
