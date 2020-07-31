@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OS='../bin/bin/os'
+OS="$(dirname "${BASH_SOURCE[0]}")/../bin/bin/os"
 if [[ ! -x "$OS" ]]; then
   echo "Unable to determine operating system"
   exit 1
@@ -24,8 +24,11 @@ sudo $OS --install tmux
 
 sudo $OS --install fd
 sudo $OS --install exa
+sudo $OS --install bat
 
+sudo $OS --install ranger
 sudo $OS --install htop
+sudo $OS --install fortune
 
 sudo $OS --install zsh
 sudo chsh -s /bin/zsh "$USER"
