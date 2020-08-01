@@ -87,7 +87,7 @@ declareKeymap 'ctrl-alt-o' "toggle whether sorting is enabled/disabled (affects 
 declareKeymap 'alt-s'      "load session from file named at prompt"
 declareKeymap 'ctrl-alt-s' "save session to file named at prompt"
 
-# comma-separated list for fzf
+# comma-separated list of custom mappings for fzf
 FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
 
 KEY_USAGE=$(cat <<KEYMAPS
