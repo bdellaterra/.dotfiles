@@ -168,10 +168,10 @@ function save_session() {
   mkdir -p "$(dirname $SESSION)" && touch "$SESSION"
   readarray -t BOOKMARKS < <(dirs -p -l)
   if [[ -w "$SESSION" ]]; then
-    declare -p PWD >> "$SESSION"
+    declare -p PWD > "$SESSION"
     [[ "$BASE_DIR" ]] && declare -p BASE_DIR >> "$SESSION"
     [[ "$ALT_DIR" ]] && declare -p ALT_DIR >> "$SESSION"
-    declare -p BOOKMARKS > "$SESSION"
+    declare -p BOOKMARKS >> "$SESSION"
     declare -p SHALLOW >> "$SESSION"
     declare -p HIDDEN >> "$SESSION"
     declare -p NO_IGNORE >> "$SESSION"
