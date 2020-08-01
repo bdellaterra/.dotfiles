@@ -39,8 +39,8 @@ FILE_PREVIEW='cat {}'
 DIRECTORY_PREVIEW='ls ${BZB_COLOR:+--color=always} ${BZB_HIDDEN:+-a} -lh {}'
 PREVIEW_WINDOW='right:62%:wrap'
 
-# Write/Load sessions manually
-AUTOWRITE_SESSION=''
+# Save/Load sessions manually
+AUTOSAVE_SESSION=''
 AUTOLOAD_SESSION=''
 
 declare -A KEYMAP
@@ -50,36 +50,36 @@ declareKeymap() {
 
 declareKeymap 'right'      "enter directory or edit file"
 declareKeymap 'left'       "go to parent directory (not moving past base directory)"
-declareKeymap 'ctrl-r'     "move/rename targets to directory named at prompt"
 declareKeymap 'alt-r'      "rename targets in current directory"
-declareKeymap 'ctrl-x'     "move targets to directory named at prompt"
+declareKeymap 'alt-m'      "move targets to directory named at prompt"
+declareKeymap 'ctrl-alt-m' "move/rename targets into directory named at prompt"
 declareKeymap 'alt-x'      "delete targets"
-declareKeymap 'ctrl-s'     "save/rename targets to directory named at prompt"
-declareKeymap 'alt-s'      "save targets to directory named at prompt"
-declareKeymap 'ctrl-d'     "create/enter directory named at prompt"
-declareKeymap 'alt-d'      "create directory without entering"
-declareKeymap 'ctrl-f'     "create/edit file named at prompt"
+declareKeymap 'alt-c'      "copy targets to directory named at prompt"
+declareKeymap 'ctrl-alt-c' "copy/rename targets into directory named at prompt"
+declareKeymap 'alt-e'      "create/edit file named at prompt"
 declareKeymap 'alt-f'      "create file without editing"
+declareKeymap 'alt-d'      "create directory named at prompt"
+declareKeymap 'ctrl-alt-d' "create/enter directory named at prompt"
 declareKeymap 'alt-b'      "bookmark target directories"
-declareKeymap 'alt-u'      "un-bookmark target directories"
+declareKeymap 'ctrl-alt-b' "un-bookmark target directories"
 declareKeymap 'alt-enter'  "bookmark current directory"
 declareKeymap 'alt-bspace' "un-bookmark current directory"
 declareKeymap 'alt-right'  "go to next bookmarked directory"
 declareKeymap 'alt-left'   "go to previous bookmarked directory"
 declareKeymap 'alt-up'     "select and enter bookmarked directory"
 declareKeymap 'alt-down'   "select and enter bookmarked directory under current directory"
-declareKeymap 'ctrl-/'     "set new base directory at prompt, then go to it"
-declareKeymap 'alt-/'      "go to base directory"
-declareKeymap 'ctrl-q'     "set alternate directory (default for save/move prompts)"
-declareKeymap 'alt-q'      "go to alternate directory"
+declareKeymap 'alt-u'      "go up to base directory"
+declareKeymap 'ctrl-alt-u' "set new base directory at prompt, then go to it"
+declareKeymap 'alt-a'      "go to alternate directory"
+declareKeymap 'ctrl-alt-a' "set alternate directory (default for copy/move prompts)"
 declareKeymap 'alt-p'      "go to previous directory"
-declareKeymap 'alt-a'      "toggle display of all nested vs. only top-level files"
+declareKeymap 'alt-n'      "toggle display of nested vs. only top-level files"
 declareKeymap 'alt-h'      "toggle display of hidden files"
-declareKeymap 'alt-g'      "toggle display of ignored files (if supported by 'find' command)"
+declareKeymap 'alt-i'      "toggle display of ignored files (if supported by 'find' command)"
 declareKeymap 'alt-v'      "toggle display of preview pane"
 declareKeymap 'alt-o'      "toggle sort order"
-declareKeymap 'ctrl-o'     "toggle whether sorting is enabled/disabled (affects performance)"
-declareKeymap 'ctrl-w'     "Write session to file named at prompt"
+declareKeymap 'ctrl-alt-o' "toggle whether sorting is enabled/disabled (affects performance)"
+declareKeymap 'alt-s'      "Save session to file named at prompt"
 declareKeymap 'alt-l'      "Load session from file named at prompt"
 
 # comma-separated list for fzf
@@ -159,7 +159,7 @@ if [[ -z "$BASE_DIR" ]]; then
 fi
 pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
 
-function write_session() {
+function save_session() {
   mkdir -p "$(dirname $SESSION)" && touch "$SESSION"
   readarray -t BOOKMARKS < <(dirs -p -l)
   if [[ -w "$SESSION" ]]; then
@@ -225,8 +225,8 @@ main() {
 
   next_targets=()
   case $command in
-    # Use alt-a to toggle showing all nested vs only top-level files/directories
-    alt-a)
+    # Use alt-n to toggle showing nested vs only top-level files/directories
+    alt-n)
       [[ $SHALLOW ]] && SHALLOW='' || SHALLOW=1
     ;;
 
@@ -235,8 +235,8 @@ main() {
       [[ $HIDDEN ]] && HIDDEN='' || HIDDEN=1
     ;;
 
-    # Use alt-g to toggle showing ignored files/directories
-    alt-g)
+    # Use alt-i to toggle showing ignored files/directories
+    alt-i)
       [[ $NO_IGNORE ]] && NO_IGNORE='' || NO_IGNORE=1
     ;;
 
@@ -250,22 +250,9 @@ main() {
       [[ $REVERSE ]] && REVERSE='' || REVERSE=1
     ;;
 
-    # Use ctrl-o to enable/disable sorting
-    ctrl-o)
+    # Use ctrl-alt-o to enable/disable sorting
+    ctrl-alt-o)
       [[ $NO_SORT ]] && NO_SORT='' || NO_SORT=1
-    ;;
-
-    # Use ctrl-r to move and rename targets
-    ctrl-r)
-      read -ep 'Move/Rename to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
-      if [[ -n "$DIR" ]]; then
-        for t in "${targets[@]}"; do
-          if [[ -r "$t" ]]; then
-            read -ep 'Move/Rename File: ' -i "mv '$PWD/$t' '${DIR%/}/$t'" CMD
-            [[ -n "$CMD" ]] && bash -c "$CMD"
-          fi
-        done
-      fi
     ;;
 
     # Use alt-r to rename targets in current directory
@@ -278,8 +265,21 @@ main() {
       done
     ;;
 
-    # Use ctrl-x to move targets
-    ctrl-x)
+    # Use ctrl-alt-m to move and rename targets
+    ctrl-alt-m)
+      read -ep 'Move/Rename to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
+      if [[ -n "$DIR" ]]; then
+        for t in "${targets[@]}"; do
+          if [[ -r "$t" ]]; then
+            read -ep 'Move/Rename File: ' -i "mv '$PWD/$t' '${DIR%/}/$t'" CMD
+            [[ -n "$CMD" ]] && bash -c "$CMD"
+          fi
+        done
+      fi
+    ;;
+
+    # Use alt-m to move targets
+    alt-m)
       read -ep 'Move to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       [[ -n "$DIR" ]] && mv -i "${targets[@]}" "$DIR"
     ;;
@@ -289,8 +289,14 @@ main() {
       rm -rI "${targets[@]}"
     ;;
 
-    # Use ctrl-s to copy and rename targets
-    ctrl-s)
+    # Use alt-c to copy targets
+    alt-c)
+      read -ep 'Copy to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
+      [[ -n "$DIR" ]] && cp -ir "${targets[@]}" "$DIR"
+    ;;
+
+    # Use ctrl-alt-c to copy and rename targets
+    ctrl-alt-c)
       read -ep 'Copy/Rename to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
       if [[ -n "$DIR" ]]; then
         for t in "${targets[@]}"; do
@@ -302,29 +308,23 @@ main() {
       fi
     ;;
 
-    # Use alt-s to copy targets
-    alt-s)
-      read -ep 'Copy to Directory: ' -i "${ALT_DIR:-$BASE_DIR}" DIR
-      [[ -n "$DIR" ]] && cp -ir "${targets[@]}" "$DIR"
-    ;;
-
-    # Use ctrl-d to create and enter directory
+    # Use ctrl-alt-d to create and enter directory
     # Use alt-d to create a directory without changing current directory
-    ctrl-d|alt-d)
+    alt-d|ctrl-alt-d)
       read -p "Create directory: " target
       if [[ -n "$target" ]]; then
         mkdir -p "$target"
-        [[ "$command" = 'ctrl-d' ]] && next_targets=("$target")
+        [[ "$command" = 'ctrl-alt-d' ]] && next_targets=("$target")
       fi
     ;;
 
-    # Use ctrl-f to create a file and edit it immediately
+    # Use alt-e to create a file and edit it immediately
     # Use alt-f to create a file without editing
-    ctrl-f|alt-f)
+    alt-e|alt-f)
       read -p "Create file: " target
       if [[ -n "$target" ]]; then
         mkdir -p "$(dirname "$target")" && touch "$target"
-        [[ "$command" = 'ctrl-f' ]] && next_targets=("$target")
+        [[ "$command" = 'alt-e' ]] && next_targets=("$target")
       fi
     ;;
 
@@ -340,8 +340,8 @@ main() {
       cd "$DIR"
     ;;
 
-    # Use alt-u to un-bookmark select targets
-    alt-u)
+    # Use ctrl-alt-b to un-bookmark select targets
+    ctrl-alt-b)
       for b in "${targets[@]}"; do
         readarray -t DIRS < <(dirs -p -l)
         for i in "${!DIRS[@]}"; do
@@ -389,38 +389,39 @@ main() {
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
-    # Use ctrl-/ to set base directory
-    # Use alt-/ to go to base directory, or go back
+    # Use ctrl-alt-u to set base directory
+    # Use alt-u to go to base directory, or go back
     # to previous directory if already in base directory
-    ctrl-/|alt-/)
-      if [[ "$command" = 'ctrl-/' || ! -d "$BASE_DIR" ]]; then
+    alt-u|ctrl-alt-u)
+      if [[ "$command" = 'ctrl-alt-u' || ! -d "$BASE_DIR" ]]; then
         read -ep "Set base directory: " -i "$PWD" DIR
         [[ -d "$DIR" ]] && BASE_DIR="$DIR" || echo "Not a directory"
       fi
-      if [[ "$command" = 'alt-/' && -d "$DIR" ]]; then
+      if [[ "$command" = 'alt-u' && -d "$DIR" ]]; then
+        echo "base: $BASE_DIR"
         [[ "$PWD" = "$BASE_DIR" ]] && cd "$OLDPWD" || cd "$BASE_DIR"
       fi
     ;;
 
-    # Use ctrl-q to set alternate directory
-    # Use alt-q to go to alternate directory, or go back
+    # Use ctrl-alt-a to set alternate directory
+    # Use alt-a to go to alternate directory, or go back
     # to previous directory if already in alternate directory
-    ctrl-q|alt-q)
-      if [[ "$command" = 'ctrl-q' || ! -d "$ALT_DIR" ]]; then
+    alt-a|ctrl-alt-a)
+      if [[ "$command" = 'ctrl-alt-a' || ! -d "$ALT_DIR" ]]; then
         read -ep "Set alternate directory: " -i "$PWD" DIR
         [[ -d "$DIR" ]] && ALT_DIR="$DIR" || echo "Not a directory"
       fi
-      if [[ "$command" = 'alt-q' && -d "$DIR" ]]; then
+      if [[ "$command" = 'alt-a' && -d "$DIR" ]]; then
         [[ "$PWD" = "$ALT_DIR" ]] && cd "$OLDPWD" || cd "$ALT_DIR"
       fi
     ;;
 
-    # Use ctrl-w to save session
-    ctrl-w)
+    # Use alt-s to save session
+    alt-s)
       SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
       read -ep "Save session: " -i "$SESSION" SESSION
       if [[ -n "$SESSION" ]]; then
-        write_session
+        save_session
       fi
     ;;
 
@@ -434,11 +435,6 @@ main() {
       fi
     ;;
 
-    alt-down)
-      readarray -t DIRS < <(dirs -p -l | grep "$PWD" | LC_ALL=C sort -u)
-      next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
-    ;;
-
     # Use left arrow to move up a directory (not above base directory)
     left)
       [[ "$PWD" != "$BASE_DIR" ]] && next_targets=("..") || next_targets=('.')
@@ -450,10 +446,10 @@ main() {
     ;;
   esac
 
-  if [[ "$AUTOWRITE_SESSION" ]]; then
+  if [[ "$AUTOSAVE_SESSION" ]]; then
     SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
     if [[ -n "$SESSION" ]]; then
-      write_session
+      save_session
     fi
   fi
 
