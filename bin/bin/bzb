@@ -69,7 +69,8 @@ declareKeymap 'alt-left'   "go to previous bookmarked directory"
 declareKeymap 'alt-up'     "select and enter bookmarked directory"
 declareKeymap 'alt-down'   "select and enter bookmarked directory under current directory"
 declareKeymap 'alt-u'      "go up to base directory"
-declareKeymap 'ctrl-alt-u' "set new base directory at prompt, then go to it"
+declareKeymap 'alt-g'      "go to directory named at prompt"
+declareKeymap 'ctrl-alt-g' "go to directory named at prompt and set it as new base directory"
 declareKeymap 'alt-a'      "toggle between current and alternate directory"
 declareKeymap 'alt-z'      "set alternate directory (default for copy/move prompts)"
 declareKeymap 'alt-p'      "go to previous directory"
@@ -389,13 +390,24 @@ main() {
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
-    # Use ctrl-alt-u to set base directory
+    # Use alt-g to go to directory named at prompt
+    alt-g)
+      read -ep "Go to directory: " -i "$PWD" DIR
+      [[ -d "$DIR" ]] && cd "$DIR" || echo "Not a directory"
+    ;;
+
+    # Use ctrl-alt-g to set base directory
     # Use alt-u to go to base directory, or go back
     # to previous directory if already in base directory
-    alt-u|ctrl-alt-u)
-      if [[ "$command" = 'ctrl-alt-u' || ! -d "$BASE_DIR" ]]; then
+    alt-u|ctrl-alt-g)
+      if [[ "$command" = 'ctrl-alt-g' || ! -d "$BASE_DIR" ]]; then
         read -ep "Set base directory: " -i "$PWD" DIR
-        [[ -d "$DIR" ]] && BASE_DIR="${DIR%/}" || echo "Not a directory"
+        if [[ -d "$DIR" ]]; then
+          BASE_DIR="${DIR%/}"
+          pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
+        else
+          echo "Not a directory"
+        fi
       fi
       if [[ -d "$BASE_DIR" ]]; then
         [[ "$PWD" = "$BASE_DIR" ]] && cd "$OLDPWD" || cd "$BASE_DIR"
@@ -413,6 +425,11 @@ main() {
       if [[ "$command" = 'alt-a' && -d "$ALT_DIR" ]]; then
         [[ "$PWD" = "$ALT_DIR" ]] && cd "$OLDPWD" || cd "$ALT_DIR"
       fi
+    ;;
+
+    # Use alt-p to go to previous directory
+    alt-p)
+      cd "$OLDPWD"
     ;;
 
     # Use alt-s to save session
