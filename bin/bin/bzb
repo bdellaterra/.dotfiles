@@ -100,7 +100,7 @@ KEYMAPS
 
 usage() {
 cat <<USAGE
-usage: $(basename "$0") [options] [target file or directory]
+usage: $(basename "${BASH_SOURCE[0]}") [options] [target file or directory]
 
 Browse files using fzf. If no target specified start in the current directory.
 
