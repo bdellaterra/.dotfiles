@@ -108,7 +108,7 @@ Key mappings are as follows:
 $(echo "$KEY_USAGE" | column -t -s ':')
 
 options:
---help                             Show this help text
+--help,-h                          Show this help text
 --once,-o                          Exit browser after editing a file
 --color,-c                         Show colorized output
 --recursive,-r                     Show nested files/direcories at start
