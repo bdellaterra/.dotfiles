@@ -70,8 +70,8 @@ declareKeymap 'alt-up'     "select and enter bookmarked directory"
 declareKeymap 'alt-down'   "select and enter bookmarked directory under current directory"
 declareKeymap 'alt-u'      "go up to base directory"
 declareKeymap 'ctrl-alt-u' "set new base directory at prompt, then go to it"
-declareKeymap 'alt-a'      "go to alternate directory"
-declareKeymap 'ctrl-alt-a' "set alternate directory (default for copy/move prompts)"
+declareKeymap 'alt-a'      "toggle between current and alternate directory"
+declareKeymap 'alt-z'      "set alternate directory (default for copy/move prompts)"
 declareKeymap 'alt-p'      "go to previous directory"
 declareKeymap 'alt-n'      "toggle display of nested vs. only top-level files"
 declareKeymap 'alt-h'      "toggle display of hidden files"
@@ -395,23 +395,22 @@ main() {
     alt-u|ctrl-alt-u)
       if [[ "$command" = 'ctrl-alt-u' || ! -d "$BASE_DIR" ]]; then
         read -ep "Set base directory: " -i "$PWD" DIR
-        [[ -d "$DIR" ]] && BASE_DIR="$DIR" || echo "Not a directory"
+        [[ -d "$DIR" ]] && BASE_DIR="${DIR%/}" || echo "Not a directory"
       fi
-      if [[ "$command" = 'alt-u' && -d "$DIR" ]]; then
-        echo "base: $BASE_DIR"
+      if [[ -d "$BASE_DIR" ]]; then
         [[ "$PWD" = "$BASE_DIR" ]] && cd "$OLDPWD" || cd "$BASE_DIR"
       fi
     ;;
 
-    # Use ctrl-alt-a to set alternate directory
+    # Use alt-z to set alternate directory
     # Use alt-a to go to alternate directory, or go back
     # to previous directory if already in alternate directory
-    alt-a|ctrl-alt-a)
-      if [[ "$command" = 'ctrl-alt-a' || ! -d "$ALT_DIR" ]]; then
+    alt-a|alt-z)
+      if [[ "$command" = 'alt-z' || ! -d "$ALT_DIR" ]]; then
         read -ep "Set alternate directory: " -i "$PWD" DIR
-        [[ -d "$DIR" ]] && ALT_DIR="$DIR" || echo "Not a directory"
+        [[ -d "$DIR" ]] && ALT_DIR="${DIR%/}" || echo "Not a directory"
       fi
-      if [[ "$command" = 'alt-a' && -d "$DIR" ]]; then
+      if [[ "$command" = 'alt-a' && -d "$ALT_DIR" ]]; then
         [[ "$PWD" = "$ALT_DIR" ]] && cd "$OLDPWD" || cd "$ALT_DIR"
       fi
     ;;
