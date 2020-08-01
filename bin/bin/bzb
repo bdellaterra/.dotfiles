@@ -65,9 +65,13 @@ declareKeymap 'ctrl-alt-b' "un-bookmark target directories"
 declareKeymap 'alt-enter'  "bookmark current directory"
 declareKeymap 'alt-bspace' "un-bookmark current directory"
 declareKeymap 'alt-right'  "go to next bookmarked directory"
+declareKeymap 'alt-l'      "go to next bookmarked directory"
 declareKeymap 'alt-left'   "go to previous bookmarked directory"
+declareKeymap 'alt-h'      "go to previous bookmarked directory"
 declareKeymap 'alt-up'     "select and enter bookmarked directory"
+declareKeymap 'alt-k'      "select and enter bookmarked directory"
 declareKeymap 'alt-down'   "select and enter bookmarked directory under current directory"
+declareKeymap 'alt-j'      "select and enter bookmarked directory under current directory"
 declareKeymap 'alt-u'      "go up to base directory"
 declareKeymap 'alt-g'      "go to directory named at prompt"
 declareKeymap 'ctrl-alt-g' "go to directory named at prompt and set it as new base directory"
@@ -367,25 +371,25 @@ main() {
     ;;
 
     # Use alt-right to go to next bookmarked directory
-    alt-right)
+    alt-right|alt-l)
       cd "$(dirs -l +1)"
       pushd +1 >/dev/null 
     ;;
 
     # Use alt-left to go to previous bookmarked directory
-    alt-left)
+    alt-left|alt-h)
       cd "$(dirs -l -0)"
       pushd -0 >/dev/null 
     ;;
 
     # Use alt-up to select bookmarked directory using fzf
-    alt-up)
+    alt-up|alt-k)
       readarray -t DIRS < <(dirs -p -l | LC_ALL=C sort -u)
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
     # Use alt-down to select bookmarked directory under current directory
-    alt-down)
+    alt-down|alt-j)
       readarray -t DIRS < <(dirs -p -l | grep "$PWD" | LC_ALL=C sort -u)
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
@@ -452,13 +456,15 @@ main() {
     ;;
 
     # Use left arrow to move up a directory (not above base directory)
-    left)
+    left|alt-h)
       [[ "$PWD" != "$BASE_DIR" ]] && next_targets=("..") || next_targets=('.')
     ;;
 
     # Use enter (parsed as empty string) or right arrow for default action
     *)
-      next_targets=("${targets[@]}")
+      if [[ -z "$command" || "$command" = 'right' ]]; then
+        next_targets=("${targets[@]}")
+      fi
     ;;
   esac
 
