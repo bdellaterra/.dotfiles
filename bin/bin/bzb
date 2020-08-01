@@ -74,14 +74,14 @@ declareKeymap 'ctrl-alt-g' "go to directory named at prompt and set it as new ba
 declareKeymap 'alt-a'      "toggle between current and alternate directory"
 declareKeymap 'alt-z'      "set alternate directory (default for copy/move prompts)"
 declareKeymap 'alt-p'      "go to previous directory"
-declareKeymap 'alt-n'      "toggle display of nested vs. only top-level files"
-declareKeymap 'alt-h'      "toggle display of hidden files"
-declareKeymap 'alt-i'      "toggle display of ignored files (if supported by 'find' command)"
-declareKeymap 'alt-v'      "toggle display of preview pane"
+declareKeymap 'alt-n'      "toggle listing nested vs. only top-level files"
+declareKeymap 'alt-i'      "toggle visibility of ignored files (if supported by 'find' command)"
+declareKeymap 'alt-v'      "toggle visibility of hidden files"
+declareKeymap 'ctrl-alt-v' "toggle visibility of preview pane"
 declareKeymap 'alt-o'      "toggle sort order"
 declareKeymap 'ctrl-alt-o' "toggle whether sorting is enabled/disabled (affects performance)"
-declareKeymap 'alt-s'      "Save session to file named at prompt"
-declareKeymap 'alt-l'      "Load session from file named at prompt"
+declareKeymap 'alt-s'      "load session from file named at prompt"
+declareKeymap 'ctrl-alt-s' "save session to file named at prompt"
 
 # comma-separated list for fzf
 FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
@@ -226,23 +226,23 @@ main() {
 
   next_targets=()
   case $command in
-    # Use alt-n to toggle showing nested vs only top-level files/directories
+    # Use alt-n to toggle listing nested vs only top-level files/directories
     alt-n)
       [[ $SHALLOW ]] && SHALLOW='' || SHALLOW=1
     ;;
 
-    # Use alt-h to toggle showing hidden files/directories
-    alt-h)
-      [[ $HIDDEN ]] && HIDDEN='' || HIDDEN=1
-    ;;
-
-    # Use alt-i to toggle showing ignored files/directories
+    # Use alt-i to toggle visibility of ignored files/directories
     alt-i)
       [[ $NO_IGNORE ]] && NO_IGNORE='' || NO_IGNORE=1
     ;;
 
-    # Use alt-v to toggle showing preview pane
+    # Use alt-v to toggle visibility of hidden files/directories
     alt-v)
+      [[ $HIDDEN ]] && HIDDEN='' || HIDDEN=1
+    ;;
+
+    # Use ctrl-alt-v to toggle visibility of preview pane
+    ctrl-alt-v)
       [[ $NO_PREVIEW ]] && NO_PREVIEW='' || NO_PREVIEW=1
     ;;
 
@@ -432,8 +432,8 @@ main() {
       cd "$OLDPWD"
     ;;
 
-    # Use alt-s to save session
-    alt-s)
+    # Use ctrl-alt-s to save session
+    ctrl-alt-s)
       SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
       read -ep "Save session: " -i "$SESSION" SESSION
       if [[ -n "$SESSION" ]]; then
@@ -441,8 +441,8 @@ main() {
       fi
     ;;
 
-    # Use alt-l to load session
-    alt-l)
+    # Use alt-s to load session
+    alt-s)
       SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
       read -ep "Load session: " -i "$SESSION" SESSION
       if [[ -r "$SESSION" ]]; then
