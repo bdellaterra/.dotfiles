@@ -62,8 +62,8 @@ declareKeymap 'alt-d'      "create directory named at prompt"
 declareKeymap 'ctrl-alt-d' "create/enter directory named at prompt"
 declareKeymap 'alt-b'      "bookmark target directories"
 declareKeymap 'ctrl-alt-b' "un-bookmark target directories"
-declareKeymap 'alt-enter'  "bookmark current directory"
-declareKeymap 'alt-bspace' "un-bookmark current directory"
+declareKeymap 'alt-w'      "bookmark current working directory"
+declareKeymap 'ctrl-alt-w' "un-bookmark current working directory"
 declareKeymap 'alt-right'  "go to next bookmarked directory"
 declareKeymap 'alt-l'      "go to next bookmarked directory"
 declareKeymap 'alt-left'   "go to previous bookmarked directory"
@@ -357,13 +357,13 @@ main() {
       done
     ;;
 
-    # Use alt-enter to bookmark current directory
-    alt-enter)
+    # Use alt-w to bookmark current working directory
+    alt-w)
       [[ ! "$(dirs -l)" =~ " $PWD" ]] && pushd "$PWD" >/dev/null
     ;;
 
-    # Use alt-bspace to un-bookmark current directory
-    alt-bspace)
+    # Use ctrl-alt-w to un-bookmark current working directory
+    ctrl-alt-w)
       readarray -t DIRS < <(dirs -p -l)
       for i in "${!DIRS[@]}"; do
         [[ $i -ge 1 && "${DIRS[$i]}" = "$PWD" ]] && popd +$i >/dev/null
