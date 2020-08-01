@@ -39,6 +39,11 @@ FILE_PREVIEW='cat {}'
 DIRECTORY_PREVIEW='ls ${BZB_COLOR:+--color=always} ${BZB_HIDDEN:+-a} -lh {}'
 PREVIEW_WINDOW='right:62%:wrap'
 
+# Determine command used to open targets in their native client
+OPEN=''
+command -v xdg-open &>/dev/null && OPEN='xdg-open'
+command -v open &>/dev/null && OPEN='open'
+
 # Save/Load sessions manually
 AUTOSAVE_SESSION=''
 AUTOLOAD_SESSION=''
@@ -50,6 +55,8 @@ declareKeymap() {
 
 declareKeymap 'right'      "enter directory or edit file"
 declareKeymap 'left'       "go to parent directory (not moving past base directory)"
+declareKeymap 'alt-enter'  "quick-launch targets using native client"
+declareKeymap 'alt-q'      "quick-launch targets using native client"
 declareKeymap 'alt-r'      "rename targets in current directory"
 declareKeymap 'alt-m'      "move targets to directory named at prompt"
 declareKeymap 'ctrl-alt-m' "move/rename targets into directory named at prompt"
@@ -264,6 +271,15 @@ main() {
     # Use ctrl-alt-o to enable/disable sorting
     ctrl-alt-o)
       [[ $NO_SORT ]] && NO_SORT='' || NO_SORT=1
+    ;;
+
+    # Use alt-enter or alt-q to quick-launch targets in their native client
+    alt-enter|alt-q)
+      if [[ "$OPEN" ]]; then
+        for t in "${targets[@]}"; do
+          bash -c "$OPEN '$t'"
+        done
+      fi
     ;;
 
     # Use alt-r to rename targets in current directory
