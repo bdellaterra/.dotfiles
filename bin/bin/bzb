@@ -24,8 +24,8 @@ if command -v fd &>/dev/null; then
   RECURSIVE_FIND='fd ${BZB_COLOR:+--color always} ${BZB_HIDDEN:+--hidden} ${BZB_NO_IGNORE:+--no-ignore}'
   SHALLOW_FIND='fd --max-depth 1 ${BZB_COLOR:+--color always} ${BZB_HIDDEN:+--hidden} ${BZB_NO_IGNORE:+--no-ignore} --exec echo {/}'
 else
-  RECURSIVE_FIND='find . ${BZB_HIDDEN:+! -name "."} | sed "s:^\./::"'
-  SHALLOW_FIND='find . -maxdepth 1 ${BZB_HIDDEN:+! -name "."} -execdir basename "{}" \;'
+  RECURSIVE_FIND='find . -not -name '.' ${BZB_HIDDEN:+-not -path "*/.*"} | sed "s:^\./::"'
+  SHALLOW_FIND='find . -maxdepth 1 -not -name '.' ${BZB_HIDDEN:+-not -path "*/.*"} -execdir basename "{}" \;'
 fi
 
 # Sort ascending
