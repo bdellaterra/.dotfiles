@@ -86,6 +86,8 @@ declareKeymap 'alt-o'      "toggle sort order"
 declareKeymap 'ctrl-alt-o' "toggle whether sorting is enabled/disabled (affects performance)"
 declareKeymap 'alt-s'      "load session from file named at prompt"
 declareKeymap 'ctrl-alt-s' "save session to file named at prompt"
+declareKeymap 'ctrl-alt-r' "reset initial view/sort settings"
+declareKeymap 'ctrl-alt-u' "kill all bookmarks (except base directory)"
 
 # comma-separated list of custom mappings for fzf
 FZF_KEYS="$(printf ",%s" "${!KEYMAP[@]}" | cut -c2-)"
@@ -398,28 +400,15 @@ main() {
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
+    # Use alt-p to go to previous directory
+    alt-p)
+      cd "$OLDPWD"
+    ;;
+
     # Use alt-g to go to directory named at prompt
     alt-g)
       read -ep "Go to directory: " -i "$PWD" DIR
       [[ -d "$DIR" ]] && cd "$DIR" || echo "Not a directory"
-    ;;
-
-    # Use ctrl-alt-g to set/enter new base directory
-    # Use alt-u to go to base directory, or go back
-    # to previous directory if already in base directory
-    alt-u|ctrl-alt-g)
-      if [[ "$command" = 'ctrl-alt-g' || ! -d "$BASE_DIR" ]]; then
-        read -ep "Set base directory: " -i "$PWD" DIR
-        if [[ -d "$DIR" ]]; then
-          BASE_DIR="${DIR%/}"
-          pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
-        else
-          echo "Not a directory"
-        fi
-      fi
-      if [[ -d "$BASE_DIR" ]]; then
-        [[ "$PWD" = "$BASE_DIR" ]] && cd "$OLDPWD" || cd "$BASE_DIR"
-      fi
     ;;
 
     # Use alt-z to set alternate directory
@@ -435,17 +424,23 @@ main() {
       fi
     ;;
 
-    # Use alt-p to go to previous directory
-    alt-p)
-      cd "$OLDPWD"
-    ;;
-
-    # Use ctrl-alt-s to save session
-    ctrl-alt-s)
-      SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
-      read -ep "Save session: " -i "$SESSION" SESSION
-      if [[ -n "$SESSION" ]]; then
-        save_session
+    # Use ctrl-alt-g to set/enter new base directory
+    # Use alt-u to go to base directory, or go back
+    # to previous directory if already in base directory
+    alt-u|ctrl-alt-g)
+      if [[ "$command" = 'ctrl-alt-g' || ! -d "$BASE_DIR" ]]; then
+        read -ep "Set base directory: " -i "$PWD" DIR
+        if [[ -d "$DIR" ]]; then
+          BASE_DIR="${DIR%/}"
+          pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
+          # Fall through to load-session case below
+          [[ ! "$AUTOLOAD_SESSION" ]] && command='alt-s'
+        else
+          echo "Not a directory"
+        fi
+      fi
+      if [[ -d "$BASE_DIR" ]]; then
+        [[ "$PWD" = "$BASE_DIR" ]] && cd "$OLDPWD" || cd "$BASE_DIR"
       fi
     ;;
 
@@ -457,6 +452,31 @@ main() {
         . -- "$SESSION"
         load_session
       fi
+    ;;
+
+    # Use ctrl-alt-s to save session
+    ctrl-alt-s)
+      SESSION="${BZB_DIR:+$BZB_DIR/sessions$BASE_DIR/session.bzb}"
+      read -ep "Save session: " -i "$SESSION" SESSION
+      if [[ -n "$SESSION" ]]; then
+        save_session
+      fi
+    ;;
+
+    # Use ctrl-alt-r to reset view/sort settings
+    ctrl-alt-r)
+      SHALLOW=1
+      HIDDEN=''
+      NO_IGNORE=''
+      NO_SORT=''
+      REVERSE=''
+      NO_PREVIEW=''
+    ;;
+
+    # Use ctrl-alt-u to unbookmark all directories (except base)
+    ctrl-alt-u)
+      dirs -c
+      [[ "$BASE_DIR" ]] && pushd "$BASE_DIR" >/dev/null && pushd +1 >/dev/null
     ;;
 
     # Use left arrow to move up a directory (not above base directory)
