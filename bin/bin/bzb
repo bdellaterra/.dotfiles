@@ -39,10 +39,10 @@ FILE_PREVIEW='cat {}'
 DIRECTORY_PREVIEW='ls ${BZB_COLOR:+--color=always} ${BZB_HIDDEN:+-a} -lh {}'
 PREVIEW_WINDOW='right:62%:wrap'
 
-# Determine command used to open targets in their native client
-OPEN=''
-command -v xdg-open &>/dev/null && OPEN='xdg-open'
-command -v open &>/dev/null && OPEN='open'
+# Determine quick-launch command used to open targets in their native client
+LAUNCH=''
+command -v xdg-open &>/dev/null && LAUNCH='xdg-open'
+command -v open &>/dev/null && LAUNCH='open'
 
 # Save/Load sessions manually
 AUTOSAVE_SESSION=''
@@ -138,6 +138,8 @@ options:
                                    default: $FILE_PREVIEW
 --directory-preview=CMD,-dp=CMD    Command to preview currently focused directory
                                    default: $DIRECTORY_PREVIEW
+--quick-launch=CMD,-ql=CMD         Command to launch files/directories using os-native client
+                                   default: $LAUNCH
 --base-directory=DIR,-bd=DIR       Specify a base directory instead of deriving it from target
 --alternate-directory=DIR,-ad=DIR  Initialize alternate directory at start
 
@@ -163,6 +165,7 @@ for arg in "$@"; do
     -rf=*|--recursive-find=*) RECURSIVE_FIND="${arg#*=}"; shift ;;
     -fp=*|--file-preview=*) FILE_PREVIEW="${arg#*=}"; shift ;;
     -dp=*|--directory-preview=*) DIRECTORY_PREVIEW="${arg#*=}"; shift ;;
+    -ql=*|--quick-launch=*) LAUNCH="${arg#*=}"; shift ;;
     -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
     -ad=*|--alt-dir=*|--alternate-directory=*) ALT_DIR="${arg#*=}"; shift ;;
     # Save remaining options for fzf with quoting preserved
@@ -275,9 +278,9 @@ main() {
 
     # Use alt-enter or alt-q to quick-launch targets in their native client
     alt-enter|alt-q)
-      if [[ "$OPEN" ]]; then
+      if [[ "$LAUNCH" ]]; then
         for t in "${targets[@]}"; do
-          bash -c "$OPEN '$t'"
+          bash -c "$LAUNCH '$t'"
         done
       fi
     ;;
