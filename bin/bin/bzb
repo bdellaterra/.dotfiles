@@ -370,25 +370,25 @@ main() {
       done
     ;;
 
-    # Use alt-right to go to next bookmarked directory
+    # Use alt-right or alt-l to go to next bookmarked directory
     alt-right|alt-l)
       cd "$(dirs -l +1)"
       pushd +1 >/dev/null 
     ;;
 
-    # Use alt-left to go to previous bookmarked directory
+    # Use alt-left or alt-h to go to previous bookmarked directory
     alt-left|alt-h)
       cd "$(dirs -l -0)"
       pushd -0 >/dev/null 
     ;;
 
-    # Use alt-up to select bookmarked directory using fzf
+    # Use alt-up or alt-k to select bookmarked directory using fzf
     alt-up|alt-k)
       readarray -t DIRS < <(dirs -p -l | LC_ALL=C sort -u)
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
     ;;
 
-    # Use alt-down to select bookmarked directory under current directory
+    # Use alt-down or alt-j to select bookmarked directory under current directory
     alt-down|alt-j)
       readarray -t DIRS < <(dirs -p -l | grep "$PWD" | LC_ALL=C sort -u)
       next_targets=("$(printf '%s\n' "${DIRS[@]}" | fzf)")
@@ -400,7 +400,7 @@ main() {
       [[ -d "$DIR" ]] && cd "$DIR" || echo "Not a directory"
     ;;
 
-    # Use ctrl-alt-g to set base directory
+    # Use ctrl-alt-g to set/enter new base directory
     # Use alt-u to go to base directory, or go back
     # to previous directory if already in base directory
     alt-u|ctrl-alt-g)
@@ -456,7 +456,7 @@ main() {
     ;;
 
     # Use left arrow to move up a directory (not above base directory)
-    left|alt-h)
+    left)
       [[ "$PWD" != "$BASE_DIR" ]] && next_targets=("..") || next_targets=('.')
     ;;
 
