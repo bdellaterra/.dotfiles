@@ -129,6 +129,8 @@ options:
                                    default: $DIRECTORY_PREVIEW
 --base-directory=DIR,-bd=DIR       Specify a base directory instead of deriving it from target
 --alternate-directory=DIR,-ad=DIR  Initialize alternate directory at start
+--auto-save-session,-as            Save bookmarks and view/sort settings continuously
+--auto-load-session,-al            Load bookmarks and view/sort settings at start
 
 Any additional options will be passed to fzf.
 USAGE
@@ -152,6 +154,8 @@ for arg in "$@"; do
     -dp=*|--directory-preview=*) DIRECTORY_PREVIEW="${arg#*=}"; shift ;;
     -bd=*|--base-dir=*|--base_directory=*) BASE_DIR="${arg#*=}"; shift ;;
     -ad=*|--alt-dir=*|--alternate-directory=*) ALT_DIR="${arg#*=}"; shift ;;
+    -as|--auto-save-session) AUTOSAVE_SESSION=1; shift ;;
+    -al|--auto-load-session) AUTOLOAD_SESSION=1; shift ;;
     # Save remaining options for fzf with quoting preserved
     # TODO: Capture non '=' style arguments 
     -*) OPTS+=("${arg%%=*}=\"${arg#*=}\""); shift ;;
