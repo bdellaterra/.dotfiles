@@ -12,10 +12,14 @@ endif
 
 " CONSTANTS
 
+function s:trim(var)
+  return substitute(substitute(a:var, '^\s*', '', ''), '\s*$', '', '')
+endfunction
+
 if has("win64") || has("win32")
-  let g:os = matchstr(trim(system('systeminfo | findstr /B /C:"OS Name"')), '\(OS Name:\s*\)\?\zs.*')
+  let g:os = matchstr(s:trim(system('systeminfo | findstr /B /C:"OS Name"')), '\(OS Name:\s*\)\?\zs.*')
 elseif executable('uname')
-  let g:os = trim(system('uname -s'))
+  let g:os = s:trim(system('uname -s'))
 endif
 
 " Regex Patterns
