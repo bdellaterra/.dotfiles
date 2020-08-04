@@ -9,3 +9,6 @@
 [submodule "opt/opt/ctags-patterns-for-javascript"]
 	path = opt/opt/ctags-patterns-for-javascript
 	url = https://github.com/romainl/ctags-patterns-for-javascript.git
+[submodule "opt/opt/bzb"]
+	path = opt/opt/bzb
+	url = git@github.com:bdellaterra/bzb.git
