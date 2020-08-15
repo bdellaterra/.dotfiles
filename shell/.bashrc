@@ -3,6 +3,8 @@
 # Source common rc.
 [[ -r ~/.shrc ]] && . ~/.shrc
 
+# Set command prompt
+[[ -r ~/.bash_prompt ]] && . ~/.bash_prompt
 
 # *** FZF (Command-line Fuzzy Finder) ***
 # https://github.com/junegunn/fzf
