@@ -734,7 +734,7 @@ function s:CopyToClipboard(text, ...)
   else
     call setreg('+', a:text)
   endif
-  if state() !~ 'x' && register != ''
+  if exists('*state') && state() !~ 'x' && register != ''
     call setreg(register, a:text)
   endif
   return a:text
