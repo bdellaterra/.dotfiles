@@ -4,6 +4,9 @@
 # (In sh compatibility-mode)
 # [[ -r ~/.shrc ]] && emulate sh -c 'source ~/.shrc'
 
+# Set command prompt
+[[ -r ~/.zsh/.zsh_prompt ]] && . ~/.zsh/.zsh_prompt
+
 # Lines configured by zsh-newuser-install
 bindkey -e
 # End of lines configured by zsh-newuser-install
