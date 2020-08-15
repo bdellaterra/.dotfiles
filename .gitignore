@@ -3,6 +3,7 @@ node_modules
 *secret*
 *history*
 .zcompcache
+.zcompdump
 vim*/**/bundle
 vim*/**/autoload
 deps/**/package-lock.json
