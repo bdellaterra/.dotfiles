@@ -67,6 +67,13 @@ stty -ixon
 # *** Tmux ***
 # https://wiki.archlinux.org/index.php/Tmux
 
+# Fix for tmux on WSL
+if [[ `grep 'openSUSE' /etc/*-release` && ! -d '/run/tmux'  ]]; then
+  echo 'Initializing systemd-tmpfiles...'
+  # From bitcrazed, 2017, https://github.com/tmux/tmux/issues/1092
+  sudo systemd-tmpfiles --create
+fi
+
 # Attach to existing deattached session or start a new session.
 if [[ `command -v tmux` && -z "$TMUX" ]] ;then
     ID="`tmux ls | grep -vm1 attached | cut -d: -f1`" # get id of deattached session
