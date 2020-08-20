@@ -32,6 +32,7 @@ sudo $OS --install bat
 
 sudo $OS --install ranger
 sudo $OS --install htop
+sudo $OS --install strace
 sudo $OS --install fortune
 
 sudo $OS --install zsh
