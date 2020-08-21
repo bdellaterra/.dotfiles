@@ -8,3 +8,4 @@ vim*/**/bundle
 vim*/**/autoload
 deps/**/package-lock.json
 deps/**/yarn.lock
+ranger/.config/htop
