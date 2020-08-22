@@ -74,3 +74,7 @@ pkgID() {
     echo "$_"
 }
 
+isBinary() {
+  test `head -qc 8192 "$1" | grep -o '[^[:print:]]' | wc -c` -gt 16
+}
+
