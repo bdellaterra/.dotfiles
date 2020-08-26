@@ -76,6 +76,9 @@
     # clone
     cl = clone
 
+    # clone, including submodules
+    cl = clone --recurse-submodules
+
     # commit w/ message
     cm = commit -m
 
