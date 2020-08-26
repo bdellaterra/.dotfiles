@@ -30,3 +30,5 @@ let g:onlineDevSearch = 'https://developer.mozilla.org/en-US/search?q='
 map <silent> <leader>vm :exe "call ReadUrl('" . g:onlineDevSearch . input('Online Dev Search: ') . "')"<CR>
 map <silent> <leader>VM :exe "call GoToUrl('" . g:onlineDevSearch . input('Online Dev Search: ') . "')"<CR>
 
+" BZB
+let g:BZB_Command=expand('$HOME') . '/bin/b'

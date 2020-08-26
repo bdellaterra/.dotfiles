@@ -24,9 +24,12 @@ alias l='ls --color --group-directories-first -lAhFG'
 # v: launch Vim, or show reminder to resume if suspended
 [[ `command -v vim` ]] && alias v='jobs | grep vim && echo "Resume Vim with fg" || vim'
 # b: preferred file-browser
-BZB_FILE_PREVIEW='bat --style changes,header,grid $(echo ${BZB_COLOR:+--color always}) --theme Nord {}'
-BZB_DIRECTORY_PREVIEW='exa ${BZB_COLOR:+--color=always} --group-directories-first -lahF {}'
-[[ `command -v bzb` ]] && alias b="bzb -c -s -l -fp='$BZB_FILE_PREVIEW' -dp='$BZB_DIRECTORY_PREVIEW'"
+# (implemented via ~/bin/b for easier Vim integration. Fallback below)
+if [[ `command -v bzb` && ! `command -v b` ]] ;then
+  BZB_FILE_PREVIEW='bat --style changes,header,grid $(echo ${BZB_COLOR:+--color always}) --theme Nord {}'
+  BZB_DIRECTORY_PREVIEW='exa ${BZB_COLOR:+--color=always} --group-directories-first -lahF {}'
+  [[ `command -v bzb` ]] && alias b="bzb -c -s -l -fp='$BZB_FILE_PREVIEW' -dp='$BZB_DIRECTORY_PREVIEW'"
+fi
 # m: preferred file-manager w/ fallbacks
 [[ `command -v mc` ]] && alias fm=mc
 [[ `command -v ranger` ]] && alias fm="source ranger" # source embedded script to cd on exit

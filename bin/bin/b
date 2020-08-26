@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Invoke bzb with custom options
+# https://github.com/bdellaterra/bzb  
+
+export BZB_PREVIEW_TEXT='bat --style changes,header,grid --color always --theme Nord {}'
+export BZB_PREVIEW_DIRECTORY='exa ${BZB_COLOR:+--color=always} --group-directories-first -lahF {}'
+
+bzb -c -s -l
