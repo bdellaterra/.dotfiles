@@ -8,6 +8,8 @@
     excludesfile = ~/.gitignore
 [branch]
     autosetuprebase = always
+[pull]
+	ff = only
 [diff]
     renames = copies
 [color]
