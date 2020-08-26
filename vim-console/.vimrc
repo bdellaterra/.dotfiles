@@ -219,7 +219,7 @@ function ToggleConceal(...)
   redraw!
 endfunction
 
-function MatchUnderCursor(regex,...)
+function MatchUnderCursor(regex, ...)
   let outerRegex = a:regex
   let innerRegex = get(a:000, 1, a:regex)
 
@@ -771,8 +771,14 @@ let g:ranger_choice_file = s:TmpDir . 'RangerChosenFile'
 " Don't use plugin mappings
 let g:ranger_map_keys = 0
 
-" ',.' will browse files at current buffer's directory
-map <leader>. :Ranger<CR>
+" ',.' will browse files at current buffer's directory (BZB)
+if !exists('g:BZB_Command')
+  let g:BZB_Command = 'bzb -c -s -l'
+endif
+map <leader>. :exe '!' . g:BZB_Command . ' -E -bd="' . fnamemodify(expand("$PWD"), ':p:h') . '" ' . fnamemodify(expand('%'), ':p:h')<CR>:let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection.bzb')<CR>:exe 'argadd ' . join(g:BZB_Targets, ' ')<CR>:exe 'edit ' . g:BZB_Targets[0]<CR>
+
+" ',;' will browse files at current buffer's directory (Ranger)
+map <leader>; :Ranger<CR>
 
 " ',p' will browse files at working-directory (usually project root)
 map <leader>p :RangerWorkingDirectory<CR>
