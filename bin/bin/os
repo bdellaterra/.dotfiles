@@ -1,11 +1,15 @@
 #!/bin/bash
 
-DISTRO_REGEX="\b(NAME|DISTRIB.ID|DISTRIBUTOR.ID)[:=]\s*\"?([^\"]*)\"?"
+DISTRO_REGEX="\b(NAME|DISTRIB.ID|DISTRIBUTOR.ID)[:=]\s*\"([^\"]*)\""
 DISTRO_CAPTURE=2
-VERSION_REGEX="\b(VERSION_ID|RELEASE)[:=]\s*\"?([^\"]*)\"?"
+VERSION_REGEX="\b(VERSION.ID|RELEASE)[:=]\"?([0-9.]*)"
 VERSION_CAPTURE=2
 
-[[ `command -v uname` ]] && OS=$(uname -s)
+if command -v uname &>/dev/null; then
+  OS="$(uname -s)"
+  ARCH="$(uname -m)"
+fi
+[[ `command -v getconf` ]] && BITS="$(getconf LONG_BIT)"
 RELEASE=$(cat /etc/*release | uniq)
 [[ -r /etc/os-release ]] && RELEASE=$(cat /etc/os-release)
 DISTRO="$RELEASE"
@@ -163,12 +167,20 @@ while [[ $# -gt 0 ]]; do
       echo "-d, --distribution-upgrade major distribution upgrade"
       exit 0
       ;;
+    -v|--verbose)
+      echo "$OS:$DISTRO:$VERSION:$ARCH:$BITS-bit"
+      break
+      ;;
     -n|--name)
       echo "$DISTRO"
       break
       ;;
-    -v|--verbose)
-      echo "$OS:$DISTRO:$VERSION"
+    -a|--arch)
+      echo "$ARCH"
+      break
+      ;;
+    -b|--bits)
+      echo "$BITS"
       break
       ;;
     -l|--list)
