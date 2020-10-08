@@ -1,8 +1,8 @@
 #!/bin/bash
 
-DISTRO_REGEX="\b(NAME|DISTRIB.ID|DISTRIBUTOR.ID)[:=]\s*\"([^\"]*)\""
+DISTRO_REGEX="\b(NAME|DISTRIB.ID|DISTRIBUTOR.ID)[:=]\s*\"?([^\"]*)\"?"
 DISTRO_CAPTURE=2
-VERSION_REGEX="\b(VERSION.ID|RELEASE)[:=]\s*\"([^\"]*)\""
+VERSION_REGEX="\b(VERSION_ID|RELEASE)[:=]\s*\"?([^\"]*)\"?"
 VERSION_CAPTURE=2
 
 [[ `command -v uname` ]] && OS=$(uname -s)
