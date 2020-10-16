@@ -2,10 +2,14 @@
 
 DISTRO_REGEX="\b(NAME|DISTRIB.ID|DISTRIBUTOR.ID)[:=]\s*\"([^\"]*)\""
 DISTRO_CAPTURE=2
-VERSION_REGEX="\b(VERSION.ID|RELEASE)[:=]\s*\"([^\"]*)\""
+VERSION_REGEX="\b(VERSION.ID|RELEASE)[:=]\"?([0-9.]*)"
 VERSION_CAPTURE=2
 
-[[ `command -v uname` ]] && OS=$(uname -s)
+if command -v uname &>/dev/null; then
+  OS="$(uname -s)"
+  ARCH="$(uname -m)"
+fi
+[[ `command -v getconf` ]] && BITS="$(getconf LONG_BIT)"
 RELEASE=$(cat /etc/*release | uniq)
 [[ -r /etc/os-release ]] && RELEASE=$(cat /etc/os-release)
 DISTRO="$RELEASE"
@@ -147,9 +151,11 @@ while [[ $# -gt 0 ]]; do
       echo "os [options]"
       echo " "
       echo "options:"
-      echo "-n, --name                 show distribution name (default output)"
-      echo "-h, --help                 show brief help message"
       echo "-v, --verbose              show verbose OS information"
+      echo "-n, --name                 show distribution name (default output)"
+      echo "-a, --arch                 show architecture hardware name"
+      echo "-b, --bits                 show processor bits"
+      echo "-h, --help                 show brief help message"
       echo "-l, --list                 list installed packages"
       echo "-w, --what, --show         show info for package"
       echo "-c, --current, --refresh   get the latest package listings"
@@ -163,12 +169,20 @@ while [[ $# -gt 0 ]]; do
       echo "-d, --distribution-upgrade major distribution upgrade"
       exit 0
       ;;
+    -v|--verbose)
+      echo "$OS:$DISTRO:$VERSION:$ARCH:$BITS-bit"
+      break
+      ;;
     -n|--name)
       echo "$DISTRO"
       break
       ;;
-    -v|--verbose)
-      echo "$OS:$DISTRO:$VERSION"
+    -a|--arch)
+      echo "$ARCH"
+      break
+      ;;
+    -b|--bits)
+      echo "$BITS"
       break
       ;;
     -l|--list)
