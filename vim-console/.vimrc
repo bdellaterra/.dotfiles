@@ -252,9 +252,8 @@ function ReadUrl(link, ...)
   let jumpId = get(a:000, 0, '')
   let g:urlFilename = get(a:000, 1, '')
   if g:urlFilename == ''
-    let tmpDir = s:TmpDir . 'www/'
     let safeUrl = matchstr(url, '\w\+:\/\/\zs.*') 
-    let g:urlFilename = tmpDir . fnameescape(safeUrl)
+    let g:urlFilename = g:wwwDir . fnameescape(safeUrl)
     if safeUrl !~ '[/\\]'
       let g:urlFilename .= '/'
     endif
@@ -844,8 +843,12 @@ nnoremap + :call JumpMRU(1)<CR>
 
 " URLS
 
+
+" Set temp file location
+let g:wwwDir = s:TmpDir . 'www/'
+
 " Set appropriate filetype for temporary html files converted to markdown (path matches url)
-exe  'autocmd BufRead,BufNewFile ' . s:TmpDir . 'www/* set filetype=pandoc'
+exe  'autocmd BufRead,BufNewFile ' . g:wwwDir . '*' . ' set filetype=pandoc'
 
 command! -nargs=1 VUE
       \ call ReadUrl(<q-args>)
