@@ -28,7 +28,6 @@ let g:rgx.urlProtocol = '[a-zA-Z]*:\/\/'
 let g:rgx.urlPathChar = '[^][ <>,;()]'
 let g:rgx.urlQuery = '?' . g:rgx.urlPathChar . '*'
 let g:rgx.url = '\(' . g:rgx.urlProtocol . g:rgx.urlPathChar . '*\)'
-let g:rgx.url = '\(' . g:rgx.urlProtocol . g:rgx.urlPathChar . '*\)'
 let g:rgx.urlFile = g:rgx.urlPathChar . '\{-}\([^/]\{-}\)' . '\%( . g:rgx.urlQuery . \)\?'
 let g:rgx.mdLabel = '\['. '\([^]]*\)' . '\]' " 'md' for 'markdown'
 let g:rgx.mdTargetName = '\([^)]\{-}\)'
@@ -519,6 +518,9 @@ function CleanHtmlToMarkdown(...)
     exe 'silent! keepjumps %s~[(<]\@>\%(#\|\w\+://\)\@!\zs[/\\]\ze~'.g:baseUrl.'/~gi'
   endif
 
+  " add brackets around un-linked urls
+  exe 'silent! keepjumps %s~\%(^\|\s\)\('.g:rgx.url.'\)\%($\|\s\)~<\1>~g' 
+
   " Remove whitespace
   silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 endfunction
@@ -893,7 +895,7 @@ map <silent> <leader>ve :exe "call ReadUrl('" . g:onlineEtymology . input('Onlin
 map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
 
 " Web Search
-let g:onlineWebSearch = 'https://yandex.com/search/?text='
+let g:onlineWebSearch = 'https://www.startpage.com/do/search?q='
 map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
 map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
 
