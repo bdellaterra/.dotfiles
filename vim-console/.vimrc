@@ -263,13 +263,18 @@ function ReadUrl(link, ...)
   set modifiable
   set noreadonly
   keepjumps normal ggVGx
-  " let &statusline = a:link
-  if executable('chromium')
-    silent! exe 'r ! chromium --silent-launch --no-startup-window --headless --minimal --dump-dom "'.url.'" 2>/dev/null | pandoc -f html -t markdown --columns=999'
+  if executable('chromium') && executable('pandoc')
+    let browse = '2>/dev/null chromium --silent-launch --no-startup-window --headless --minimal --dump-dom "'.url.'"'
+    let clean = ''
+    if executable('readability')
+      let clean =  ' | readability "'.url.'"'
+    endif
+    let convert = ' | pandoc -f html -t markdown --columns=999'
+    silent! exe 'r ! ' . browse . clean . convert
   elseif executable('curl') && executable('pandoc')
     silent! exe 'r ! curl -s ' . url . ' | pandoc -f html -t markdown'
   else
-    throw "Error: Need chromium or pandoc/curl to browse web urls"
+    throw "Error: Need pandoc and chromium/curl to browse web urls"
   endif
   let g:baseUrl = matchstr(a:link, '\(^\w\+:\/\/\)\?[^\/]*')
   silent! call CleanHtmlToMarkdown(g:baseUrl)
@@ -888,7 +893,7 @@ map <silent> <leader>ve :exe "call ReadUrl('" . g:onlineEtymology . input('Onlin
 map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
 
 " Web Search
-let g:onlineWebSearch = 'https://www.startpage.com/do/search?q='
+let g:onlineWebSearch = 'https://yandex.com/search/?text='
 map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
 map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
 
@@ -897,12 +902,13 @@ let g:onlineWikiSearch = 'https://en.wikipedia.org/wiki/'
 map <silent> <leader>vw :exe "call ReadUrl('" . g:onlineWikiSearch . input('Online Wiki Search: ') . "')"<CR>
 map <silent> <leader>VW :exe "call GoToUrl('" . g:onlineWikiSearch . input('Online Wiki Search: ') . "')"<CR>
 
-let g:postHtmlToMdCleanup = [
-  \ ['www.thesaurus.com', s:mdHeadingJump(1)],
-  \ ['www.wordnik.com', s:mdHeadingJump(1)],
-  \ ['www.startpage.com', s:mdHeadingJump(1)],
-  \ ['en.wikipedia.org', s:mdHeadingJump(1)],
-  \ ]
+let g:postHtmlToMdCleanup = []
+" let g:postHtmlToMdCleanup = [
+"   \ ['www.thesaurus.com', s:mdHeadingJump(1)],
+"   \ ['www.wordnik.com', s:mdHeadingJump(1)],
+"   \ ['www.startpage.com', s:mdHeadingJump(1)],
+"   \ ['en.wikipedia.org', s:mdHeadingJump(1)],
+"   \ ]
 
 
 " SELECTION
