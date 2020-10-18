@@ -300,6 +300,7 @@ function GoToUrl(...)
     else
       call netrw#NetrwBrowseX(url, 0)
     endif
+    return
   elseif altEnter == 2
     call search(g:rgx.mdAnyLink, 'ce')
     let label = substitute(MatchUnderCursor(g:rgx.mdLink)[1], '^[^.]\+$', '&.md', '')
