@@ -263,7 +263,7 @@ function ReadUrl(link, ...)
   set noreadonly
   keepjumps normal ggVGx
   if executable('chromium') && executable('pandoc')
-    let browse = '2>/dev/null chromium --silent-launch --no-startup-window --headless --minimal --dump-dom "'.url.'"'
+    let browse = '2>/dev/null chromium --silent-launch --no-startup-window --headless --incognito --minimal --dump-dom "'.url.'"'
     let clean = ''
     if executable('readability')
       let clean =  ' | readability "'.url.'"'
