@@ -1812,6 +1812,8 @@ function! s:Focus()
   augroup END
   let s:save_enableConcealAtCursor = get(g:, 'enableConcealAtCursor', 0)
   let g:enableConcealAtCursor = 1
+  let s:save_concealcursor = &concealcursor
+  set concealcursor+=n
   let s:save_showtabline = &showtabline
   let &showtabline = 0
   set noshowmode
@@ -1834,6 +1836,7 @@ function! s:Blur()
   endif
   au! VerticallyCenterCursor CursorMoved
   let g:enableConcealAtCursor = s:save_enableConcealAtCursor
+  let &concealcursor = s:save_concealcursor
   let &showtabline = s:save_showtabline
   silent! unlet s:save_showtabline
   set showmode
