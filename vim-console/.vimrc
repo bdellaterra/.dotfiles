@@ -896,9 +896,10 @@ map <silent> <leader>ve :exe "call ReadUrl('" . g:onlineEtymology . input('Onlin
 map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
 
 " Web Search
-let g:onlineWebSearch = 'https://www.startpage.com/do/search?q='
-map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
-map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
+let g:onlineWebSearch = 'https://gibiru.com/results.html?q='
+" let g:onlineWebSearch = 'https://www.lukol.com/s.php?q='
+map <silent> <leader>vg :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search (gibiru): ') . "')"<CR>
+map <silent> <leader>VG :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search (gibiru): ') . "')"<CR>
 
 " Wiki Search
 let g:onlineWikiSearch = 'https://en.wikipedia.org/wiki/'
