@@ -246,8 +246,10 @@ function s:mdHeadingJump(...)
   return 'normal gg' . string(headingCount) . ']]zt'
 endfunction
 
+let g:defaultPreHtmlToMdCleanup = executable('readability') ? "| readability '%s'" : ''
 function ReadUrl(link, ...)
-  let url = a:link
+  let url = substitute(a:link, ' ', '+', 'g')
+  let g:url = url
   let jumpId = get(a:000, 0, '')
   let g:urlFilename = get(a:000, 1, '')
   if g:urlFilename == ''
@@ -263,11 +265,16 @@ function ReadUrl(link, ...)
   set noreadonly
   keepjumps normal ggVGx
   if executable('chromium') && executable('pandoc')
-    let browse = '2>/dev/null chromium --silent-launch --no-startup-window --headless --incognito --minimal --dump-dom "'.url.'"'
+    " Site-specific pre-cleanup, with readability as default
     let clean = ''
-    if executable('readability')
-      let clean =  ' | readability "'.url.'"'
-    endif
+    for [siteRegex, syscmd] in g:preHtmlToMdCleanup
+      if url =~ siteRegex
+        " Adding space for truthiness so syscmd set to '' will clear default cleanup command
+        silent! let clean .= ' ' . printf(syscmd, url)
+      endif
+    endfor
+    silent! let clean = clean != '' ? clean : printf(g:defaultPreHtmlToMdCleanup, url)
+    let browse = '2>/dev/null chromium --silent-launch --no-startup-window --headless --incognito --minimal --dump-dom "'.url.'"'
     let convert = ' | pandoc -f html -t markdown --columns=999'
     silent! exe 'r ! ' . browse . clean . convert
   elseif executable('curl') && executable('pandoc')
@@ -278,7 +285,7 @@ function ReadUrl(link, ...)
   let g:baseUrl = matchstr(a:link, '\(^\w\+:\/\/\)\?[^\/]*')
   silent! call CleanHtmlToMarkdown(g:baseUrl)
   keepjumps normal gg
-  " Site-specific customizations
+  " Site-specific post-cleanup
   for [siteRegex, cmd] in g:postHtmlToMdCleanup
     if url =~ siteRegex
       exe 'keepjumps ' . cmd
@@ -896,24 +903,23 @@ map <silent> <leader>ve :exe "call ReadUrl('" . g:onlineEtymology . input('Onlin
 map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
 
 " Web Search
-let g:onlineWebSearch = 'https://gibiru.com/results.html?q='
-" let g:onlineWebSearch = 'https://www.lukol.com/s.php?q='
-map <silent> <leader>vg :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search (gibiru): ') . "')"<CR>
-map <silent> <leader>VG :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search (gibiru): ') . "')"<CR>
+let g:onlineWebSearch = 'https://www.dogpile.com/serp?q='
+map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
+map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
 
 " Wiki Search
 let g:onlineWikiSearch = 'https://en.wikipedia.org/wiki/'
 map <silent> <leader>vw :exe "call ReadUrl('" . g:onlineWikiSearch . input('Online Wiki Search: ') . "')"<CR>
 map <silent> <leader>VW :exe "call GoToUrl('" . g:onlineWikiSearch . input('Online Wiki Search: ') . "')"<CR>
 
-let g:postHtmlToMdCleanup = []
-" let g:postHtmlToMdCleanup = [
-"   \ ['www.thesaurus.com', s:mdHeadingJump(1)],
-"   \ ['www.wordnik.com', s:mdHeadingJump(1)],
-"   \ ['www.startpage.com', s:mdHeadingJump(1)],
-"   \ ['en.wikipedia.org', s:mdHeadingJump(1)],
-"   \ ]
+let g:preHtmlToMdCleanup = []
+let g:postHtmlToMdCleanup = [
+  \ ['www.example.com', s:mdHeadingJump(1)],
+  \ ]
 
+let g:postHtmlToMdCleanup += [
+  \ ['dogpile.com', 'silent! %s#^<.*>\n##'],
+  \ ]
 
 " SELECTION
 
