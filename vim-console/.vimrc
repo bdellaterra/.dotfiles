@@ -1061,7 +1061,7 @@ noremap <expr>= <SID>EditBufferOrReindent(v:count)
 noremap 0= :<C-u>call <SID>SwitchToAltBufferOrMruFile()<CR>
 
 " '-=' will delete current buffer or # buffer number from command-count
-nnoremap -= :<C-u>exe (v:count ? v:count : '') . 'bdelete'<CR>
+nnoremap -= :<C-u>exe (v:count ? v:count : '') . 'bdelete!'<CR>
 nnoremap 0-= :<C-u>confirm bdelete #<CR>
 " Alias 'Ctrl-w,Ctrl-w'
 nmap <C-w><C-w> -=
