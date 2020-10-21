@@ -884,8 +884,8 @@ function SearchFile(file, searchTerm)
 endfunction
 
 " Browse URLs
-map <leader>vv :VUE https://
-map <leader>VV :VUB https://
+map <leader>vv :VUE 
+map <leader>VV :VUB 
 
 " Dictionary
 let g:onlineDictionary = 'https://www.wordnik.com/words/'
