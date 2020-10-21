@@ -249,6 +249,7 @@ endfunction
 let g:defaultPreHtmlToMdCleanup = executable('readability') ? "| readability '%s'" : ''
 function ReadUrl(link, ...)
   let url = substitute(a:link, ' ', '+', 'g')
+  let url = url =~ '^\w\+://' ? url : 'https://' . url
   let g:url = url
   let jumpId = get(a:000, 0, '')
   let g:urlFilename = get(a:000, 1, '')
