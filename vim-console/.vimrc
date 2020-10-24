@@ -793,7 +793,7 @@ function s:BZB()
   endif
   return g:BZB_Command
 endfunction
-map <silent> <leader>. :exe '!' . <SID>BZB() . ' -E -bd="' . fnamemodify(expand("$PWD"), ':p:h') . '" ' . fnamemodify(expand('%'), ':p:h')<CR>:let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')<CR>:exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')<CR>:if len(g:BZB_Targets) \| exe 'edit ' . g:BZB_Targets[0] \| endif<CR>
+map <silent> <leader>. :exe '!' . <SID>BZB() . ' -E -bd="' . fnamemodify(expand("$PWD"), ':p:h') . '" ' . fnamemodify(expand('%'), ':p:h')<CR>:silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')<CR>:exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')<CR>:if len(g:BZB_Targets) \| exe 'edit ' . g:BZB_Targets[0] \| endif<CR>
 
 " ',;' will browse files at current buffer's directory (Ranger)
 map <leader>; :Ranger<CR>
