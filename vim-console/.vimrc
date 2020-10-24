@@ -789,7 +789,7 @@ let g:ranger_map_keys = 0
 " ',.' will browse files at current buffer's directory (BZB)
 function s:BZB()
   if !exists('g:BZB_Command')
-    let g:BZB_Command = 'bzb -c'
+    let g:BZB_Command = 'bzb -c -as -al'
   endif
   return g:BZB_Command
 endfunction
