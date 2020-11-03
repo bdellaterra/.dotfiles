@@ -7,3 +7,4 @@ npx
 puppeteer
 typescript
 typescript-language-server
+mozilla-readability-cli
