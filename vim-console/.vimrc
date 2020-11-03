@@ -285,6 +285,8 @@ function ReadUrl(link, ...)
   endif
   let g:baseUrl = matchstr(a:link, '\(^\w\+:\/\/\)\?[^\/]*')
   silent! call CleanHtmlToMarkdown(g:baseUrl)
+  " Add original source url to bottom
+  exe "silent! keepjumps normal Go\<CR>Source: <" . url . ">"
   keepjumps normal gg
   " Site-specific post-cleanup
   for [siteRegex, cmd] in g:postHtmlToMdCleanup
