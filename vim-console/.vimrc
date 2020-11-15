@@ -465,6 +465,7 @@ endfunction
 
 function CleanHtmlToMarkdown(...)
   let g:baseUrl = get(a:000, 0, '')
+  let g:baseUrl = g:baseUrl =~ '^\w\+://' ? g:baseUrl : 'https://' . g:baseUrl
   let g:baseDomain = matchstr(g:baseUrl, '\w\+:\/\/\zs.*')
   let g:baseRegex = '\%(\%(\%(\%(\w\+:\)\?//\)\?www\.\)\?'.g:baseDomain.'[/\\]\?\)'
 
@@ -906,7 +907,8 @@ map <silent> <leader>ve :exe "call ReadUrl('" . g:onlineEtymology . input('Onlin
 map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Online Etymology Search: ') . "')"<CR>
 
 " Web Search
-let g:onlineWebSearch = 'https://www.dogpile.com/serp?q='
+" let g:onlineWebSearch = 'http://localhost/search?q='
+let g:onlineWebSearch =  'https://searx.be/search?q='
 map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
 map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
 
