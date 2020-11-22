@@ -6,4 +6,4 @@
 command -v bat &>/dev/null && export BZB_PREVIEW_TEXT="bat --style changes,header,grid \${BZB_COLOR:+--color} \${BZB_COLOR:+always} --theme Nord {}"
 command -v exa &>/dev/null && export BZB_PREVIEW_DIRECTORY="exa \${BZB_COLOR:+--color=always} --group-directories-first -lahF {}"
 
-bzb -aq -as -al $@
+bzb -ah -aq -as -al $@
