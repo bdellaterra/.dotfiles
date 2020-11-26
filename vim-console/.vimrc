@@ -1515,12 +1515,6 @@ if executable('rg')
   map <leader>/g   :Rg<Space>
   map <leader>/G   :Rg!<Space>
   map <leader>/<leader> :Rg!<CR>
-
-  let g:rgAny = 'rg --column --line-number --no-heading --color=always --smart-case -e "" '
-  " Requires notational-fzf plugin and ripgrep
-  if exists('g:nv_search_paths')
-    map <leader>/n :call fzf#vim#grep(<C-r>="g:rgAny . join(map(g:nv_search_paths, 'File(v:val)'))"<CR>, 1, fzf#vim#with_preview('up:60%'), 1)<CR>
-  endif
   " Requires ProjectRoot plugin
   map <leader>/p :call fzf#vim#grep(ProjectRootGuess(), 1, fzf#vim#with_preview('up:60%'), 1)<CR>
   " Recursively under current directory
