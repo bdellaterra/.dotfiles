@@ -239,29 +239,6 @@ hi link pandocCiteKey Label
 hi link pandocCiteAnchor Operator
 hi link pandocCiteLocator Operator
 
-" Emphasis
-hi pandocEmphasis gui=italic cterm=italic
-hi pandocStrong gui=bold cterm=bold
-hi pandocStrongEmphasis gui=bold,italic cterm=bold,italic
-hi pandocStrongInEmphasis gui=bold,italic cterm=bold,italic
-hi pandocEmphasisInStrong gui=bold,italic cterm=bold,italic
-if !exists('s:hi_tail')
-  let s:fg = '' " Vint can't figure ou these get set dynamically
-  let s:bg = '' " so initialize them manually first
-  for s:i in ['fg', 'bg']
-    let s:tmp_val = synIDattr(synIDtrans(hlID('String')), s:i)
-    let s:tmp_ui =  has('gui_running') || (has('termguicolors') && &termguicolors) ? 'gui' : 'cterm'
-    if !empty(s:tmp_val) && s:tmp_val != -1
-      exe 'let s:'.s:i . ' = "'.s:tmp_ui.s:i.'='.s:tmp_val.'"'
-    else
-      exe 'let s:'.s:i . ' = ""'
-    endif
-  endfor
-  let s:hi_tail = ' '.s:fg.' '.s:bg
-endif
-exe 'hi pandocNoFormattedInEmphasis gui=italic cterm=italic'.s:hi_tail
-exe 'hi pandocNoFormattedInStrong gui=bold cterm=bold'.s:hi_tail
-
 hi link pandocNoFormatted String
 hi link pandocNoFormattedAttrs Comment
 hi link pandocSubscriptMark Operator
