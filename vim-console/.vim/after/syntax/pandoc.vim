@@ -1,4 +1,4 @@
-# Modified from https://github.com/vim-pandoc/vim-pandoc-syntax/blob/master/syntax/pandoc.vim
+" Modified from https://github.com/vim-pandoc/vim-pandoc-syntax/blob/master/syntax/pandoc.vim
 scriptencoding utf-8
 
 " cchars used in conceal rules {{{2
@@ -51,9 +51,6 @@ syn match pandocBlockQuoteMark /\_^\s\{,3}>/ contained containedin=pandocEmphasi
 " }}}2
 
 " Code Blocks: {{{2
-if g:pandoc#syntax#protect#codeblocks == 1
-    syn match pandocCodeblock /\([ ]\{4}\|\t\).*$/
-endif
 syn region pandocCodeBlockInsideIndent   start=/\(\(\d\|\a\|*\).*\n\)\@<!\(^\(\s\{8,}\|\t\+\)\).*\n/ end=/.\(\n^\s*\n\)\@=/ contained
 " }}}2
 
@@ -65,7 +62,7 @@ syn region pandocReferenceURL matchgroup=pandocOperator start=/\]\@1<=(/ end=/)/
 " let's not consider "a [label] a" as a label, remove formatting - Note: breaks implicit links
 syn match pandocNoLabel /\]\@1<!\(\s\{,3}\|^\)\[[^\[\]]\{-}\]\(\s\+\|$\)[\[(]\@!/ contains=pandocPCite
 syn match pandocLinkTip /\s*".\{-}"/ contained containedin=pandocReferenceURL contains=@Spell,pandocAmpersandEscape display
-exe 'syn match pandocImageIcon /!\[\@=/ display conceal cchar=' . s:cchars['image'])
+exe 'syn match pandocImageIcon /!\[\@=/ display conceal cchar=' . s:cchars['image']
 " }}}3
 
 " Definitions: {{{3
@@ -130,17 +127,17 @@ syn match pandocNoFormattedAttrs /{.\{-}}/ contained
 
 " Subscripts: {{{3
 syn region pandocSubscript start=/\~\(\([[:graph:]]\(\\ \)\=\)\{-}\~\)\@=/ end=/\~/ keepend
-exe 'syn match pandocSubscriptMark /\~/ contained containedin=pandocSubscript conceal cchar='.s:cchars['sub'])
+exe 'syn match pandocSubscriptMark /\~/ contained containedin=pandocSubscript conceal cchar='.s:cchars['sub']
 " }}}3
 
 " Superscript: {{{3
 syn region pandocSuperscript start=/\^\(\([[:graph:]]\(\\ \)\=\)\{-}\^\)\@=/ skip=/\\ / end=/\^/ keepend
-exe 'syn match pandocSuperscriptMark /\^/ contained containedin=pandocSuperscript conceal cchar='.s:cchars['super'])
+exe 'syn match pandocSuperscriptMark /\^/ contained containedin=pandocSuperscript conceal cchar='.s:cchars['super']
 " }}}3
 
 " Strikeout: {{{3
 syn region pandocStrikeout start=/\~\~/ end=/\~\~/ contains=@Spell,pandocAmpersandEscape keepend
-exe 'syn match pandocStrikeoutMark /\~\~/ contained containedin=pandocStrikeout conceal cchar='.s:cchars['strike'])
+exe 'syn match pandocStrikeoutMark /\~\~/ contained containedin=pandocStrikeout conceal cchar='.s:cchars['strike']
 " }}}3
 
 " }}}2
@@ -148,7 +145,7 @@ exe 'syn match pandocStrikeoutMark /\~\~/ contained containedin=pandocStrikeout 
 " Headers: {{{2
 syn match pandocAtxHeader /\(\%^\|<.\+>.*\n\|^\s*\n\)\@<=#\{1,6}.*\n/ contains=pandocEmphasis,pandocStrong,pandocNoFormatted,pandocLaTeXInlineMath,pandocEscapedDollar,@Spell,pandocAmpersandEscape,pandocReferenceLabel,pandocReferenceURL display
 syn match pandocAtxHeaderMark /\(^#\{1,6}\|\\\@<!#\+\(\s*.*$\)\@=\)/ contained containedin=pandocAtxHeader
-exe 'syn match pandocAtxStart /#/ contained containedin=pandocAtxHeaderMark conceal cchar='.s:cchars['atx'])
+exe 'syn match pandocAtxStart /#/ contained containedin=pandocAtxHeaderMark conceal cchar='.s:cchars['atx']
 syn match pandocSetexHeader /^.\+\n[=]\+$/ contains=pandocEmphasis,pandocStrong,pandocNoFormatted,pandocLaTeXInlineMath,pandocEscapedDollar,@Spell,pandocAmpersandEscape
 syn match pandocSetexHeader /^.\+\n[-]\+$/ contains=pandocEmphasis,pandocStrong,pandocNoFormatted,pandocLaTeXInlineMath,pandocEscapedDollar,@Spell,pandocAmpersandEscape
 syn match pandocHeaderAttr /{.*}/ contained containedin=pandocAtxHeader,pandocSetexHeader
@@ -183,16 +180,6 @@ hi link pandocHTMLCommentEnd Delimiter
 hi link pandocBlockQuote Comment
 hi link pandocBlockQuoteMark Comment
 hi link pandocAmpersandEscape Special
-
-" if the user sets g:pandoc#syntax#codeblocks#ignore to contain
-" a codeblock type, don't highlight it so that it remains Normal
-if index(g:pandoc#syntax#codeblocks#ignore, 'definition') == -1
-  hi link pandocCodeBlockInsideIndent String
-endif
-
-if index(g:pandoc#syntax#codeblocks#ignore, 'delimited') == -1
-  hi link pandocDelimitedCodeBlock Special
-endif
 
 hi link pandocDelimitedCodeBlockStart Delimiter
 hi link pandocDelimitedCodeBlockEnd Delimiter
@@ -252,39 +239,40 @@ hi link pandocCiteKey Label
 hi link pandocCiteAnchor Operator
 hi link pandocCiteLocator Operator
 
-if g:pandoc#syntax#style#emphases == 1
-    hi pandocEmphasis gui=italic cterm=italic
-    hi pandocStrong gui=bold cterm=bold
-    hi pandocStrongEmphasis gui=bold,italic cterm=bold,italic
-    hi pandocStrongInEmphasis gui=bold,italic cterm=bold,italic
-    hi pandocEmphasisInStrong gui=bold,italic cterm=bold,italic
-    if !exists('s:hi_tail')
-        let s:fg = '' " Vint can't figure ou these get set dynamically
-        let s:bg = '' " so initialize them manually first
-        for s:i in ['fg', 'bg']
-            let s:tmp_val = synIDattr(synIDtrans(hlID('String')), s:i)
-            let s:tmp_ui =  has('gui_running') || (has('termguicolors') && &termguicolors) ? 'gui' : 'cterm'
-            if !empty(s:tmp_val) && s:tmp_val != -1
-                exe 'let s:'.s:i . ' = "'.s:tmp_ui.s:i.'='.s:tmp_val.'"'
-            else
-                exe 'let s:'.s:i . ' = ""'
-            endif
-        endfor
-        let s:hi_tail = ' '.s:fg.' '.s:bg
+" Emphasis
+hi pandocEmphasis gui=italic cterm=italic
+hi pandocStrong gui=bold cterm=bold
+hi pandocStrongEmphasis gui=bold,italic cterm=bold,italic
+hi pandocStrongInEmphasis gui=bold,italic cterm=bold,italic
+hi pandocEmphasisInStrong gui=bold,italic cterm=bold,italic
+if !exists('s:hi_tail')
+  let s:fg = '' " Vint can't figure ou these get set dynamically
+  let s:bg = '' " so initialize them manually first
+  for s:i in ['fg', 'bg']
+    let s:tmp_val = synIDattr(synIDtrans(hlID('String')), s:i)
+    let s:tmp_ui =  has('gui_running') || (has('termguicolors') && &termguicolors) ? 'gui' : 'cterm'
+    if !empty(s:tmp_val) && s:tmp_val != -1
+      exe 'let s:'.s:i . ' = "'.s:tmp_ui.s:i.'='.s:tmp_val.'"'
+    else
+      exe 'let s:'.s:i . ' = ""'
     endif
-    exe 'hi pandocNoFormattedInEmphasis gui=italic cterm=italic'.s:hi_tail
-    exe 'hi pandocNoFormattedInStrong gui=bold cterm=bold'.s:hi_tail
+  endfor
+  let s:hi_tail = ' '.s:fg.' '.s:bg
 endif
+exe 'hi pandocNoFormattedInEmphasis gui=italic cterm=italic'.s:hi_tail
+exe 'hi pandocNoFormattedInStrong gui=bold cterm=bold'.s:hi_tail
+
 hi link pandocNoFormatted String
 hi link pandocNoFormattedAttrs Comment
 hi link pandocSubscriptMark Operator
 hi link pandocSuperscriptMark Operator
 hi link pandocStrikeoutMark Operator
-if g:pandoc#syntax#style#underline_special == 1
-    hi pandocSubscript gui=underline cterm=underline
-    hi pandocSuperscript gui=underline cterm=underline
-    hi pandocStrikeout gui=underline cterm=underline
-endif
+
+" Underline special
+hi pandocSubscript gui=underline cterm=underline
+hi pandocSuperscript gui=underline cterm=underline
+hi pandocStrikeout gui=underline cterm=underline
+
 hi link pandocNewLine Error
 hi link pandocHRule Delimiter
 

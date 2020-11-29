@@ -111,3 +111,4 @@ if get(g:, 'vim_pandoc_syntax_exists', 0)
   hi! link htmlTagN Statement
 endif
 
+set conceallevel=2
