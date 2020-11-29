@@ -78,3 +78,19 @@ isBinary() {
   test `head -qc 8192 "$1" | grep -o '[^[:print:]]' | wc -c` -gt 16
 }
 
+# Shell-escape special characters
+esc() { echo $(printf '%q' "$1"); }
+
+# Unescape a shell-escaped string
+unesc() { bash -c echo\ "$e"; }
+
+# Escape single-quotes to make a single-quotable string
+squo() { echo ${1//\'/\'\\\'\'}; }
+
+# Escape chars and newlines to make a double-quotable string
+dquo() {
+  esc_chars='s/[$`"\]/\\&/g'
+  echo "$1" | sed -e "$esc_chars" | (
+    while read line; do echo -n "$(echo "$line" | sed -e "$esc_chars")\n"; done
+  ) | sed -e 's/\\n$//'
+}
