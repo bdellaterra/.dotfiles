@@ -49,7 +49,11 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 AUTOENV_FILE_ENTER=.entry.sh
 AUTOENV_FILE_LEAVE=.exit.sh
 
-source ~/.zsh/plugins/zsh-autoenv/autoenv.zsh
+if [[ -x "$HOME/opt/zsh/plugins/zsh-autoenv/autoenv.zsh" ]]; then
+  source "$HOME/opt/zsh/plugins/zsh-autoenv/autoenv.zsh"
+elif [[ -x "$HOME/.zsh/plugins/zsh-autoenv/autoenv.zsh" ]]; then
+  source "$HOME/.zsh/plugins/zsh-autoenv/autoenv.zsh"
+fi
 
 # Edit and (re)source folder scoped variables
 alias reentry="${EDITOR:-vi} .entry.sh && source .entry.sh"
