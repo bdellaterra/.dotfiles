@@ -248,7 +248,9 @@ endfunction
 
 let g:defaultPreHtmlToMdCleanup = executable('readability') ? "| readability '%s'" : ''
 function ReadUrl(link, ...)
-  let url = substitute(a:link, ' ', '+', 'g')
+  let disableClean = a:link =~ '!$' ? 1 : 0
+  let url = substitute(a:link, '!$', '', 'g')
+  let url = substitute(url, ' ', '+', 'g')
   let url = url =~ '^\w\+://' ? url : 'https://' . url
   let g:url = url
   let jumpId = get(a:000, 0, '')
@@ -274,7 +276,7 @@ function ReadUrl(link, ...)
         silent! let clean .= ' ' . printf(syscmd, url)
       endif
     endfor
-    silent! let clean = clean != '' ? clean : printf(g:defaultPreHtmlToMdCleanup, url)
+    silent! let clean = !disableClean && clean != '' ? clean : printf(g:defaultPreHtmlToMdCleanup, url)
     let browse = '2>/dev/null chromium --silent-launch --no-startup-window --headless --incognito --minimal --dump-dom "'.url.'"'
     let convert = ' | pandoc -f html -t markdown --columns=999'
     silent! exe 'r ! ' . browse . clean . convert
@@ -909,8 +911,8 @@ map <silent> <leader>VE :exe "call GoToUrl('" . g:onlineEtymology . input('Onlin
 " Web Search
 " let g:onlineWebSearch = 'http://localhost/search?q='
 let g:onlineWebSearch =  'https://searx.be/search?q='
-map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
-map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "')"<CR>
+map <silent> <leader>vs :exe "call ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "!')"<CR>
+map <silent> <leader>VS :exe "call GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "!')"<CR>
 
 " Wiki Search
 let g:onlineWikiSearch = 'https://en.wikipedia.org/wiki/'
