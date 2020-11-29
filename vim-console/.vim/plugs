@@ -90,10 +90,11 @@ tomtom/tcomment_vim # file-type sensible comments
 # rkitover/vimpager # pager using vim and less.vim
 
 # WRITING
-vim-pandoc/vim-pandoc # pandoc integration and utilities for Vim
-vim-pandoc/vim-pandoc-syntax # pandoc markdown syntax
 dkarter/bullets.vim # automated bullet lists
 dhruvasagar/vim-table-mode # automatic table creation and formatting
+# pandoc integration and utilities for Vim
+vim-pandoc/vim-pandoc # (executable('pandoc') ? {} : {'on':[]})
+# vim-pandoc/vim-pandoc-syntax (executable('pandoc') ? {} : {'on':[]})
 
 # VERSION CONTROL
 tpope/vim-fugitive # A complement to command line git
