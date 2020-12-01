@@ -19,18 +19,6 @@ elseif executable('uname')
 endif
 
 
-" FUNCTIONS
-
-" ':GCheckout' will checkout git branch with command-line completion
-function! s:ListBranches(...)
-   let argLead = get(a:000, 0, '')
-   let g:branches = system("git branch -a --no-color | grep -v '^\* ' ")
-   let trimmed = map(split(g:branches, '\n'), 'trim(v:val)')
-   return filter(trimmed, 'v:val =~ "^'. argLead . '"') 
-endfunction
-command -complete=customlist,<SID>ListBranches -nargs=1 Gcheckout !git checkout <args>
-
-
 " *** General Configuration ***************************************************
 
 " VIM SETTINGS
@@ -932,6 +920,9 @@ let g:diffget_upstream_map = 'gu'
 
 " sign-column flags only check for git status by default
 let g:signify_vcs_list = ['git']
+
+" ':GCheckout' will checkout git branch with command-line completion
+command -complete=customlist,rc#ListBranches -nargs=1 Gcheckout !git checkout <args>
 
 
 " SESSION MANAGER

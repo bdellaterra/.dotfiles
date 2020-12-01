@@ -219,6 +219,17 @@ function rc#AutoAddMarkdownExtensionToNotes()
 endfunction
 
 
+" VERSION CONTROL
+
+" List git branches from command-completion
+function! rc#ListBranches(...)
+   let argLead = get(a:000, 0, '')
+   let g:branches = system("git branch -a --no-color | grep -v '^\* ' ")
+   let trimmed = map(split(g:branches, '\n'), 'trim(v:val)')
+   return filter(trimmed, 'v:val =~ "^'. argLead . '"') 
+endfunction
+
+
 " CONCEALMENT
 
 " Returns true if cursor is currently over a concealed syntax region
