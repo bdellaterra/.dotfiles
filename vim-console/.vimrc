@@ -84,6 +84,24 @@ function CursorIsOn(regex)
   return MatchUnderCursor(a:regex) != []
 endfunction
 
+" Create a list of alternate file paths based on (1) base file name
+" (2) automatic extensions (3) index filenames for directory paths
+function s:FilePattern(...)
+  let name = get(a:000, 0, 'index')
+  let extensions = get(a:000, 1, [])
+  let indexes = get(a:000, 2, ['index'])
+  let link = name
+  let attempts = [link]
+  if link !~ '^\.'
+    let attempts += [ProjectRootGuess() . link]
+  endif
+  let attempts += map(copy(indexes), 'rc#DirSlashes(link).v:val')
+  for a in copy(attempts)
+    let attempts += map(copy(extensions), 'a.v:val')
+  endfor
+  return attempts
+endfunction
+
 function s:mdHeadingJump(...)
   let headingCount = get(a:000, 0, 1)
   return 'normal gg' . string(headingCount) . ']]zt'
@@ -219,24 +237,6 @@ function s:GoToMarkdownReference(...)
     let refTargetRegex = '\_.*\[' . link . '\]\s*\S'
     call search(refTargetRegex, 'e')
   endif
-endfunction
-
-" Create a list of alternate file paths based on (1) base file name
-" (2) automatic extensions (3) index filenames for directory paths
-function s:FilePattern(...)
-  let name = get(a:000, 0, 'index')
-  let extensions = get(a:000, 1, [])
-  let indexes = get(a:000, 2, ['index'])
-  let link = name
-  let attempts = [link]
-  if link !~ '^\.'
-    let attempts += [ProjectRootGuess() . link]
-  endif
-  let attempts += map(copy(indexes), 'rc#DirSlashes(link).v:val')
-  for a in copy(attempts)
-    let attempts += map(copy(extensions), 'a.v:val')
-  endfor
-  return attempts
 endfunction
 
 " Overload behavior of the enter key
@@ -387,31 +387,6 @@ function s:JoinLinesAsTableRow()
   '<,'>:s~\n\_s*~\|~
   normal I|
   normal A|
-endfunction
-
-" Move cursor through next whitespace in current column. Lands on non-whitespace
-" character after the gap. Optional boolean triggers backwards search if true
-function s:GoToNextVerticalNonBlank(...)
-  let reverse = get(a:000, 0, 0)
-  let col = virtcol('.') 
-  let lastsearch=@/
-  let blank = 1
-  while blank
-    call search('\(^\s*$\)\|\%' . col . 'v\s', reverse ? 'b' : '')
-    call search('\%' . col . 'v\S', reverse ? 'b' : '')
-    let blank = s:SynGroup() =~ '\<Ignore$'
-  endwhile
-  let @/=lastsearch
-endfunction
-
-" Show syntax group and translated syntax group of character under cursor
-" Will look at syntax v:count lines below cursor if a count is specified
-" If optional boolean true is passed, will look v:count lines above cursor
-" (Modified) From Laurence Gonsalves, 2016, https://stackoverflow.com/questions/9464844/how-to-get-group-name-of-highlighting-under-cursor-in-vim
-function! s:SynGroup(...)
-  let reverse = get(a:000, 0, 0)
-  let l:s = synID(line('.') + v:count * (reverse ? -1 : 1), col('.'), 1)
-  return synIDattr(l:s, 'name') . ' ->  ' . synIDattr(synIDtrans(l:s), 'name')
 endfunction
 
 " ':GCheckout' will checkout git branch with command-line completion
@@ -792,10 +767,10 @@ noremap } }}{<Enter>
 noremap { {{<Enter>
 
 " '\' will jump down to next non-blank character in current column
-nnoremap \ :silent! call <SID>GoToNextVerticalNonBlank()<CR>
+nnoremap \ :silent! call rc#GoToNextVerticalNonBlank()<CR>
 
 " '|' will jump up to previous non-blank character in current column
-nnoremap \| :silent! call <SID>GoToNextVerticalNonBlank(1)<CR>
+nnoremap \| :silent! call rc#GoToNextVerticalNonBlank(1)<CR>
 
 " ',m' will mark current location (VimPager plugin)
 " map <Leader>m <Plug>SaveWinPosn
