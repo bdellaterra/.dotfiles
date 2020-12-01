@@ -63,6 +63,19 @@ function rc#BufferFile(...)
   return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
 endfunction
 
+function rc#File(file)
+ let file = fnamemodify(fnameescape(a:file), ':p')
+ if filereadable(file) || isdirectory(file)
+   return file
+ endif
+ return ''
+endfunction
+
+function rc#SearchFile(file, searchTerm)
+  exe 'edit ' . File(a:file)
+  call search(a:searchTerm, 'cw')
+endfunction
+
 " If current file has no extension, add the one supplied as first argument
 function rc#AddMissingFileExtension(ext)
   let g:extension = a:ext

@@ -270,19 +270,6 @@ command! -nargs=1 VUE
 command! -nargs=1 VUB
       \ call rc_vue#GoToUrl(<q-args>, 1)
 
-function File(file)
- let file = fnamemodify(fnameescape(a:file), ':p')
- if filereadable(file) || isdirectory(file)
-   return file
- endif
- return ''
-endfunction
-
-function SearchFile(file, searchTerm)
-  exe 'edit ' . File(a:file)
-  call search(a:searchTerm, 'cw')
-endfunction
-
 " Browse URLs
 map <leader>vv :VUE 
 map <leader>VV :VUB 
