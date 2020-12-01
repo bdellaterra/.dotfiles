@@ -5,7 +5,7 @@ node_modules
 .zcompcache
 .zcompdump
 vim*/**/bundle
-vim*/**/autoload
+vim*/**/autoload/plug.vim
 deps/**/package-lock.json
 deps/**/yarn.lock
 ranger/.config/htop
