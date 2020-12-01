@@ -18,46 +18,6 @@ elseif executable('uname')
   let g:os = rc#trim(system('uname -s'))
 endif
 
-" Regex Patterns
-let g:rgx = {}
-let g:rgx.urlProtocol = '[a-zA-Z]*:\/\/'
-let g:rgx.urlPathChar = '[^][ <>,;()]'
-let g:rgx.urlQuery = '?' . g:rgx.urlPathChar . '*'
-let g:rgx.url = '\(' . g:rgx.urlProtocol . g:rgx.urlPathChar . '*\)'
-let g:rgx.urlFile = g:rgx.urlPathChar . '\{-}\([^/]\{-}\)' . '\%( . g:rgx.urlQuery . \)\?'
-let g:rgx.mdLabel = '\['. '\([^]]*\)' . '\]' " 'md' for 'markdown'
-let g:rgx.mdTargetName = '\([^)]\{-}\)'
-let g:rgx.mdTargetAnchor = '\%(' . '#' . '\([^)]*\)' . '\)\?'
-let g:rgx.mdTargetExtra = '\%(\s\+"[^"]*"\)\?'
-let g:rgx.mdTarget = '(' . '\('
-  \ . g:rgx.mdTargetName
-  \ . g:rgx.mdTargetAnchor
-  \ . g:rgx.mdTargetExtra
-  \ . '\)' . ')'
-let g:rgx.mdUrlTarget = '(' . '\('
-  \ . g:rgx.url
-  \ . g:rgx.mdTargetAnchor
-  \ . g:rgx.mdTargetExtra
-  \ . '\)' . ')'
-let g:rgx.mdLinkPre = '\%([-•#]*\s*\)\?' " Possible bullet/heading marker
-let g:rgx.mdLink = g:rgx.mdLinkPre . g:rgx.mdLabel . g:rgx.mdTarget
-let g:rgx.mdLinkNoLabel =
-  \ g:rgx.mdLinkPre
-  \ . '<' . '\('
-  \ . g:rgx.mdTargetName
-  \ . g:rgx.mdTargetAnchor
-  \ . '\)' . '>'
-let g:rgx.mdUrlLink = g:rgx.mdLinkPre . g:rgx.mdLabel . g:rgx.mdUrlTarget
-let g:rgx.mdUrlLinkNoLabel =
-  \ g:rgx.mdLinkPre
-  \ . '<' . '\('
-  \ . g:rgx.url
-  \ . g:rgx.mdTargetAnchor
-  \ . '\)' . '>'
-let g:rgx.mdRefLink = '\%(' . g:rgx.mdLabel . '\)\?' . g:rgx.mdLabel
-let g:rgx.mdAfterLinkStart = '\%(<[^>]*\|([^)]*\|\[[^]]*\)'
-let g:rgx.mdAnyLink = '\%('.g:rgx.mdLink.'\|'.g:rgx.mdLinkNoLabel.'\)'
-
 
 " FUNCTIONS
 
