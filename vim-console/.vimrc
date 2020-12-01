@@ -860,46 +860,8 @@ set foldlevelstart=999
 set foldopen=all
 set foldclose=all
 
-" Set a nicer foldtext function
-" (Modified) From Edouard, 2008, http://vim.wikia.com/wiki/Customize_text_for_closed_folds
-function! MyFoldText()
-  let line = getline(v:foldstart)
-  if match( line, '^[ \t]*\(\/\*\|\/\/\)[*/\\]*[ \t]*$' ) == 0
-    let initial = substitute( line, '^\([ \t]\)*\(\/\*\|\/\/\)\(.*\)', '\1\2', '' )
-    let linenum = v:foldstart + 1
-    while linenum < v:foldend
-      let line = getline( linenum )
-      let comment_content = substitute( line, '^\([ \t\/\*]*\)\(.*\)$', '\2', 'g' )
-      if comment_content != ''
-	break
-      endif
-      let linenum = linenum + 1
-    endwhile
-    let sub = initial . ' ' . comment_content
-  else
-    let sub = line
-    let startbrace = substitute( line, '^.*{[ \t]*$', '{', 'g')
-    if startbrace == '{'
-      let line = getline(v:foldend)
-      let endbrace = substitute( line, '^[ \t]*}\(.*\)$', '}', 'g')
-      if endbrace == '}'
-	let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
-      endif
-    endif
-  endif
-  let n = v:foldend - v:foldstart + 1
-  let info = " " . n . " lines   "
-  let sub = sub . "                                                                                                                  "
-  let num_w = getwinvar( 0, '&number' ) * getwinvar( 0, '&numberwidth' )
-  let fold_w = getwinvar( 0, '&foldcolumn' )
-  let sub = strpart( sub, 0, winwidth(0)
-    \ - strlen( info ) - num_w - fold_w - 1 )
-  let pad = winwidth(0) - strlen(sub) - strlen(info) - 1
-  return sub . repeat(' ', pad) . info
-endfunction
-
 " Customize how folded lines are displayed
-set foldtext=MyFoldText()
+set foldtext=rc#FoldText()
 
 
 " STATUSLINE
@@ -925,39 +887,8 @@ map <silent> <leader><leader> :Goyo<CR>
 
 " STARTSCREEN
 
-" Show ASCII art + fortune message
-function! s:StartScreen()
-  let w = rc#MaxLineWidth()
-  let h = winheight(0)
-  let margin = 2
-  let art = readfile(expand('$HOME') . '/.vim/art.txt')
-  let toASCII = 'iconv -f utf-8 -t ascii//translit'
-  let trim = "awk '{$1=$1;print}'"
-  let fortune = systemlist('fortune | ' .  toASCII . ' | ' . trim)
-  let artWidth = min(map(copy(art), 'len(v:val)'))
-  let lineWidth = max(map(copy(fortune), 'len(v:val)'))
-  let formatWidth = w - artWidth - margin * 2
-  if lineWidth > formatWidth
-    let fortune = systemlist('fmt --width ' . formatWidth, fortune)
-    let lineWidth = max(map(copy(fortune), 'len(v:val)'))
-  endif
-  exe ':normal' . max([1, h - len(art) - 1]) . 'O'
-  call append(line('.'), art)
-  normal gg
-  let lnum = (margin / 2) " leaving space at top
-  for line in fortune
-    let lnum += 1
-    let cur = getline(lnum)
-    let pad = w - len(cur) - (lineWidth - len(line)) - (margin * 2)
-    call setline(lnum, cur . printf('%' . pad . 'S', line))
-  endfor
-  normal gg
-  redraw!
-  nnoremap <buffer> <silent> <Return> :enew<CR>:call startscreen#start()<CR>
-endfunction
-
 " Customize the start screen
-let g:Startscreen_function = function('<SID>StartScreen')
+let g:Startscreen_function = function('rc#StartScreen')
 
 
 " INFO
