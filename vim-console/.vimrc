@@ -61,61 +61,6 @@ let g:rgx.mdAnyLink = '\%('.g:rgx.mdLink.'\|'.g:rgx.mdLinkNoLabel.'\)'
 
 " FUNCTIONS
 
-" Toggle between conceallevel 0 and 2. Pass optional boolean
-" false to disable temporarily, or true to restore last on/off setting
-function s:ReinforceConcealSyntax()
-  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
-    if &conceallevel
-      silent! exe 'source ~/.dotfiles/vim-console/.vim/after/syntax/' . &filetype . '.vim'
-    endif
-  endif
-endfunction
-function s:UpdateTime(...)
-  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
-    let newUpdateTime = get(a:000, 0, 0)
-    if newUpdateTime && newUpdateTime != &updatetime
-      let g:restoreUpdateTime = &updatetime
-      let &updatetime = newUpdateTime
-    elseif exists('g:restoreUpdateTime')
-      let &updatetime = g:restoreUpdateTime
-      unlet g:['restoreUpdateTime']
-    endif
-  endif
-endfunction
-function s:RevealLine(...)
-  let l:save_view = winsaveview()
-  if !exists('g:enableConcealAtCursor') || !g:enableConcealAtCursor
-    set concealcursor=
-  elseif !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
-    let unconcealLine = get(a:000, 0, 0)
-    if unconcealLine
-      set concealcursor=
-    else
-      set concealcursor=n
-    endif
-  endif
-  call winrestview(l:save_view)
-endfunction
-function ToggleConceal(...)
-  let save_lazyredraw = &lazyredraw
-  set lazyredraw
-  if !exists('g:disableConcealSyntax') || !g:disableConcealSyntax
-    let tmpToggle = get(a:000, 0, 0)
-    if !exists('b:save_conceallevel')
-      let b:save_conceallevel = &conceallevel
-    endif
-    if len(a:000)
-      let &conceallevel = tmpToggle ? b:save_conceallevel : 0
-    else
-      let &conceallevel = &conceallevel ? 0 : 2
-      let b:save_conceallevel = &conceallevel
-    endif
-    call <SID>ReinforceConcealSyntax()
-  endif
-  let &lazyredraw = save_lazyredraw
-  redraw!
-endfunction
-
 function MatchUnderCursor(regex, ...)
   let outerRegex = a:regex
   let innerRegex = get(a:000, 1, a:regex)
@@ -1483,8 +1428,8 @@ endif
 map <leader>uh :GundoToggle<CR>
 
 " Temporarily toggle conceal to fix undo behavior (using silent to hide syntax warnings)
-map <silent> u :silent! call ToggleConceal(0) \| silent! undo \| :silent! call ToggleConceal(1)<CR>
-map <silent> <C-r> :silent! call ToggleConceal(0) \| silent! redo \| :silent! call ToggleConceal(1)<CR>
+map <silent> u :silent! call rc#ToggleConceal(0) \| silent! undo \| :silent! call rc#ToggleConceal(1)<CR>
+map <silent> <C-r> :silent! call rc#ToggleConceal(0) \| silent! redo \| :silent! call rc#ToggleConceal(1)<CR>
 
 " Prevent <Esc>u from accidentally inserting special character 'õ' in insert-mode
 " (Use 'Ctrl-v,245' to insert 'õ' intentionally)
@@ -1516,13 +1461,13 @@ set noshowmode
 map /<Backspace> :set hls!<CR>
 
 " ',c' will toggle concealed text
-map <leader>c :call ToggleConceal()<CR>
+map <leader>c :call rc#ToggleConceal()<CR>
 
 " ',-' will toggle cursor line
 map <leader>- :set cursorline!<CR>
 
 " ',+' will toggle both
-map <leader>+ :set cursorline! cursorcolumn!<CR>:call ToggleConceal(!&cursorcolumn)<CR>
+map <leader>+ :set cursorline! cursorcolumn!<CR>:call rc#ToggleConceal(!&cursorcolumn)<CR>
 
 
 " FOLDING
