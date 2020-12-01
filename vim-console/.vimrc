@@ -61,24 +61,6 @@ let g:rgx.mdAnyLink = '\%('.g:rgx.mdLink.'\|'.g:rgx.mdLinkNoLabel.'\)'
 
 " FUNCTIONS
 
-" Check whether the sign column is active
-function s:IsSignColumnActive()
-  return &signcolumn == 'yes'
-    \ || &signcolumn == 'auto' && len(sign_getplaced())
-endfunction
-
-" Determine maximum line width accounting for left-side gutters
-function s:MaxLineWidth()
-  return winwidth(0)
-    \ - (s:IsSignColumnActive() ? 2 : 0)
-    \ - (&number ? len(line('$')) + 1 : 0)
-endfunction
-
-" Returns true if cursor is currently over a concealed syntax region
-function s:IsCursorOverConcealed()
-  return synconcealed(line('.'), col('.'))[0]
-endfunction
-
 " Toggle between conceallevel 0 and 2. Pass optional boolean
 " false to disable temporarily, or true to restore last on/off setting
 function s:ReinforceConcealSyntax()
@@ -1599,103 +1581,11 @@ set foldtext=MyFoldText()
 
 " STATUSLINE
 
-" Set highlight groups used in statusline
-function SetDefaultStatusModeHLGroups()
-  highlight User1 ctermfg=233 ctermbg=6
-  highlight User2 ctermfg=233 ctermbg=14
-  highlight User3 ctermfg=233 ctermbg=9
-  highlight User4 ctermfg=233 ctermbg=8
-  highlight User5 ctermfg=233 ctermbg=1
-  highlight User6 ctermfg=233 ctermbg=11
-endfunction
-
-" Set statusline highlight based on current mode
-function! s:StatusModeHL()
-  let mode = mode()
-  " User4 highlight for Insert/Replace mode
-  " User3 Highlight when changing a readonly file
-  if mode =~ '\vi|R' " '=~#' to match case
-    return &readonly ? '%3*' : '%4*'
-  " User2 highlight when in Visual mode
-  elseif mode =~ '\vv|s|'
-    return '%2*'
-  endif
-  " User6 if over concealed syntax
-  if s:IsCursorOverConcealed()
-    return '%6*'
-  endif
-  " User1 highlight for Normal mode
-  return '%1*'
-endfunction
-
-" Generate unicode bar to represent progress through file
-let s:percentBars = ['█', '▇', '▆', '▅', '▄', '▃', '▂', '▁']
-function g:StatusPercentBar()
-  let percent = (1.0 * line('.')) / line('$')
-  let index = float2nr(round((len(s:percentBars) - 1) * percent))
-  return s:percentBars[index]
-endfunction
-
-" Toggle between more and less verbose variations of statusline
-function s:ToggleVerboseStatus()
-  if !exists('s:verboseStatus') || !s:verboseStatus
-    let s:verboseStatus = 1
-  else
-    let s:verboseStatus = 0
-  endif
-endfunction
-
-" Generate custom statusline (Ctrl-S omitted as it halts terminal)
-let s:statusWidth = 80
-let s:statusModeSymbols = {
-  \ 'n':'ƞ', 'v':'ⱱ', 'V':'Ⅴ', '':'⋎', 's':'ș', 'S':'Ṣ',
-  \ 'i':'∣', 'R':'Ɍ', 'c':'ċ', 'r':'ṙ', '!':'⟳', 't':'ẗ'
-  \ }
-function MyStatus()
-  try
-    let verbose = exists('s:verboseStatus') && s:verboseStatus
-    let bufnum = '%2.n'
-    let corner = s:StatusModeHL()
-      \ . (verbose ? bufnum : '  ')
-      \ . '%*'
-    let line = &number && !verbose ? '' : '%5l'
-    let col = '%3c'
-    let pos = line != '' ? line . ' ' . col : col
-    let mod = '%{&modified ? "…" : ""}'
-    let ro = '%{&modifiable && &readonly ? "" : " "}'
-    let file = ro . (verbose ? '%f' : '%t') . mod
-    let branch = verbose ? '%{&buftype == "" ? " ｢" . FugitiveHead() . "｣ " : ""}' : ''
-    let mode = verbose ? get(s:statusModeSymbols, mode(), '') : ''
-    let conceal = verbose ? '%{&conceallevel ? "␦" : ""}' : ''
-    let paste = '%{&paste ? "⎘" : ""}'
-    let modeInfo = mode . conceal . paste
-    let pb = '%{g:StatusPercentBar()}'
-    let datetime = verbose ? ' ' . strftime('%d/%b %H:%M') . ' ' : ''
-
-    " file meta
-    let ff = &fileformat
-    let fe = &fileencoding != "" ? "/" . &fileencoding : ""
-    let ft = &filetype != "" ? "/" . &filetype : "/unknown"
-    let bomb = &bomb ? "※" : ""
-    let g:statusLineFileInfo = verbose ? ff . fe . ft . bomb . '  ⋰⋰' : ''
-
-    let leftSide = ' %<' . file . branch 
-    let rightMinWidth = string(s:MaxLineWidth() - s:statusWidth)
-    let rightSide = datetime . ' ' . modeInfo . '  '
-      \ . '%{&buftype == "terminal" ? g:os : g:statusLineFileInfo}' . pos . '  ' . pb
-    let g:statusline = corner . leftSide . ' %= '
-      \ . '%#TabLine# ' . rightSide
-    return g:statusline
-  catch
-    return v:exception
-  endtry
-endfunction
-
 " Use custom expression to build statusline
-set statusline=%!MyStatus()
+set statusline=%!rc_status#Status()
 
 " ',vb' will toggle verbose statusline
-map <silent> <leader>vb :call <SID>ToggleVerboseStatus()<CR>
+map <silent> <leader>vb :call rc_status#ToggleVerboseStatus()<CR>
 
 " FOCUS
 
@@ -1714,7 +1604,7 @@ map <silent> <leader><leader> :Goyo<CR>
 
 " Show ASCII art + fortune message
 function! s:StartScreen()
-  let w = s:MaxLineWidth()
+  let w = rc#MaxLineWidth()
   let h = winheight(0)
   let margin = 2
   let art = readfile(expand('$HOME') . '/.vim/art.txt')
@@ -1786,7 +1676,7 @@ call plug#end()
 " light: disciple earendel lightning
 " base16: noctu
 colorscheme custom_base16
-call SetDefaultStatusModeHLGroups()
+call rc_status#SetDefaultStatusModeHLGroups()
 
 " Source personal configurations, if present
 if filereadable($HOME . '/personal/.vimrc')
