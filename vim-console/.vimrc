@@ -440,38 +440,12 @@ map <silent> <C-w><Enter> :silent! call ZoomWin()<CR>
 
 " BUFFERS
 
-" Overload behavior of the equals key
-function s:EditBufferOrReindent(...)
-  let bufNum = get(a:000, 0, '')
-  if bufNum == ''
-    return "="
-  elseif bufNum == 0
-    if fnamemodify(expand('#'), ':p') == fnamemodify(expand('%'), ':p')
-      " fallback to most recently used filed if no alternate buffer is defined
-      return ":\<C-u>edit " . fzf_mru#mrufiles#list()[0] . "\<CR>"
-    endif
-    return ":\<C-u>confirm buffer #\<CR>"
-  else
-    return ":\<C-u>confirm buffer" . bufNum . "\<CR>"
-  endif
-  return ""
-endfunction
-
-" Switch to alternate buffer, or if none defined switch to most recently used file
-function s:SwitchToAltBufferOrMruFile()
-  if fnamemodify(expand('#'), ':p') == fnamemodify(expand('%'), ':p')
-    exe 'edit ' . fzf_mru#mrufiles#list()[1]
-  else
-    confirm buffer #
-  endif
-endfunction
-
 " If used after a numeric count the equals key switches to that number buffer.
 " Number zero signifies the alternate buffer. (See :help alternate-file)
 " Otherwise the default re-indent behavior is used.
-noremap <expr>= <SID>EditBufferOrReindent(v:count)
+noremap <expr>= rc#EditBufferOrReindent(v:count)
 " Vim won't pass zero-counts to mappings
-noremap 0= :<C-u>call <SID>SwitchToAltBufferOrMruFile()<CR>
+noremap 0= :<C-u>call rc#SwitchToAltBufferOrMruFile()<CR>
 
 " '-=' will delete current buffer or # buffer number from command-count
 nnoremap -= :<C-u>exe (v:count ? v:count : '') . 'bdelete!'<CR>
