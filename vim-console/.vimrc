@@ -12,14 +12,10 @@ endif
 
 " CONSTANTS
 
-function s:trim(var)
-  return substitute(substitute(a:var, '^\s*', '', ''), '\s*$', '', '')
-endfunction
-
 if has("win64") || has("win32")
-  let g:os = matchstr(s:trim(system('systeminfo | findstr /B /C:"OS Name"')), '\(OS Name:\s*\)\?\zs.*')
+  let g:os = matchstr(rc#trim(system('systeminfo | findstr /B /C:"OS Name"')), '\(OS Name:\s*\)\?\zs.*')
 elseif executable('uname')
-  let g:os = s:trim(system('uname -s'))
+  let g:os = rc#trim(system('uname -s'))
 endif
 
 " Regex Patterns
@@ -64,86 +60,6 @@ let g:rgx.mdAnyLink = '\%('.g:rgx.mdLink.'\|'.g:rgx.mdLinkNoLabel.'\)'
 
 
 " FUNCTIONS
-
-" Convert path to forward slashes with a slash at the end
-function s:DirSlashes(path)
-  return substitute(a:path, '[^/\\]\@<=$\|\\', '/', 'g')
-endfunction
-
-" Create directory if necessary and normalize slashes
-function s:MakeDir(path)
-  try
-    if !isdirectory(a:path) && exists('*mkdir')
-      call mkdir(a:path, 'p')
-    endif
-  endtry
-  return s:DirSlashes(a:path)
-endfunction
-
-" Create file if necessary and normalize slashes
-function s:MakeFile(path, ...)
-  try
-    let file = fnamemodify(a:path, ':t')
-    let dir = s:DirSlashes(fnamemodify(a:path, ':h'))
-    let bufferDir = s:DirSlashes(fnamemodify(expand('%'), ':p:h'))
-    let projectDir = s:DirSlashes(fnamemodify(get(a:000, 0, $PWD), ':p'))
-    " full path
-    if dir =~ bufferDir
-      let targetDir = dir
-    " relative path
-    elseif dir =~ '^\V..\?/'
-      let targetDir = s:DirSlashes(fnamemodify(bufferDir . dir, ':.'))
-    " existing project path
-    elseif isdirectory(projectDir . dir)
-      let targetDir = projectDir . dir
-    " just filename
-    elseif dir == '' && isdirectory(bufferDir)
-      let targetDir = bufferDir
-    endif
-    if exists('targetDir') " variable named 'targetDir' exists
-      call s:MakeDir(targetDir)
-      let file = targetDir . file
-      if filewritable(file)
-        call writefile([], file, 'a')
-      endif
-    endif
-  endtry
-  return file
-endfunction
-
-" Get full file path for current buffer or # buffer if command-count provided
-function s:BufferFile(...)
-  let fnameMods = get(a:000, 0, '')
-  return expand((v:count ? '#'.v:count : '%') . ':p' . fnameMods)
-endfunction
-
-" If current file has no extension, add the one supplied as first argument
-function AddMissingFileExtension(ext)
-  if a:ext != '' && fnamemodify(expand("%"), ":e") == ''
-    try
-      exe 'Gmove ' . fnameescape(expand('%:p')) . a:ext
-    catch
-      exe 'saveas %' . a:ext
-      bdelete #
-      call delete(expand('%:r'))
-    endtry
-  endif
-endfunction
-
-" Establish lost settings after session reload
-function s:OnSessionLoaded()
-  if get(b:, 'isRestoredSession', 0)
-    call SetDefaultStatusModeHLGroups()
-    " re-edit file to invoke filetype and git branch (via fugitive)
-    call feedkeys(':e')
-    unlet b:isRestoredSession
-  endif
-endfunction
-
-" Calculate ideal position for cursor to settle during scrolling
-function! s:CursorRatio()
-  return float2nr(round(winheight(0) * 0.381966))
-endfunction
 
 " Check whether the sign column is active
 function s:IsSignColumnActive()
@@ -262,8 +178,8 @@ function ReadUrl(link, ...)
       let g:urlFilename .= '/'
     endif
   endif
-  exe 'cd ' . s:MakeDir(fnamemodify(g:urlFilename, ':h'))
-  exe 'edit ' . s:MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index.md', ''))
+  exe 'cd ' . rc#MakeDir(fnamemodify(g:urlFilename, ':h'))
+  exe 'edit ' . rc#MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index.md', ''))
   set modifiable
   set noreadonly
   keepjumps normal ggVGx
@@ -350,9 +266,9 @@ function s:GoToMarkdownLink(...)
         let isDirectory = link =~ '[/\\]$' || filewritable(link) == 2
         let needsExtension = link == fnamemodify(link, ':r')
         let newFile = isDirectory
-              \ ? s:DirSlashes(link) . 'index.md' 
+              \ ? rc#DirSlashes(link) . 'index.md' 
               \ : (needsExtension ? link . '.md' : link)
-        let newFile = s:MakeFile(input('New File: ', newFile))
+        let newFile = rc#MakeFile(input('New File: ', newFile))
         call pandoc#hypertext#OpenLocal(newFile, g:pandoc#hypertext#edit_open_cmd)
         let foundFile = 1
       endif
@@ -389,7 +305,7 @@ function s:FilePattern(...)
   if link !~ '^\.'
     let attempts += [ProjectRootGuess() . link]
   endif
-  let attempts += map(copy(indexes), 's:DirSlashes(link).v:val')
+  let attempts += map(copy(indexes), 'rc#DirSlashes(link).v:val')
   for a in copy(attempts)
     let attempts += map(copy(extensions), 'a.v:val')
   endfor
@@ -419,7 +335,7 @@ function s:EnterHelper(...)
     else
       if altEnter
         " echo "CREATE AND GO TO FILE"
-        exe 'edit ' . s:MakeFile(expand('<cfile>'))
+        exe 'edit ' . rc#MakeFile(expand('<cfile>'))
       else
         " echo "GO TO FILE"
         normal! gf
@@ -605,7 +521,7 @@ set display=lastline
 set autowriteall
 
 " Set directory where temporary files can be stored
-let s:TmpDir = s:MakeDir($HOME . '/tmp/vim')
+let s:TmpDir = rc#MakeDir($HOME . '/tmp/vim')
 
 " Keep swap/backup/undo files from cluttering the working directory
 set nobackup
@@ -792,13 +708,7 @@ let g:ranger_choice_file = s:TmpDir . 'RangerChosenFile'
 let g:ranger_map_keys = 0
 
 " ',.' will browse files at current buffer's directory (BZB)
-function s:BZB()
-  if !exists('g:BZB_Command')
-    let g:BZB_Command = 'bzb -c -as -al'
-  endif
-  return g:BZB_Command
-endfunction
-map <silent> <leader>. :exe '!' . <SID>BZB() . ' -E -bd="' . fnamemodify(expand("$PWD"), ':p:h') . '" ' . fnamemodify(expand('%'), ':p:h')<CR>:silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')<CR>:exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')<CR>:if len(g:BZB_Targets) \| exe 'edit ' . g:BZB_Targets[0] \| endif<CR>
+map <silent> <leader>. :exe '!' . bzb#BZB() . ' -E -bd="' . fnamemodify(expand("$PWD"), ':p:h') . '" ' . fnamemodify(expand('%'), ':p:h')<CR>:silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')<CR>:exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')<CR>:if len(g:BZB_Targets) \| exe 'edit ' . g:BZB_Targets[0] \| endif<CR>
 
 " ',;' will browse files at current buffer's directory (Ranger)
 map <leader>; :Ranger<CR>
@@ -820,7 +730,7 @@ map <silent> <leader>wr :echo <SID>CopyToClipboard(substitute(
 map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t'), '"')<CR>
 
 " Automatically create missing parent directories when editing a new file
-autocmd BufWritePre * :call s:MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
+autocmd BufWritePre * :call rc#MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
 
 " 'Enter' will go to file/url/tag/definition/declaration under cursor
 map <silent> <Enter> :call <SID>EnterHelper()<CR>
@@ -981,8 +891,8 @@ endfunction
 " SCROLLING
 
 " lock cursor to optimal location while scrolling
-map <expr> <ScrollWheelUp> winline() >= <SID>CursorRatio() ? "\<C-e>gj" : 'gj'
-map <expr> <ScrollWheelDown> winline() <= <SID>CursorRatio() ? "\<C-y>gk" : 'gk'
+map <expr> <ScrollWheelUp> winline() >= rc#CursorRatio() ? "\<C-e>gj" : 'gj'
+map <expr> <ScrollWheelDown> winline() <= rc#CursorRatio() ? "\<C-y>gk" : 'gk'
 
 
 " WINDOWS
@@ -1076,7 +986,7 @@ nmap 0<C-w><C-w> 0-=
 
 " '+=' will prompt for editing a file with filename needing to be specified.
 " Path will be same as the current buffer or that of # buffer from command-count
-nnoremap += :<C-u>edit <C-r>=<SID>BufferFile(':h') . '/'<CR>
+nnoremap += :<C-u>edit <C-r>=rc#BufferFile(':h') . '/'<CR>
 
 " '=]' will switch to previous buffer, or command-count buffers back
 nnoremap =] :<C-u>exe (v:count ? v:count : '') . 'bnext'<CR>
@@ -1461,7 +1371,7 @@ command! -bang -nargs=* FZFRelativeMru call <SID>FZFRelativeMru()
 map <leader>/<space>   :Files 
 map <leader>/~   :Files ~<CR>
  " 'f' for current file/folder (recursive)
-map <leader>/f   :<C-u>Files <C-r>=<SID>BufferFile(':h') . '/'<CR><CR>
+map <leader>/f   :<C-u>Files <C-r>=rc#BufferFile(':h') . '/'<CR><CR>
 map <leader>/<Enter> :Buffers<CR>
 map <leader>/w   :Windows<CR>
  " '#' for color-code
@@ -1569,7 +1479,7 @@ let g:signify_vcs_list = ['git']
 " NOTE: see session autocommands in .vim/after/after.vim
 
 " Set temp file location
-let g:pickMeUpSessionDir = s:MakeDir(s:TmpDir . 'sessions')
+let g:pickMeUpSessionDir = rc#MakeDir(s:TmpDir . 'sessions')
 
 " ',ss' will prompt to save a named session
 exe "map \<leader>ss :\<C-u>SaveSession " . g:pickMeUpSessionDir
@@ -1787,80 +1697,14 @@ set statusline=%!MyStatus()
 " ',vb' will toggle verbose statusline
 map <silent> <leader>vb :call <SID>ToggleVerboseStatus()<CR>
 
-
-" FOCUS-MODE
-function s:ScrollAdjustment()
-  let adjustment = (winheight(0) / 2) - s:CursorRatio()
-  if line('.') - adjustment <= adjustment || (line('$') - line('.')) <= (winheight(0) - adjustment)
-    return 0
-  endif
-  return adjustment
-endfunction
-
-" Apply focus-mode customizations
-function! s:Focus()
-  if !exists('g:limelight_conceal_ctermfg')
-   let g:limelight_conceal_ctermfg = 239
-  endif
-  if exists('g:colors_name')
-   let g:save_colors_name = g:colors_name
-  endif
-  if has('gui_running')
-    set fullscreen
-  elseif exists('$TMUX')
-    silent !tmux set status off
-    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-  endif
-  augroup VerticallyCenterCursor
-    autocmd!
-    " Keep cursor/scroll position just north of center
-    autocmd VerticallyCenterCursor CursorMoved * exe 'normal zz'
-      \ . repeat("\<C-e>", s:ScrollAdjustment())
-  augroup END
-  let s:save_enableConcealAtCursor = get(g:, 'enableConcealAtCursor', 0)
-  let g:enableConcealAtCursor = 1
-  let s:save_concealcursor = &concealcursor
-  set concealcursor+=n
-  let s:save_showtabline = &showtabline
-  let &showtabline = 0
-  set noshowmode
-  set noshowcmd
-  set nofoldenable
-  Limelight
-endfunction
-
-" Revert focus-mode customizations
-function! s:Blur()
-  if exists('g:save_colors_name')
-   exe 'colorscheme ' . g:colors_name
-   unlet g:save_colors_name
-  endif
-  if has('gui_running')
-    set nofullscreen
-  elseif exists('$TMUX')
-    silent !tmux set status on
-    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-  endif
-  au! VerticallyCenterCursor CursorMoved
-  let g:enableConcealAtCursor = s:save_enableConcealAtCursor
-  let &concealcursor = s:save_concealcursor
-  let &showtabline = s:save_showtabline
-  silent! unlet s:save_showtabline
-  set showmode
-  set showcmd
-  Limelight!
-  " Restore User Highlight groups that are being cleared for some reason
-  call SetDefaultStatusModeHLGroups()
-  " Reset filetype to fix concealed syntax highlighting
-  exe 'set filetype=' . &filetype
-endfunction
+" FOCUS
 
 " Increase width from default 80 characters
 let g:goyo_width = 100
 
 " Trigger custom-handlers when enabling/disabling focus-mode
-autocmd! User GoyoEnter nested call <SID>Focus()
-autocmd! User GoyoLeave nested call <SID>Blur()
+autocmd! User GoyoEnter nested call rc#Focus()
+autocmd! User GoyoLeave nested call rc#Blur()
 
 " Toggle focus-mode
 map <silent> <leader><leader> :Goyo<CR>
