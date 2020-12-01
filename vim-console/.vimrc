@@ -1066,18 +1066,10 @@ nmap gu <Plug>(characterize)
 
 " PLUGINS
 
-" Support loading plugin/options from file w/ empty lines and comments removed
-function s:Plugin(plug)
-  let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*([{(].*[)}])?')[1:2]
-  if len(locator)
-    call call('plug#', len(options) ? [locator, eval(options)] : [locator])
-  end
-endfunction
-
 " Load plugins listed in /.vim/plugs
 let s:plugins = readfile($HOME . '/.vim/plugs')
 call plug#begin('~/.vim/bundle')
-call map(s:plugins, {_, p -> s:Plugin(p)})
+call map(s:plugins, {_, p -> rc#Plugin(p)})
 call plug#end()
 
 " POST-PLUGIN CONFIGURATION
