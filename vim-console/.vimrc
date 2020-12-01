@@ -570,13 +570,6 @@ map <leader>k :set spell! spell?<CR>
 " DELIMITERS
 
 let g:surround_open_subs = []
-function! SurroundOpenSubs(match)
-  let string = a:match
-  for [search, replace, flags] in g:surround_open_subs
-    let string = substitute(string, search, replace, flags)
-  endfor
-  return string
-endfunction
 
 let g:surround_close_subs = [
   \ [ '\V{{{\w\+', '}}}', 'g' ], 
@@ -584,77 +577,17 @@ let g:surround_close_subs = [
   \ [ '\V[', ']', 'g' ], 
   \ [ '\V{', '}', 'g' ], 
   \ ]
-function! SurroundCloseSubs(match)
-  let string = a:match
-  let string = substitute(string, '\V{{{\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
-  let string = substitute(string, '\V~~~\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
-  let string = substitute(string, '\V```\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
-  let string = substitute(string, '\V(', ')', 'g')
-  let string = substitute(string, '\V[', ']', 'g')
-  let string = substitute(string, '\V{', '}', 'g')
-  return string
-endfunction
 
 " Surround text with delimiter. Optional "mode" param indicates 'visual'
 " selection or a command-count for number of words to surround w/ delimiter
 let g:surround_leader = "\<C-s>"
 let g:surround_prompt_trigger = "\<C-e>"
 let g:surround_{char2nr(g:surround_prompt_trigger)} = "\1Enter string: "
-  \ . "\r.*\r\\=SurroundOpenSubs(submatch(0))\1\r\1\r.*\r\\=SurroundCloseSubs(submatch(0))\1"
-function! s:Surround(...)
-  let mode = get(a:000, 0, 0)
-  let char = nr2char(getchar())
-  let nextChar = ''
-  let hasPrompt = [char] == [g:surround_prompt_trigger] || [char] == ['<']
-  " Determine action
-  if char == g:surround_leader " Double Ctrl-s will swap existing delimiter
-    let char = nr2char(getchar())
-    let nextChar = nr2char(getchar())
-    let hasPrompt = [nextChar] == [g:surround_prompt_trigger]
-    let action = [nextChar] == [g:surround_prompt_trigger]
-      \ || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
-  elseif type(mode) == type(0)
-    let action = 'surround'
-  else
-    let action = mode " 'visual' or 'insert'
-  endif
-  if hasPrompt || char =~ '[[:print:]]'
-    let iNormal = "\<C-\>\<C-n>"
-     let iSaveCursor = iNormal . ":let save_cursor = getcurpos()\<CR>"
-    let iRestoreCursor = iNormal . ":call setpos('.', save_cursor)\<CR>"
-      \ . ([action] == ['surround'] ? "\<Right>" : '')
-      \ . ([action] == ['delete'] ? "\<Left>" : '')
-    let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
-    let iRestoreSelection = [action] == ['delete']
-      \ ? iNormal . "gv\<Left>o\<Left>o"
-      \ : 'gv'
-    let iRestoreMode = [mode] == ['visual']
-      \ ? iRestoreSelection : ([mode] == ['insert']
-      \ ? iRestoreInsert : '')
-    let iSurround = 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char
-    let iChange = 'cs' . char . nextChar
-    let iDelete = 'ds' . char
-    let iVisual = 'S' . char
-    if hasPrompt
-      let iSaveCursor = ''
-      let iRestoreCursor = ''
-      let iRestoreSelection = ''
-      let iRestoreMode = ''
-    endif
-    let cmd = {
-      \ 'insert': "\<Plug>Isurround" . char,
-      \ 'surround': iSaveCursor . iNormal . iSurround . iRestoreCursor . iRestoreMode,
-      \ 'change': iSaveCursor . iNormal . iChange . iRestoreCursor . iRestoreMode,
-      \ 'delete': iSaveCursor . iNormal . iDelete . iRestoreCursor . iRestoreMode,
-      \ 'visual': iVisual . iRestoreMode,
-      \ }
-    return cmd[action]
-  endif
-endfunction
+  \ . "\r.*\r\\=rc#SurroundOpenSubs(submatch(0))\1\r\1\r.*\r\\=rc#SurroundCloseSubs(submatch(0))\1"
 
-exe 'map <expr>  ' . g:surround_leader . ' <SID>Surround(v:count)'
-exe 'imap <expr> ' . g:surround_leader . ' <SID>Surround("insert")'
-exe 'vmap <expr> ' . g:surround_leader . ' <SID>Surround("visual")'
+exe 'map <expr>  ' . g:surround_leader . ' rc#Surround(v:count)'
+exe 'imap <expr> ' . g:surround_leader . ' rc#Surround("insert")'
+exe 'vmap <expr> ' . g:surround_leader . ' rc#Surround("visual")'
 
 
 " SNIPPETS

@@ -158,6 +158,79 @@ function! rc#BuildQuickfixList(lines)
 endfunction
 
 
+" SURROUND
+
+function! rc#SurroundOpenSubs(match)
+  let string = a:match
+  for [search, replace, flags] in g:surround_open_subs
+    let string = substitute(string, search, replace, flags)
+  endfor
+  return string
+endfunction
+
+function! rc#SurroundCloseSubs(match)
+  let string = a:match
+  let string = substitute(string, '\V{{{\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
+  let string = substitute(string, '\V~~~\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
+  let string = substitute(string, '\V```\+\v\zs\w+\s*(\{[^}]*\})?', '', 'g') " code snippet
+  let string = substitute(string, '\V(', ')', 'g')
+  let string = substitute(string, '\V[', ']', 'g')
+  let string = substitute(string, '\V{', '}', 'g')
+  return string
+endfunction
+
+function! rc#Surround(...)
+  let mode = get(a:000, 0, 0)
+  let char = nr2char(getchar())
+  let nextChar = ''
+  let hasPrompt = [char] == [g:surround_prompt_trigger] || [char] == ['<']
+  " Determine action
+  if char == g:surround_leader " Double Ctrl-s will swap existing delimiter
+    let char = nr2char(getchar())
+    let nextChar = nr2char(getchar())
+    let hasPrompt = [nextChar] == [g:surround_prompt_trigger]
+    let action = [nextChar] == [g:surround_prompt_trigger]
+      \ || nextChar =~ '[[:print:]]' ? 'change' : 'delete'
+  elseif type(mode) == type(0)
+    let action = 'surround'
+  else
+    let action = mode " 'visual' or 'insert'
+  endif
+  if hasPrompt || char =~ '[[:print:]]'
+    let iNormal = "\<C-\>\<C-n>"
+     let iSaveCursor = iNormal . ":let save_cursor = getcurpos()\<CR>"
+    let iRestoreCursor = iNormal . ":call setpos('.', save_cursor)\<CR>"
+      \ . ([action] == ['surround'] ? "\<Right>" : '')
+      \ . ([action] == ['delete'] ? "\<Left>" : '')
+    let iRestoreInsert = [mode] == ['insert'] ? 'a' : ''
+    let iRestoreSelection = [action] == ['delete']
+      \ ? iNormal . "gv\<Left>o\<Left>o"
+      \ : 'gv'
+    let iRestoreMode = [mode] == ['visual']
+      \ ? iRestoreSelection : ([mode] == ['insert']
+      \ ? iRestoreInsert : '')
+    let iSurround = 'wbviw' . repeat('e', max([mode - 1, 0])) . 'S' . char
+    let iChange = 'cs' . char . nextChar
+    let iDelete = 'ds' . char
+    let iVisual = 'S' . char
+    if hasPrompt
+      let iSaveCursor = ''
+      let iRestoreCursor = ''
+      let iRestoreSelection = ''
+      let iRestoreMode = ''
+    endif
+    let cmd = {
+      \ 'insert': "\<Plug>Isurround" . char,
+      \ 'surround': iSaveCursor . iNormal . iSurround . iRestoreCursor . iRestoreMode,
+      \ 'change': iSaveCursor . iNormal . iChange . iRestoreCursor . iRestoreMode,
+      \ 'delete': iSaveCursor . iNormal . iDelete . iRestoreCursor . iRestoreMode,
+      \ 'visual': iVisual . iRestoreMode,
+      \ }
+    return cmd[action]
+  endif
+endfunction
+
+
 " BUFFERS
 
 " Move forward/backward in the list of Most Recently Used files
