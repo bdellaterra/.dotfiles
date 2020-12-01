@@ -257,8 +257,12 @@ map <silent> <leader>wd :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:h
 map <silent> <leader>wf :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p'), '"')<CR>
 
 " ',wr' will copy working file (relative-path) to the clipboard
-map <silent> <leader>wr :echo <SID>CopyToClipboard(substitute(
+map <silent> <leader>wr :echo '.' . <SID>CopyToClipboard(substitute(
   \ fnamemodify(bufname(), ':p'), fnamemodify(ProjectRootGuess(), ':p:h'), '', ''), '"')<CR>
+
+" ',ws' will copy working file (short-path) to the clipboard
+map <silent> <leader>ws :echo <SID>CopyToClipboard(substitute(
+  \ fnamemodify(bufname(), ':p:r'), fnamemodify(ProjectRootGuess(), ':p:h') . '/', '', ''), '"')<CR>
 
 " ',wt' will copy "tail" of working path to the clipboard (just the filename)
 map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t'), '"')<CR>
