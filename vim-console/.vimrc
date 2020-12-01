@@ -535,18 +535,11 @@ noremap <silent> <leader>n :exe '!' . bzb#BZB() . ' -E -bd="' . fnamemodify(g:nv
 
 " ',tm' will toggle vim-table-mode plugin
 
-function! s:IsAtStartOfLine(mapping)
-  let text_before_cursor = getline('.')[0 : col('.')-1]
-  let mapping_pattern = '\V' . escape(a:mapping, '\')
-  let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
-  return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
-endfunction
-
 inoreabbrev <expr> <bar><bar>
-          \ <SID>IsAtStartOfLine('\|\|') ?
+          \ rc#IsAtStartOfLine('\|\|') ?
           \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
 inoreabbrev <expr> __
-          \ <SID>IsAtStartOfLine('__') ?
+          \ rc#IsAtStartOfLine('__') ?
           \ '<c-o>:silent! TableModeDisable<cr>' : '__'
 
 " ',tr' will join selected lines as table row
@@ -701,13 +694,6 @@ let g:fzf_colors = {
   \ 'header':  ['fg', 'Comment']
   \ }
 
-" Helper commands from fzf-vim documentation
-function! s:BuildQuickfixList(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
-endfunction
-
 let g:fzf_colors = {
   \ 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -748,14 +734,7 @@ command! -bang -nargs=* Rg
 command! -bang -nargs=? -complete=dir Files
       \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-" Temporarily switch FZFMru to search relative to current directory
-function s:FZFRelativeMru()
-  let save_rel = g:fzf_mru_relative
-  let g:fzf_mru_relative = 1
-  FZFMru
-  let g:fzf_mru_relative = save_rel
-endfunction
-command! -bang -nargs=* FZFRelativeMru call <SID>FZFRelativeMru()
+command! -bang -nargs=* FZFRelativeMru call rc#FZFRelativeMru()
 
 " FZF mappings are all prefixed with ',/'
 map <leader>/<space>   :Files 

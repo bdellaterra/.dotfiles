@@ -143,6 +143,20 @@ function rc#GoToNextVerticalNonBlank(...)
   let @/=lastsearch
 endfunction
 
+function! rc#IsAtStartOfLine(mapping)
+  let text_before_cursor = getline('.')[0 : col('.')-1]
+  let mapping_pattern = '\V' . escape(a:mapping, '\')
+  let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
+  return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
+endfunction
+
+" Helper commands from fzf-vim documentation
+function! rc#BuildQuickfixList(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+
 
 " BUFFERS
 
@@ -190,6 +204,14 @@ function rc#SwitchToAltBufferOrMruFile()
   else
     confirm buffer #
   endif
+endfunction
+
+" Temporarily switch FZFMru to search relative to current directory
+function rc#FZFRelativeMru()
+  let save_rel = g:fzf_mru_relative
+  let g:fzf_mru_relative = 1
+  FZFMru
+  let g:fzf_mru_relative = save_rel
 endfunction
 
 
@@ -421,3 +443,15 @@ function! rc#OnLspBufferEnabled() abort
     nmap <buffer> GC :let g:lsp_highlight_references_enabled = !g:lsp_highlight_references_enabled<CR>
     nmap <buffer> GE :echo lsp#ui#vim#diagnostics#get_diagnostics_under_cursor()<CR>
 endfunction
+
+
+" PLUGINS
+
+" Support loading plugin/options from file w/ empty lines and comments removed
+function rc#Plugin(plug)
+  let [locator, options] = matchlist(a:plug, '\v^([^# ]*)\s*([{(].*[)}])?')[1:2]
+  if len(locator)
+    call call('plug#', len(options) ? [locator, eval(options)] : [locator])
+  end
+endfunction
+
