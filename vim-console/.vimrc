@@ -259,32 +259,13 @@ map <silent> <M-Enter> :call rc_vue#EnterHelper(1)<CR>
 map <silent> \<Enter> :call rc_vue#EnterHelper(2)<CR>
 
 " Go count forward/backward in the list of Most Recently Used files
-let s:mruJump = 0
-let s:mruIndex = 0
-let s:mruFiles = []
-function! JumpMRU(...)
-  let delta = get(a:000, 0, -1)
-  " let mruFiles = insert(copy(fzf_mru#mrufiles#list()), expand('%'))
-  let s:mruFiles = len(s:mruFiles) > 0
-    \ ? s:mruFiles
-    \ : map(
-    \   fzf_mru#mrufiles#list(),
-    \   "fnamemodify(filereadable(v:val) ? v:val : ProjectRootGuess() . '/' . v:val, ':p')"
-    \ )
-  let s:mruIndex = max([0, s:mruIndex - delta])
-  let s:mruIndex = min([s:mruIndex, len(s:mruFiles) - 1])
-  echo s:mruIndex . ': ' . s:mruFiles[s:mruIndex]
-  let s:mruJump = 1
-  silent! exe 'silent! buffer ' .  s:mruFiles[s:mruIndex]
-  let s:mruJump = 0
-endfunction
-autocmd BufEnter * :if !s:mruJump | let s:mruFiles = [] | let s:mruIndex = 0 | endif
+autocmd BufEnter * :if !get(g:, 'mruJump', 0) | let g:mruFiles = [] | let g:mruIndex = 0 | endif
 
 " '-' will go back in the MRU list
-nnoremap - :call JumpMRU(-1)<CR>
+nnoremap - :call rc#JumpMRU(-1)<CR>
 
 " '+' will go forward in the MRU list
-nnoremap + :call JumpMRU(1)<CR>
+nnoremap + :call rc#JumpMRU(1)<CR>
 
 
 " URLS
