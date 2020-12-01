@@ -219,6 +219,17 @@ function rc#PasteFromClipboard()
 endfunction
 
 
+" PAGER
+
+function rc#LessInitFunc()
+  let g:disableSessionManager = 1
+  let g:disableToggleConceal = 1
+  " augroup! SessionManager
+  AnsiEsc
+  au VimEnter * normal gg
+endfunction
+
+
 " NOTES
 
 " Calling this at end of script so any added paths can be captured
@@ -372,4 +383,41 @@ function! rc#Blur()
   call rc_status#SetDefaultStatusModeHLGroups()
   " Reset filetype to fix concealed syntax highlighting
   exe 'set filetype=' . &filetype
+endfunction
+
+
+" LANGUAGE SUPPORT
+
+function! rc#OnLspBufferEnabled() abort
+    let b:lspBufferEnabled = 1
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    highlight LspErrorHighlight term=underline cterm=underline ctermfg=131 gui=underline guifg=#af5f5f
+    highlight LspWarningHighlight term=underline cterm=underline ctermfg=11 gui=underline guifg=#ffee33
+    highlight LspHintHighlight term=underline cterm=underline gui=underline
+    highlight lspReference term=italic cterm=italic gui=italic
+	nmap <buffer> <leader>r <plug>(lsp-next-error)
+	nmap <buffer> <leader>e <plug>(lsp-previous-error)
+	nmap <buffer> <C-n> <plug>(lsp-next-diagnostic)
+	nmap <buffer> <C-p> <plug>(lsp-previous-diagnostic)
+	nmap <buffer> GR <plug>(lsp-rename)<C-u>
+	nmap <buffer> GF <plug>(lsp-references)
+	nmap <buffer> GN <plug>(lsp-next-reference)
+	nmap <buffer> GP <plug>(lsp-previous-reference)
+	nmap <buffer> GD <plug>(lsp-definition)
+	nmap <buffer> Gd <plug>(lsp-peek-definition)
+	nmap <buffer> GB <plug>(lsp-declaration)
+	nmap <buffer> Gb <plug>(lsp-peek-declaration)
+	nmap <buffer> GT <plug>(lsp-type-definition)
+	nmap <buffer> Gt <plug>(lsp-peek-type-definition)
+	nmap <buffer> GI <plug>(lsp-implementation)
+	nmap <buffer> Gi <plug>(lsp-peek-implementation)
+	nmap <buffer> GH <plug>(lsp-type-hierarchy)
+	nmap <buffer> GW <plug>(lsp-workspace-symbol)
+	nmap <buffer> GB <plug>(lsp-hover)
+	nmap <buffer> GV <plug>(lsp-hover)
+	nmap <buffer> GA <plug>(lsp-code-action)
+	nmap <buffer> GS <plug>(lsp-status)
+    nmap <buffer> GC :let g:lsp_highlight_references_enabled = !g:lsp_highlight_references_enabled<CR>
+    nmap <buffer> GE :echo lsp#ui#vim#diagnostics#get_diagnostics_under_cursor()<CR>
 endfunction
