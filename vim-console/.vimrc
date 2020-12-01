@@ -194,35 +194,12 @@ if has('windows') || has("win64") || has("win32")
   endif
 endif
 
-" Share yanked text with system clipboard, even when Vim lacks 'clipboard' support
-function s:CopyToClipboard(text, ...)
-  let register = get(a:000, 0, '')
-  if !has('clipboard')
-    if exists('s:clipCopy') && register == ''
-      call system(s:clipCopy, a:text)
-    endif
-  else
-    call setreg('+', a:text)
-  endif
-  if exists('*state') && state() !~ 'x' && register != ''
-    call setreg(register, a:text)
-  endif
-  return a:text
-endfunction
-
-" Sync system clipboard with Vim for paste-support
-function s:PasteFromClipboard()
-  if exists('s:clipPaste')
-    let @" = system(s:clipPaste)
-  endif
-endfunction
-
 " Share system clipboard for copy/paste events
 if has('clipboard')
   set clipboard=unnamed,unnamedplus
 else
-  autocmd TextYankPost * :call <SID>CopyToClipboard(v:event.regcontents, v:event.regname)
-  autocmd FocusGained * :call <SID>PasteFromClipboard()
+  autocmd TextYankPost * :call rc#CopyToClipboard(v:event.regcontents, v:event.regname)
+  autocmd FocusGained * :call rc#PasteFromClipboard()
 endif
 
 " 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
@@ -251,21 +228,21 @@ map <leader>; :Ranger<CR>
 map <leader>p :RangerWorkingDirectory<CR>
 
 " ',wd' will copy working directory to the clipboard
-map <silent> <leader>wd :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:h'), '"')<CR>
+map <silent> <leader>wd :call rc#CopyToClipboard(fnamemodify(bufname(''),':p:h'), '"')<CR>
 
 " ',wf' will copy working file (full-path) to the clipboard
-map <silent> <leader>wf :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p'), '"')<CR>
+map <silent> <leader>wf :call rc#CopyToClipboard(fnamemodify(bufname(''),':p'), '"')<CR>
 
 " ',wr' will copy working file (relative-path) to the clipboard
-map <silent> <leader>wr :echo '.' . <SID>CopyToClipboard(substitute(
+map <silent> <leader>wr :echo '.' . rc#CopyToClipboard(substitute(
   \ fnamemodify(bufname(), ':p'), fnamemodify(ProjectRootGuess(), ':p:h'), '', ''), '"')<CR>
 
 " ',ws' will copy working file (short-path) to the clipboard
-map <silent> <leader>ws :echo <SID>CopyToClipboard(substitute(
+map <silent> <leader>ws :echo rc#CopyToClipboard(substitute(
   \ fnamemodify(bufname(), ':p:r'), fnamemodify(ProjectRootGuess(), ':p:h') . '/', '', ''), '"')<CR>
 
 " ',wt' will copy "tail" of working path to the clipboard (just the filename)
-map <silent> <leader>wt :call <SID>CopyToClipboard(fnamemodify(bufname(''),':p:t'), '"')<CR>
+map <silent> <leader>wt :call rc#CopyToClipboard(fnamemodify(bufname(''),':p:t'), '"')<CR>
 
 " Automatically create missing parent directories when editing a new file
 autocmd BufWritePre * :call rc#MakeDir(fnamemodify(expand('<afile>'), ':p:h'))
