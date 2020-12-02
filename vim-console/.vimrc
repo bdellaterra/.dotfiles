@@ -156,14 +156,14 @@ endif
 
 " nix
 if executable('xclip')
-  let s:clipCopy = 'xclip'
-  let s:clipPaste = 'xclip -o'
+  let g:clipCopy = 'xclip'
+  let g:clipPaste = 'xclip -o'
 endif
 
 " mac
 if executable('pbcopy')
-  let s:clipCopy = 'pbcopy'
-  let s:clipPaste = 'pbpaste' " mac
+  let g:clipCopy = 'pbcopy'
+  let g:clipPaste = 'pbpaste' " mac
 endif
 
 " win
@@ -172,13 +172,13 @@ endif
 " Default (with no paste support) at /mnt/c/Windows/System32/clip.exe
 if has('windows') || has("win64") || has("win32")
   if executable('clip')
-    let s:clipCopy = 'clip'
+    let g:clipCopy = 'clip'
   endif
 
   " Install from https://github.com/equalsraf/win32yank/releases
   if executable('win32yank') && executable('unix2dos')
-    let s:clipCopy = 'unix2dos | win32yank -i'
-    let s:clipPaste = 'win32yank -o | dos2unix'
+    let g:clipCopy = 'unix2dos | win32yank -i'
+    let g:clipPaste = 'win32yank -o | dos2unix'
   endif
 endif
 
@@ -468,6 +468,40 @@ nmap ga <Plug>(EasyAlign)
 
 " LANGUAGE SUPPORT
 
+function! OnLspBufferEnabled() abort
+    let b:lspBufferEnabled = 1
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    highlight LspErrorHighlight term=underline cterm=underline ctermfg=131 gui=underline guifg=#af5f5f
+    highlight LspWarningHighlight term=underline cterm=underline ctermfg=11 gui=underline guifg=#ffee33
+    highlight LspHintHighlight term=underline cterm=underline gui=underline
+    highlight lspReference term=italic cterm=italic gui=italic
+	nmap <buffer> <leader>r <plug>(lsp-next-error)
+	nmap <buffer> <leader>e <plug>(lsp-previous-error)
+	nmap <buffer> <C-n> <plug>(lsp-next-diagnostic)
+	nmap <buffer> <C-p> <plug>(lsp-previous-diagnostic)
+	nmap <buffer> GR <plug>(lsp-rename)<C-u>
+	nmap <buffer> GF <plug>(lsp-references)
+	nmap <buffer> GN <plug>(lsp-next-reference)
+	nmap <buffer> GP <plug>(lsp-previous-reference)
+	nmap <buffer> GD <plug>(lsp-definition)
+	nmap <buffer> Gd <plug>(lsp-peek-definition)
+	nmap <buffer> GB <plug>(lsp-declaration)
+	nmap <buffer> Gb <plug>(lsp-peek-declaration)
+	nmap <buffer> GT <plug>(lsp-type-definition)
+	nmap <buffer> Gt <plug>(lsp-peek-type-definition)
+	nmap <buffer> GI <plug>(lsp-implementation)
+	nmap <buffer> Gi <plug>(lsp-peek-implementation)
+	nmap <buffer> GH <plug>(lsp-type-hierarchy)
+	nmap <buffer> GW <plug>(lsp-workspace-symbol)
+	nmap <buffer> GB <plug>(lsp-hover)
+	nmap <buffer> GV <plug>(lsp-hover)
+	nmap <buffer> GA <plug>(lsp-code-action)
+	nmap <buffer> GS <plug>(lsp-status)
+    nmap <buffer> GC :let g:lsp_highlight_references_enabled = !g:lsp_highlight_references_enabled<CR>
+    nmap <buffer> GE :echo lsp#ui#vim#diagnostics#get_diagnostics_under_cursor()<CR>
+endfunction
+
 let g:lsp_diagnostics_enabled = 1
 let g:lsp_signs_enabled = 0
 let g:lsp_diagnostics_echo_cursor = 1
@@ -480,7 +514,7 @@ let g:lsp_highlights_enabled = 0
 augroup lsp_install
     au!
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-    autocmd User lsp_buffer_enabled call rc#OnLspBufferEnabled()
+    autocmd User lsp_buffer_enabled call OnLspBufferEnabled()
 augroup END
 
 let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]

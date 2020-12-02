@@ -7,7 +7,7 @@ hi! link Conceal Statement
 set concealcursor=n
 if !exists('b:save_conceallevel') || b:save_conceallevel
   if !&conceallevel
-    call ToggleConceal()
+    call rc#ToggleConceal()
   endif
 endif
 
