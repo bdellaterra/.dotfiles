@@ -5,8 +5,8 @@ if !get(g:, 'disableSessionManager', 0)
     autocmd QuitPre * SaveSession
 
     " reestablish settings that can't be reloaded from session
-    autocmd SessionLoadPost * ++once let b:isRestoredSession=1
-    autocmd SafeState * ++once call rc#OnSessionLoaded()
+    autocmd SessionLoadPost * let b:isRestoredSession=1
+    autocmd VimEnter * call rc#OnSessionLoaded()
   augroup END
 endif
 
