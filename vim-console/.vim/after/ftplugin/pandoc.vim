@@ -77,7 +77,8 @@ vmap <buffer> <leader>_ <Plug>(pandoc-keyboard-toggle-subscript)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
-if get(g:, 'vim_pandoc_syntax_exists', 0)
+if !get(g:, 'vim_pandoc_syntax_exists', 0)
+  let g:pandoc_syntax_exists = 1
   " Gradient Headers
   if exists('g:pandoc#syntax#conceal#use') && g:pandoc#syntax#conceal#use != 0
     if !exists('g:pandoc#syntax#conceal#blacklist') || index(g:pandoc#syntax#conceal#blacklist, 'atx') == -1
