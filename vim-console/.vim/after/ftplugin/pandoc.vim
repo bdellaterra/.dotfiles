@@ -97,6 +97,7 @@ if !get(g:, 'vim_pandoc_syntax_exists', 0)
   hi! link pandocStrong Statement
   hi! link pandocStrikeout Comment
   hi! link pandocStrikeoutMark WarningMsg
+  hi! link pandocDelimitedCodeBlock Comment
 
   " Prevent false emphasis syntax region that can lead to runaway highlighting
   if !(get(g:, 'allowPandocEmphasis', 0) || get(b:, 'allowPandocEmphasis', 0))
