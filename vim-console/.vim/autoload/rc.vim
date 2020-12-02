@@ -369,8 +369,8 @@ endfunction
 function rc#CopyToClipboard(text, ...)
   let register = get(a:000, 0, '')
   if !has('clipboard')
-    if exists('s:clipCopy') && register == ''
-      call system(s:clipCopy, a:text)
+    if exists('g:clipCopy') && register == ''
+      call system(g:clipCopy, a:text)
     endif
   else
     call setreg('+', a:text)
@@ -383,8 +383,8 @@ endfunction
 
 " Sync system clipboard with Vim for paste-support
 function rc#PasteFromClipboard()
-  if exists('s:clipPaste')
-    let @" = system(s:clipPaste)
+  if exists('g:clipPaste')
+    let @" = system(g:clipPaste)
   endif
 endfunction
 
