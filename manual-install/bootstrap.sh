@@ -17,9 +17,12 @@ fi
 
 sudo $OS --install git
 sudo $OS --install stow
-
 sudo $OS --install curl
+
 sudo $OS --install vim
+if [[ $DISTRO =~ 'SUSE' ]]; then
+  sudo $OS --install vim-data
+fi
 
 sudo $OS --install rg
 sudo $OS --install fzf
