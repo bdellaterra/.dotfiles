@@ -26,7 +26,7 @@ alias l='ls --color --group-directories-first -lAhFG'
 # b: preferred file-browser
 # (implemented via ~/bin/b for easier Vim integration. Fallback below)
 if [[ `command -v bzb` && ! `command -v b` ]] ;then
-  BZB_FILE_PREVIEW='bat --style changes,header,grid $(echo ${BZB_COLOR:+--color always}) --theme Nord {}'
+  BZB_FILE_PREVIEW='bat --style changes,header,grid $(echo ${BZB_COLOR:+--color always}) {}'
   BZB_DIRECTORY_PREVIEW='exa ${BZB_COLOR:+--color=always} --group-directories-first -lahF {}'
   [[ `command -v bzb` ]] && alias b="bzb -c -s -l -fp='$BZB_FILE_PREVIEW' -dp='$BZB_DIRECTORY_PREVIEW'"
 fi
