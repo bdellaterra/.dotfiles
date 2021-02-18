@@ -85,7 +85,10 @@ esc() { echo $(printf '%q' "$1"); }
 unesc() { bash -c echo\ "$e"; }
 
 # Escape single-quotes to make a single-quotable string
-squo() { echo ${1//\'/\'\\\'\'}; }
+sq() { printf '%s' "${1//'/'\\''}"; }
+
+# Escape special chars and newlines to make a double-quotable string
+dq() { printf '%s' "$1" | sed -e 's/[$!&`"\]/\\&/g'; }
 
 # Escape chars and newlines to make a double-quotable string
 dquo() {
