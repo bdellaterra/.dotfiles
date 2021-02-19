@@ -197,18 +197,15 @@ imap <expr> <F12> set paste! paste? ? '' : ''
 
 " FILES
 
-command! -nargs=1 BZB
-  \ exe '!' . bzb#BZB(<q-args>)
-  \ | silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')
-  \ | exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')
-  \ | if len(g:BZB_Targets) | exe 'edit ' . g:BZB_Targets[0] | endif
+command! -nargs=* BZB
+  \ silent! call bzb#BZB(<q-args>)
 
 " Replace default file manager when viewing directories
 " let g:ranger_replace_netrw = 1
 augroup ReplaceNetrwWithBzb
   autocmd!
   autocmd VimEnter * silent! autocmd! FileExplorer
-  autocmd BufEnter,VimEnter * if isdirectory(expand("%")) | BZB %
+  autocmd BufEnter * if isdirectory(expand("%")) | set nobuflisted | BZB %
 augroup END
 
 " Set temp file location
@@ -218,13 +215,14 @@ let g:ranger_choice_file = s:TmpDir . 'RangerChosenFile'
 let g:ranger_map_keys = 0
 
 " ',.' will browse files at current buffer's directory (BZB)
-map <silent> <leader>. :exe '!' . bzb#BZB()<CR>:silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')<CR>:exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')<CR>:if len(g:BZB_Targets) \| exe 'edit ' . g:BZB_Targets[0] \| endif<CR>
+map <silent> <leader>. :silent! call bzb#BZB()<CR>
 
 " ',;' will browse files at current buffer's directory (Ranger)
 map <leader>; :Ranger<CR>
 
 " ',p' will browse files at working-directory (usually project root)
-map <leader>p :RangerWorkingDirectory<CR>
+" map <leader>p :RangerWorkingDirectory<CR>
+map <leader>p :silent! call bzb#BZB(ProjectRootGuess())<CR>
 
 " ',wd' will copy working directory to the clipboard
 map <silent> <leader>wd :call rc#CopyToClipboard(fnamemodify(bufname(''),':p:h'), '"')<CR>
