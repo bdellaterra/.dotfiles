@@ -197,8 +197,19 @@ imap <expr> <F12> set paste! paste? ? '' : ''
 
 " FILES
 
+command! -nargs=1 BZB
+  \ exe '!' . bzb#BZB(<q-args>)
+  \ | silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')
+  \ | exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')
+  \ | if len(g:BZB_Targets) | exe 'edit ' . g:BZB_Targets[0] | endif
+
 " Replace default file manager when viewing directories
-let g:ranger_replace_netrw = 1
+" let g:ranger_replace_netrw = 1
+augroup ReplaceNetrwWithBzb
+  autocmd!
+  autocmd VimEnter * silent! autocmd! FileExplorer
+  autocmd BufEnter,VimEnter * if isdirectory(expand("%")) | BZB %
+augroup END
 
 " Set temp file location
 let g:ranger_choice_file = s:TmpDir . 'RangerChosenFile'
