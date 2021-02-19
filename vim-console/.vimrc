@@ -207,7 +207,7 @@ let g:ranger_choice_file = s:TmpDir . 'RangerChosenFile'
 let g:ranger_map_keys = 0
 
 " ',.' will browse files at current buffer's directory (BZB)
-map <silent> <leader>. :exe '!' . bzb#BZB() . ' -E -bd="' . fnamemodify(expand("$PWD"), ':p:h') . '" ' . fnamemodify(expand('%'), ':p:h')<CR>:silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')<CR>:exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')<CR>:if len(g:BZB_Targets) \| exe 'edit ' . g:BZB_Targets[0] \| endif<CR>
+map <silent> <leader>. :exe '!' . bzb#BZB()<CR>:silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')<CR>:exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')<CR>:if len(g:BZB_Targets) \| exe 'edit ' . g:BZB_Targets[0] \| endif<CR>
 
 " ',;' will browse files at current buffer's directory (Ranger)
 map <leader>; :Ranger<CR>
