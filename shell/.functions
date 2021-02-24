@@ -98,73 +98,9 @@ dquo() {
   ) | sed -e 's/\\n$//'
 }
 
-# relpath() {
-#   local common path up
-#   common=${1%/} path=${2%/}/
-#   while test "${path#"$common"/}" = "$path"; do
-#       common=${common%/*} up=../$up
-#   done
-#   path=$up${path#"$common"/}; path=${path%/}; printf %s "${path:-.}"
-# }
-#
-# rel() {
-#   local common="$1" path="$2"/ up
-#   while [[ "${path#"$common"/}" = "$path" ]]; do
-#       echo "-- ${path#"$common"/}" "$path"
-#       common=${common%/*} up=../$up
-#       echo "== ${path#"$common"/}" "$path"
-#   done
-#   path=$up${path#"$common"/}; path=${path%/}; printf %s "${path:-.}"
-# }
-#
-# # Return relative path from first arg to 2nd arg. Args must be absolute paths without trailing '/'
-# # rel() {
-# #   local relpath=''
-# #   while [[ "${2#"$1"/}" = "$2" ]]; do set -- "${1%/*}" "$2"; relpath+="../"; done
-# #   relpath+="${2#"$1"/}${2%/}" && printf %s "${relpath:-.}"
-# # }
-#
-# setrel() {
-#   if [[ "$2" =~ ^"$1" ]]; then
-#     printf '%s' "${2#$1}"
-#   elif [[ "$1" =~ ^"$2" ]]; then
-#     printf '.'
-#     [[ ! "$1" = "$2" ]] && printf '.'
-#     printf '%s' "$(setrel "${1%/*}" "$2")"
-#   # else
-#   #   printf "$1"
-#   fi
-#   # echo "$1" "$2"
-#   # while [[ "$1" =~ ^"$2" ]]; do
-#   #   echo "::: $1 $2"
-#   #   set -- "${1%/*}" "$2"
-#   # done
-#   # echo "$1" "$2"
-# }
-#
-# rel_dir() {
-#   if [[ "$1" = "$2" ]]; then
-#     printf '.'
-#   elif [[ "$2" =~ ^"$1" ]]; then
-#     printf '%s' "${2#"$1"/}"
-#   elif [[ "$1" =~ ^"$2" ]]; then
-#     printf "/${1#"$2"/}" | sed -e 's#/[^/]*#../#g'
-#   fi
-# }
-
-# / /a/b/c
-# /a /a/b/c
-# /a/b /a/b/c
-# /a/b/c /a/b/c
-# /a/b/d /a/b/c
-# /a/b/c /a/b
-# /a/b/c /a
-# /a/b/c /
-
-# re() {
-#   [[ "$1" = "$2" ]] && echo "."
-# }
-rel() {(
+# Get relative path from source directory (1st arg) to target directory (2nd arg)
+# Use absolute path if supplying a directory that does not exist
+rel_dir() {(
   shopt -s extglob
   _rel_down() {
 	[[ "$1" = '/' && ! "$2" = '/' ]] && local pre='./' || local pre='.'
