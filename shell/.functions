@@ -98,9 +98,9 @@ dquo() {
   ) | sed -e 's/\\n$//'
 }
 
-# Get relative path from source directory (1st arg) to target directory (2nd arg)
-# Use absolute path if supplying a directory that does not exist
-rel_dir() {(
+# Get relative path from source file/directory (1st arg) to target file/directory (2nd arg)
+# Can supply non-existant directories (not files) for either arg if using absolute path
+rel() {(
   shopt -s extglob
   _rel_down() {
 	[[ "$1" = '/' && ! "$2" = '/' ]] && local pre='./' || local pre='.'
@@ -113,10 +113,15 @@ rel_dir() {(
 	done
 	echo "$back${rest#/}"
   }
-  local rel a b
-  [[ -d "$1" ]] && a="$(readlink -f "$1")" || a="${1/%%+(/)}"
-  [[ -d "$2" ]] && b="$(readlink -f "$2")" || b="${2/%%+(/)}"
-  rel="$(_rel_down "$a" "$b")"; 
-  [[ ! $rel ]] && rel="$(_rel_up "$a" "$b")"
+  local source="$1" target="$2" source_file='' target_file=''
+  [[ -f "$source" ]] && source_file="$(basename "$source")" source="$(dirname "$source")"
+  [[ -f "$target" ]] && target_file="$(basename "$target")" target="$(dirname "$target")"
+  [[ -d "$source" && ! "$source" = '/' ]] && source="$(readlink -f "${source%/}")" || source="${source/%%+(/)}"
+  [[ -d "$target" && ! "$target" = '/' ]] && target="$(readlink -f "${target%/}")" || target="${target/%%+(/)}"
+  echo "SOURCE $source : $source_file"
+  echo "TARGET $target : $target_file"
+  local rel="$(_rel_down "$source" "$target")"; 
+  [[ ! $rel ]] && rel="$(_rel_up "$source" "$target")"
+  [[ $target_file ]] && rel="${rel%%+(/)}/$target_file"
   echo "$rel"
 )}
