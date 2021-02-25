@@ -103,23 +103,23 @@ dquo() {
 rel() {(
   shopt -s extglob
   _rel_down() {
-	[[ "$1" = '/' && ! "$2" = '/' ]] && local pre='./' || local pre='.'
-	[[ "$2" =~ ^"$1" ]] && echo "$pre${2#"$1"}"
+    [[ "$1" = '/' && ! "$2" = '/' ]] && local pre='./' || local pre='.'
+    [[ "${2%/}/" =~ ^"${1%/}/" ]] && echo "$pre${2#"$1"}"
   }
   _rel_up() {
-	while [[ ! "$(_rel_down "$1" "$2")" ]]; do
-	  set -- "$(dirname "$1")" "$2" 
-	  local back="../$back" rest="${2#"$1"}"
-	done
-	echo "$back${rest#/}"
+    while [[ ! "$(_rel_down "$1" "$2")" ]]; do
+      set -- "$(dirname "$1")" "$2" 
+      local back="../$back" rest="${2#"$1"}"
+    done
+    echo "$back${rest#/}"
   }
-  local source="$1" target="$2" source_file='' target_file=''
+  local source=$(printf '%q' "$1") target=$(printf '%q' "$2") source_file='' target_file=''
+  [[ ! "$source" =~ \.*\/ ]] && source="./$source"
+  [[ ! "$target" =~ \.*\/ ]] && target="./$target"
   [[ -f "$source" ]] && source_file="$(basename "$source")" source="$(dirname "$source")"
   [[ -f "$target" ]] && target_file="$(basename "$target")" target="$(dirname "$target")"
   [[ -d "$source" && ! "$source" = '/' ]] && source="$(readlink -f "${source%/}")" || source="${source/%%+(/)}"
   [[ -d "$target" && ! "$target" = '/' ]] && target="$(readlink -f "${target%/}")" || target="${target/%%+(/)}"
-  echo "SOURCE $source : $source_file"
-  echo "TARGET $target : $target_file"
   local rel="$(_rel_down "$source" "$target")"; 
   [[ ! $rel ]] && rel="$(_rel_up "$source" "$target")"
   [[ $target_file ]] && rel="${rel%%+(/)}/$target_file"
