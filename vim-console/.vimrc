@@ -190,6 +190,10 @@ else
   autocmd FocusGained * :call rc#PasteFromClipboard()
 endif
 
+" Prevent paste from overwriting registers with replaced text
+" From rox, 2017, https://stackoverflow.com/questions/290465/how-to-paste-over-without-overwriting-register 
+xnoremap <expr> p 'pgv"'.v:register.'y`>'
+
 " 'F12' will toggle paste mode, which disables auto-formatting of copy/pasted text
 noremap <F12> :set paste! paste?<CR>
 imap <expr> <F12> set paste! paste? ? '' : ''
