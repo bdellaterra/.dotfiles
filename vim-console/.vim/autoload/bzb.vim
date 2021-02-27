@@ -12,7 +12,8 @@ function bzb#BZBCommand(...)
   if !exists('g:BZB_Command')
     let g:BZB_Command = 'bzb -c -as -al -ah'
   endif
-  let g:cmd = g:BZB_Command . ' -E -bd=' . base_dir . ' ' . fnameescape(g:target)
+  let g:keybinds = len($BZB_BIND) ? "BZB_BIND='" . $BZB_BIND . "' " : ''
+  let g:cmd = g:keybinds . g:BZB_Command . ' -E -bd=' . base_dir . ' ' . fnameescape(g:target)
   return g:cmd
 endfunction
 
