@@ -69,8 +69,8 @@ stty -ixon
 # *** Tmux ***
 # https://wiki.archlinux.org/index.php/Tmux
 
-# Fix for tmux on WSL
-if [[ `grep 'openSUSE' /etc/*-release` && ! -d '/run/tmux'  ]]; then
+# Fix for tmux on WSL (Using nullglob to prevent shell error on systems that have no /etc/*-release files
+if [[ `bash -c 'shopt -s nullglob; glob=(/etc/*-release); [[ "${#glob[@]}" = 0 ]] || grep "openSUSE" "${glob[@]}"'` && ! -d '/run/tmux' ]]; then
   echo 'Initializing systemd-tmpfiles...'
   # From bitcrazed, 2017, https://github.com/tmux/tmux/issues/1092
   sudo systemd-tmpfiles --create
