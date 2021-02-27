@@ -265,4 +265,6 @@ hi link pandocHRule Delimiter
 let b:current_syntax = 'pandoc'
 
 syntax sync clear
-syntax sync minlines=1000
+syntax sync minlines=10000
+" syntax sync fromstart
+set redrawtime=10000
