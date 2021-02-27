@@ -569,6 +569,21 @@ augroup VimCompletesMePandoc
     \ let b:vcm_omni_pattern = '@'
 augroup END
 
+function! AddMarkdownTitle(...)
+  let title = get(a:000, 0, fnamemodify(expand('%'), ':t:r'))
+  let file = expand('%')
+  let g:fmod = getftime(file)
+  if !len(readfile(file)) && ( g:fmod < 0 || ((localtime() - g:fmod) <= 1) )
+	exe 'normal ggo' . title
+	exe 'normal o' . substitute(title, '.', '=', 'g')
+	normal o
+    write
+  endif
+endfunction
+
+augroup Skeletons
+  autocmd BufNewFile,FileType *.md :call AddMarkdownTitle()
+augroup END
 
 " NOTES
 
@@ -637,22 +652,22 @@ exe 'imap <expr> ' . g:surround_leader . ' rc#Surround("insert")'
 exe 'vmap <expr> ' . g:surround_leader . ' rc#Surround("visual")'
 
 
-" SNIPPETS
+" SNIPPETS / SKELETONS
 
-" Directory where personal snippets are stored
-let g:UltiSnipsSnippetsDir = '~/.vim-personal/after/UltiSnips'
-
-" Define triggers
-let g:UltiSnipsExpandTrigger = "<M-Enter>"
-let g:UltiSnipsListSnippets = "<M-l>"
-let g:UltiSnipsJumpForwardTrigger  = "<M-Enter>"
-let g:UltiSnipsJumpBackwardTrigger = "<M-l>"
-
-" Automatically activate file type skeletons
-let skeletons#autoRegister = 1
-
-" Set directory where skeletons are stored
-let skeletons#skeletonsDir = '~/.skeletons/vim'
+" " Directory where personal snippets are stored
+" let g:UltiSnipsSnippetsDir = '~/.vim-personal/after/UltiSnips'
+"
+" " Define triggers
+" let g:UltiSnipsExpandTrigger = "<M-Enter>"
+" let g:UltiSnipsListSnippets = "<M-l>"
+" let g:UltiSnipsJumpForwardTrigger  = "<M-Enter>"
+" let g:UltiSnipsJumpBackwardTrigger = "<M-l>"
+"
+" " Automatically activate file type skeletons
+" let skeletons#autoRegister = 1
+"
+" " Set directory where skeletons are stored
+" let skeletons#skeletonsDir = '~/.skeletons/vim'
 
 
 " FUZZY-FIND
