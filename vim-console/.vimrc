@@ -154,7 +154,7 @@ endif
 
 " Detect system clipboard utilities:
 
-" nix
+" *nix
 if executable('xclip')
   let g:clipCopy = 'xclip'
   let g:clipPaste = 'xclip -o'
@@ -163,7 +163,7 @@ endif
 " mac
 if executable('pbcopy')
   let g:clipCopy = 'pbcopy'
-  let g:clipPaste = 'pbpaste' " mac
+  let g:clipPaste = 'pbpaste'
 endif
 
 " win
@@ -209,7 +209,7 @@ command! -nargs=* BZB
 augroup ReplaceNetrwWithBzb
   autocmd!
   autocmd VimEnter * silent! autocmd! FileExplorer
-  autocmd BufEnter * if isdirectory(expand("%")) | set nobuflisted | BZB %
+  autocmd BufEnter * if isdirectory(expand("%")) | set nobuflisted | exe 'BZB ' . expand('%')
 augroup END
 
 " Set temp file location
