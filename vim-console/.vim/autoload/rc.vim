@@ -310,22 +310,24 @@ endfunction
 
 " Move forward/backward in the list of Most Recently Used files
 function! rc#JumpMRU(...)
-  if !exists('g:mruJump') | let g:mruJump = 0 | endif
-  if !exists('g:mruIndex') | let g:mruIndex = 0 | endif
   if !exists('g:mruFiles') | let g:mruFiles = [] | endif
   let delta = get(a:000, 0, -1)
-  let g:mruFiles = len(g:mruFiles) > 0
-    \ ? g:mruFiles
-    \ : map(
-    \   fzf_mru#mrufiles#list(),
-    \   "fnamemodify(filereadable(v:val) ? v:val : ProjectRootGuess() . '/' . v:val, ':p')"
-    \ )
-  let g:mruIndex = max([0, g:mruIndex - delta])
-  let g:mruIndex = min([g:mruIndex, len(g:mruFiles) - 1])
-  echo g:mruIndex . ': ' . g:mruFiles[g:mruIndex]
-  let g:mruJump = 1
-  silent! exe 'silent! buffer ' .  g:mruFiles[g:mruIndex]
-  let g:mruJump = 0
+  if len(g:mruFiles) == 0
+    let g:mruFiles = get(a:000, 1, filter(MruGetFiles(), 'filereadable(v:val)'))
+    let g:mruIndex = 0
+    let g:mruBase = ProjectRootGuess()
+  endif
+  if len(g:mruFiles) > 0
+    let g:mruIndex -= delta
+    if g:mruIndex > len(g:mruFiles)
+      let g:mruIndex = 0
+    endif
+    if g:mruIndex < 0
+      let g:mruIndex = len(g:mruFiles) - 1
+    endif
+    let g:mruFile = g:mruFiles[g:mruIndex]
+    silent! exe 'silent! edit ' .  fnamemodify(g:mruFiles[g:mruIndex], ':p')
+  endif
 endfunction
 
 " Overload behavior of the equals key
@@ -348,18 +350,13 @@ endfunction
 " Switch to alternate buffer, or if none defined switch to most recently used file
 function rc#SwitchToAltBufferOrMruFile()
   if fnamemodify(expand('#'), ':p') == fnamemodify(expand('%'), ':p')
-    exe 'edit ' . fzf_mru#mrufiles#list()[1]
+    let mruFiles = MruGetFiles()
+    if len(mruFiles) > 1
+      exe 'edit ' . MruGetFiles()[1]
+    endif
   else
     confirm buffer #
   endif
-endfunction
-
-" Temporarily switch FZFMru to search relative to current directory
-function rc#FZFRelativeMru()
-  let save_rel = g:fzf_mru_relative
-  let g:fzf_mru_relative = 1
-  FZFMru
-  let g:fzf_mru_relative = save_rel
 endfunction
 
 

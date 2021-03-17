@@ -260,17 +260,16 @@ map <silent> <M-Enter> :call rc_vue#EnterHelper(1)<CR>
 map <silent> \<Enter> :call rc_vue#EnterHelper(2)<CR>
 
 " Go count forward/backward in the list of Most Recently Used files
-autocmd BufEnter * :if !get(g:, 'mruJump', 0) | let g:mruFiles = [] | let g:mruIndex = 0 | endif
+autocmd BufAdd,BufDelete,CursorHold,CursorHoldI * :let g:mruFiles = [] | let g:mruIndex = 0
 
 " '-' will go back in the MRU list
-nnoremap - :call rc#JumpMRU(-1)<CR>
+nnoremap <silent> - :call rc#JumpMRU(-1)<CR>
 
 " '+' will go forward in the MRU list
-nnoremap + :call rc#JumpMRU(1)<CR>
+nnoremap <silent> + :call rc#JumpMRU(1)<CR>
 
 
 " URLS
-
 
 " Set temp file location
 let g:wwwDir = s:TmpDir . 'www/'
@@ -673,22 +672,6 @@ exe 'vmap <expr> ' . g:surround_leader . ' rc#Surround("visual")'
 " FUZZY-FIND
 
 " match FZF colors to the current color scheme
-let g:fzf_colors = {
-  \ 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment']
-  \ }
-
 let g:fzf_colors = {
   \ 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],

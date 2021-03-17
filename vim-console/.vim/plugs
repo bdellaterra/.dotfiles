@@ -27,6 +27,7 @@ bdellaterra/vim-pick-me-up # automatically save/restore per-project sessions
 # FILES
 francoiscabrol/ranger.vim # vim-friendly file manager
 gioele/vim-autoswap # less annoying swap file messages
+yegappan/mru # provides easy access to a list of recently opened/edited files
 
 # WINDOWS
 christoomey/vim-tmux-navigator # seamless navigation between tmux panes and vim splits 
@@ -44,7 +45,6 @@ bronson/vim-visual-star-search # Start a * or # search from a visual block
 # FUZZY-FIND
 junegunn/fzf {'dir': '~/.fzf', 'do': './install --all'} # general-purpose command-line fuzzy finder
 junegunn/fzf.vim # fzf-based commands and mappings
-pbogut/fzf-mru.vim # fzf extension for "most recently used" files
 
 # ALIGNMENT
 junegunn/vim-easy-align # alignment commands (see: https://devhints.io/vim-easyalign)
