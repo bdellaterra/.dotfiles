@@ -1,6 +1,6 @@
 
 # *** bat ***
-if [[ -r ~/.config/bat/themes/Nord/Nord.tmTheme ]]; then
-  ( bat --list-themes | grep -q Nord ) || bat cache --build
-  export BAT_THEME=Nord
+if [[ -r ~/.config/bat/themes/Nord/Gyromantia.tmTheme ]]; then
+  ( bat --list-themes | grep -q Gyromantia ) || bat cache --build
+  export BAT_THEME=Gyromantia
 fi
