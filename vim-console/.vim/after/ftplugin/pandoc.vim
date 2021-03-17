@@ -6,6 +6,9 @@ set autochdir
 set modifiable
 set noreadonly
 
+" Don't show fold indicators in side column
+set foldcolumn=0
+
 " Mappings
 
 " ,l = list/locate sections
