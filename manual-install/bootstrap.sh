@@ -22,6 +22,7 @@ sudo $OS --install curl
 sudo $OS --install vim
 if [[ $DISTRO =~ 'SUSE' ]]; then
   sudo $OS --install vim-data
+  sudo $OS --install psmisc
 fi
 
 sudo $OS --install rg
