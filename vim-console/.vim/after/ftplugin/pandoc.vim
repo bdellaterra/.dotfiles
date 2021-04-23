@@ -104,8 +104,8 @@ if !get(g:, 'vim_pandoc_syntax_exists', 0)
 
   " Prevent false emphasis syntax region that can lead to runaway highlighting
   if !(get(g:, 'allowPandocEmphasis', 0) || get(b:, 'allowPandocEmphasis', 0))
-    syn clear pandocEmphasis
-    syn clear pandocEmphasisInStrong
+    silent! syn clear pandocEmphasis
+    silent! syn clear pandocEmphasisInStrong
     syn match pandocEmphasisDelimiter /\*/ conceal
   endif
 
