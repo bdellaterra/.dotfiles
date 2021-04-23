@@ -203,7 +203,10 @@ function rc_vue#ReadUrl(link, ...)
     endif
   endif
   exe 'cd ' . rc#MakeDir(fnamemodify(g:urlFilename, ':h'))
-  exe 'edit ' . rc#MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index.md', ''))
+  try
+    exe 'edit ' . rc#MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index.md', ''))
+  catch /E484/
+  endtry
   set modifiable
   set noreadonly
   keepjumps normal ggVGx
@@ -348,8 +351,8 @@ function rc_vue#EnterHelper(...)
       endif
     endif
   catch
-    " echo "GO TO TAG"
-    exe "normal \<C-]>"
+    echo "GO TO TAG" v:exception
+    " exe "normal \<C-]>"
   catch
     if b:lspBufferEnabled == 1
       " echo "GO TO DEFINITION"
