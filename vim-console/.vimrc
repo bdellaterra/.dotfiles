@@ -345,8 +345,8 @@ inoremap <C-l>     <C-o>v
 
 " MOVEMENT
 
-" '}' will jump down to start of next paragraph, not blank line before
-noremap } }}{<Enter>
+" '}' will jump down to end of next paragraph, not blank line before
+noremap } }}{<Enter>$
 
 " '{' will jump up to start of paragraph, not blank line before
 noremap { {{<Enter>
