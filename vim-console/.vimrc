@@ -318,6 +318,10 @@ let g:postHtmlToMdCleanup = [
   \ ]
 
 let g:postHtmlToMdCleanup += [
+  \ ['searx', 'silent! %s#\\_#_#g'],
+  \ ]
+
+let g:postHtmlToMdCleanup += [
   \ ['dogpile.com', 'silent! %s#^<.*>\n##'],
   \ ]
 
