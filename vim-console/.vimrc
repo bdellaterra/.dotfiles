@@ -933,6 +933,9 @@ autocmd! User GoyoLeave nested call rc#Blur()
 " Toggle focus-mode
 map <silent> <leader><leader> :Goyo<CR>
 
+" Toggle focus highlighting
+map <silent> <leader>h :Limelight!!<CR>
+
 
 " STARTSCREEN
 
