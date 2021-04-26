@@ -154,15 +154,15 @@ function s:CleanHtmlToMarkdown(...)
   
   " Unescape characters
   silent! keepjumps %s~\\\?$~~g " newlines
-  silent! keepjumps %s~\\\([-'"]\)~\1~g " other characters
+  silent! keepjumps %s~\\\([-^'"._|\[\]]\)~\1~g " other characters
 
   " Remove empty brackets
   silent! keepjumps %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
   silent! keepjumps %s~<\_s*[/\\#]\?\_s*>~~g
 
-  " Excessively long dividers
-  silent! keepjumps %s~^\(\(-\|=\)\{80}\)\1*~\1~
-
+  " Excessively long dividers or wide tables
+  silent! keepjumps %s~\_s*\_^\_s*\(\(-\|=\|+\)\{80}\)\2*\_s*\_$\_s*~\r\r\1\r\r~
+  
   " Remove Advertisements
   silent! keepjumps %s~\[ad\%(vertisement\)\?\]\%(([^)]*)\)\?\s*\n~~gi
 
@@ -184,6 +184,9 @@ function s:CleanHtmlToMarkdown(...)
 
   " Remove whitespace
   silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
+
+  " Remove non-printable characters
+  silent! keepjumps %s~‎\|﻿~~gi
 endfunction
 
 let g:defaultPreHtmlToMdCleanup = executable('readability') ? "| readability '%s'" : ''

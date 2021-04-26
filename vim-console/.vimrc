@@ -318,11 +318,11 @@ let g:postHtmlToMdCleanup = [
   \ ]
 
 let g:postHtmlToMdCleanup += [
-  \ ['searx', 'silent! %s#\\_#_#g'],
+  \ ['dogpile.com', 'silent! %s#^<.*>\n##'],
   \ ]
 
 let g:postHtmlToMdCleanup += [
-  \ ['dogpile.com', 'silent! %s#^<.*>\n##'],
+  \ ['wikipedia.org', 'silent! %s#\[\\\[\(\d\+\)\\\]\]#[^\1]#g'],
   \ ]
 
 " SELECTION
