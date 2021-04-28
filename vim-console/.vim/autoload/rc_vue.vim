@@ -154,7 +154,7 @@ function s:CleanHtmlToMarkdown(...)
   
   " Unescape characters
   silent! keepjumps %s~\\\?$~~g " newlines
-  silent! keepjumps %s~\\\([-^'"._|\[\]]\)~\1~g " other characters
+  silent! keepjumps %s~\\\([-^@$'"._|\[\]]\)~\1~g " other characters
 
   " Remove empty brackets
   silent! keepjumps %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
@@ -186,7 +186,7 @@ function s:CleanHtmlToMarkdown(...)
   silent! keepjumps %s~\(\_^[-*]\?\s*\n\)\+~\r~g " repeated empty lines (possibly just bullets)
 
   " Remove non-printable characters
-  silent! keepjumps %s~‎\|﻿~~gi
+  silent! keepjumps %s~​\|‎\|﻿~~gi
 endfunction
 
 let g:defaultPreHtmlToMdCleanup = executable('readability') ? "| readability '%s'" : ''

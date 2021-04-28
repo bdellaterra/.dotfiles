@@ -309,8 +309,9 @@ map <silent> <leader>VS :exe "call rc_vue#GoToUrl('" . g:onlineWebSearch . input
 
 " Wiki Search
 let g:onlineWikiSearch = 'https://en.wikipedia.org/wiki/'
-map <silent> <leader>vw :exe "call rc_vue#ReadUrl('" . g:onlineWikiSearch . input('Online Wiki Search: ') . "')"<CR>
-map <silent> <leader>VW :exe "call rc_vue#GoToUrl('" . g:onlineWikiSearch . input('Online Wiki Search: ') . "')"<CR>
+" let g:onlineWikiSearch = 'https://wiki2.org/en/'
+map <silent> <leader>vw :exe "call rc_vue#ReadUrl('" . g:onlineWikiSearch . substitute(input('Online Wiki Search: '), ' ', '_', 'g') . "')"<CR>
+map <silent> <leader>VW :exe "call rc_vue#GoToUrl('" . g:onlineWikiSearch . substitute(input('Online Wiki Search: '), ' ', '_', 'g') . "')"<CR>
 
 let g:preHtmlToMdCleanup = []
 let g:postHtmlToMdCleanup = [
