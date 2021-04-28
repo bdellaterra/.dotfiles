@@ -205,9 +205,16 @@ function rc_vue#ReadUrl(link, ...)
       let g:urlFilename .= '/'
     endif
   endif
-  exe 'cd ' . rc#MakeDir(fnamemodify(g:urlFilename, ':h'))
+  let g:urlSaveDir = rc#MakeDir(fnamemodify(g:urlFilename, ':h'))
+  exe 'cd ' . g:urlSaveDir
   try
-    exe 'edit ' . rc#MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index.md', ''))
+    let g:urlSaveFile = rc#MakeFile(substitute(g:urlFilename, '[/\\]\zs\ze$', 'index', '')) . '.md'
+    exe 'edit ' . g:urlSaveFile
+  catch /E482/
+    let g:urlSaveDir = rc#MakeDir(fnamemodify(g:urlFilename))
+    exe 'cd ' . g:urlSaveDir
+    let g:urlSaveFile = rc#MakeFile(g:urlFilename . '/index.md')
+    exe 'edit ' . g:urlSaveFile
   catch /E484/
   endtry
   set modifiable
