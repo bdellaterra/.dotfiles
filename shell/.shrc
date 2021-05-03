@@ -6,8 +6,8 @@
 # https://github.com/creationix/nvm
 
 # Set path to NVM and initialize.
-[[ -d "$HOME/opt/nvm" ]] && NVM_DIR="$HOME/opt/nvm"
 [[ -d "$HOME/.dotfiles/node/.nvm" ]] && NVM_DIR="$HOME/.dotfiles/node/.nvm"
+[[ -d "$HOME/opt/nvm" ]] && NVM_DIR="$HOME/opt/nvm"
 # Requires fix for symlink into .dotfiles
 # From CristianCantoro, 2018, https://github.com/creationix/nvm/issues/617
 export NVM_DIR="$(realpath "$NVM_DIR")" 
