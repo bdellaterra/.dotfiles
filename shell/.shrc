@@ -59,6 +59,9 @@ stty -ixon
 # Increase terminal colors.
 [[ -n "$DISPLAY" && "$TERM" = "xterm" ]] && export TERM=xterm-256color
 
+# Detect and export dynamic ip for display server on Windows WSL
+export DISPLAY=$(ip route|awk '/^default/{print $3}'):0.0
+
 
 # *** Liquid Prompt ***
 # https://github.com/nojhan/liquidprompt
