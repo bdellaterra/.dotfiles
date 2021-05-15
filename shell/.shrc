@@ -59,9 +59,6 @@ stty -ixon
 # Increase terminal colors.
 [[ -n "$DISPLAY" && "$TERM" = "xterm" ]] && export TERM=xterm-256color
 
-# Detect and export dynamic ip for display server on Windows WSL
-export DISPLAY=$(ip route|awk '/^default/{print $3}'):0.0
-
 
 # *** Liquid Prompt ***
 # https://github.com/nojhan/liquidprompt
@@ -107,6 +104,19 @@ fi
 
 # Source command aliases
 [[ -r ~/.aliases ]] && . ~/.aliases
+
+
+# *** WSL Fixes ***
+
+if grep -q microsoft /proc/version &>/dev/null; then
+  # Detect and export dynamic ip for display server on Windows WSL
+  export DISPLAY=$(ip route|awk '/^default/{print $3}'):0.0
+  # Temporarily fix time drift from system clock while hiberating, unil 5.10 kernel release
+  # See: https://github.com/microsoft/WSL/issues/5324 
+  # Requires adding a password exemption like the following using `visudo`:
+  # <username> ALL=(ALL) NOPASSWD: /usr/bin/nohup watch -n 10 hwclock -s 
+  echo "Setup clock sync:" && sudo nohup watch -n 10 hwclock -s > /tmp/clocksync.out 2>&1 &
+fi
 
 
 # EXTENDED CONFIGURATION ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
