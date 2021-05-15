@@ -18,6 +18,11 @@ fi
 sudo $OS --install git
 sudo $OS --install stow
 sudo $OS --install curl
+if [[ $DISTRO =~ 'SUSE' ]]; then
+  sudo $OS --install mr
+else
+  sudo $OS --install myrepos
+fi
 
 sudo $OS --install vim
 if [[ $DISTRO =~ 'SUSE' ]]; then
