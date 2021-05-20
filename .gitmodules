@@ -12,6 +12,3 @@
 [submodule "opt/opt/bzb"]
 	path = opt/opt/bzb
 	url = git@github.com:bdellaterra/bzb.git
-[submodule "node/.nvm"]
-	path = node/.nvm
-    url = https://github.com/nvm-sh/nvm.git
