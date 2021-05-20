@@ -19,6 +19,13 @@ export NVM_DIR="$(realpath "$NVM_DIR")"
 # Set path to yarn
 [[ -d "$HOME/.yarn/bin" ]] && export PATH="$HOME/.yarn/bin:$PATH"
 
+# ** Deno **
+
+if [[ -d "$HOME/.deno" ]]; then
+  export DENO_INSTALL="/home/smooth/.deno"
+  export PATH="$DENO_INSTALL/bin:$PATH"
+fi
+
 # *** Ruby ***
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
