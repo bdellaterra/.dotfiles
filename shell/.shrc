@@ -74,13 +74,6 @@ stty -ixon
 # *** Tmux ***
 # https://wiki.archlinux.org/index.php/Tmux
 
-# Fix for tmux on WSL (Using nullglob to prevent shell error on systems that have no /etc/*-release files
-if [[ `bash -c 'shopt -s nullglob; glob=(/etc/*-release); [[ "${#glob[@]}" = 0 ]] || grep "openSUSE" "${glob[@]}"'` && ! -d '/run/tmux' ]]; then
-  echo 'Initializing systemd-tmpfiles...'
-  # From bitcrazed, 2017, https://github.com/tmux/tmux/issues/1092
-  sudo systemd-tmpfiles --create
-fi
-
 # Attach to existing deattached session or start a new session.
 if [[ `command -v tmux` && -z "$TMUX" ]] ;then
     ID="`tmux ls | grep -vm1 attached | cut -d: -f1`" # get id of deattached session
@@ -114,13 +107,23 @@ fi
 # *** WSL Fixes ***
 
 if grep -q microsoft /proc/version &>/dev/null; then
+
+  # Fix for tmux on WSL (Using nullglob to prevent shell error on systems that have no /etc/*-release files
+  if [[ `bash -c 'shopt -s nullglob; glob=(/etc/*-release); [[ "${#glob[@]}" = 0 ]] || grep "openSUSE" "${glob[@]}"'` && ! -d '/run/tmux' ]]; then
+    echo 'Initializing systemd-tmpfiles...'
+    # From bitcrazed, 2017, https://github.com/tmux/tmux/issues/1092
+    sudo systemd-tmpfiles --create
+  fi
+
   # Detect and export dynamic ip for display server on Windows WSL
   export DISPLAY=$(ip route|awk '/^default/{print $3}'):0.0
+
   # Temporarily fix time drift from system clock while hiberating, unil 5.10 kernel release
   # See: https://github.com/microsoft/WSL/issues/5324 
   # Requires adding a password exemption like the following using `visudo`:
   # <username> ALL=(ALL) NOPASSWD: /usr/bin/nohup watch -n 10 hwclock -s 
   echo "Setup clock sync:" && sudo nohup watch -n 10 hwclock -s > /tmp/clocksync.out 2>&1 &
+
 fi
 
 
