@@ -6,12 +6,13 @@
 # https://github.com/creationix/nvm
 
 # Set path to NVM and initialize.
-[[ -d "$HOME/opt/nvm" ]] && NVM_DIR="$HOME/opt/nvm"
-# Requires fix for symlink into .dotfiles
-# From CristianCantoro, 2018, https://github.com/creationix/nvm/issues/617
-export NVM_DIR="$(realpath "$NVM_DIR")" 
-[[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-[[ -r "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
+if [[ -d "$HOME/opt/nvm" ]]; then
+  # Fix for symlink into .dotfiles
+  # From CristianCantoro, 2018, https://github.com/creationix/nvm/issues/617
+  export NVM_DIR="$(realpath "$HOME/opt/nvm")" 
+  [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+  [[ -r "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
+fi
 
 # *** Yarn (Node Dependency Manager) ***
 # https://yarnpkg.com
