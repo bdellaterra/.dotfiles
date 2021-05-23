@@ -90,8 +90,15 @@ fi
 # *** Pager ***
 
 # Override default pager
-# [[ -x "$HOME/bin/pager" ]] && export PAGER="$HOME/bin/pager"
-# alias less="$PAGER"
+if [[ -x "$HOME/bin/pager" ]]; then
+  export PAGER="$HOME/bin/pager"
+  alias less="$PAGER"
+fi
+
+# Use fallback LESSOPEN command if not provided by OS
+if [[ ! $LESSOPEN && `command -v lessopen.sh` ]]; then
+  export LESSOPEN="lessopen.sh %s"
+fi
 
 
 # *** Functions ***

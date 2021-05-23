@@ -31,7 +31,7 @@ export MOZ_USE_XINPUT2=1
 # https://github.com/junegunn/fzf
 
 # Integrate 'fd' command if it's available
-if [[ `command -v fd` ]] ;then
+if [[ `command -v fd` ]]; then
   export FZF_DEFAULT_COMMAND="fd --type file --color=always"
   export FZF_DEFAULT_OPTS="--ansi"
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
