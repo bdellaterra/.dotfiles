@@ -32,9 +32,17 @@ export MOZ_USE_XINPUT2=1
 
 # Integrate 'fd' command if it's available
 if [[ `command -v fd` ]]; then
-  export FZF_DEFAULT_COMMAND="fd --type file --color=always"
-  export FZF_DEFAULT_OPTS="--ansi"
+  export FZF_DEFAULT_COMMAND='fd --type file --color=always'
+  export FZF_DEFAULT_OPTS='--ansi'
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
+
+
+# *** MDV (Markdown Previewer) **
+
+# Prevent random cycling of color themes
+if [[ `command -v mdv` ]]; then
+  export MDV_THEME='729.8953'
 fi
 
 
