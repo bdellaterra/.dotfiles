@@ -326,6 +326,11 @@ let g:postHtmlToMdCleanup += [
   \ ['wikipedia.org', 'silent! %s#\[\\\[\(\d\+\)\\\]\]#[^\1]#g'],
   \ ]
 
+let g:postHtmlToMdCleanup += [
+  \ ['developer.mozilla.org', 'silent! %s#\[Permalink to \([^]]*\)\].*#\r\1#'],
+  \ ['developer.mozilla.org', 'silent! 1s@^\_.*\_^\[# content\]@@'],
+  \ ]
+
 " SELECTION
 
 " In input mode, Ctrl + movement keys initiate visual selection
