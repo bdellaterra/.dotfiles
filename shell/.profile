@@ -42,7 +42,7 @@ fi
 
 # Prevent random cycling of color themes
 if [[ `command -v mdv` ]]; then
-  export MDV_THEME='729.8953'
+  export MDV_THEME='693.8662'
 fi
 
 
