@@ -304,6 +304,7 @@ map <silent> <leader>VE :exe "call rc_vue#GoToUrl('" . g:onlineEtymology . input
 " Web Search
 " let g:onlineWebSearch = 'http://localhost/search?q='
 let g:onlineWebSearch =  'https://searx.be/search?q='
+let g:onlineWebSearch =  'https://anon.sx/search?q='
 map <silent> <leader>vs :exe "call rc_vue#ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "!')"<CR>
 map <silent> <leader>VS :exe "call rc_vue#GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "!')"<CR>
 
@@ -806,10 +807,10 @@ map <leader>go  :Gcheckout<Space>
 map <leader>gwd :Gcd<Space>
 map <leader>gr  :Gread<CR>
 map <leader>gw  :Gwrite!<CR>
-map <leader>gg  :Gwrite! \| Gcommit<CR>
+map <leader>gg  :Gwrite! \| Git commit<CR>
 map <leader>gs  :Gstatus<CR>
-map <leader>gc  :Gcommit<CR>
-map <leader>ga  :Gcommit --amend<CR>
+map <leader>gc  :Git commit<CR>
+map <leader>ga  :Git commit --amend<CR>
 map <leader>g/  :Ggrep<Space>
 map <leader>gl  :Commits<CR>
 map <leader>ge  :Gedit<Space>
