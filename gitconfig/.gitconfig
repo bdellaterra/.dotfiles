@@ -48,7 +48,15 @@
     bm = branch -m
 
     # show current branch
-    bs = symbolic-ref --short HEAD 
+    bc = symbolic-ref --short HEAD 
+
+    # list braches used recently before
+    # From Scott Stafford (modified), 2020, https://ses4j.github.io/2020/04/01/git-alias-recent-branches/
+    bb = !git reflog show --pretty=format:'%gs ~ %gd' --date=relative | grep 'checkout:' | grep -oE '[^ ]+ ~ .*' | awk -F~ '!seen[$1]++' | head -n 15 | sed 's/~ HEAD@//'
+
+    # list detailed local branch history (graph)
+    # From Mike Monkiewicz, 2013, https://stackoverflow.com/questions/14889017/how-to-show-local-branch-history
+    bh = log --graph --all --date=short --pretty=format':%C(yellow)%h%Cblue%d%Creset %s %Cgreen %aN, %ad%Creset'
 
     # commit (check in)
     c = commit
@@ -250,7 +258,7 @@
     bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
     
     # Amend a specific commit
-    # source: https://blog.filippo.io/git-fixup-amending-an-older-commit/ (Filippo Valsorda)
+    # From Filippo Valsorda, 2016, https://blog.filippo.io/git-fixup-amending-an-older-commit/
     # example: git fixup HEAD^ Makefile
     fixup = "!f() { TARGET=$(git rev-parse "$1"); git commit --fixup=$TARGET ${@:2} && EDITOR=true git rebase -i --autostash --autosquash $TARGET^; }; f"
 
