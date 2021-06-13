@@ -12,7 +12,7 @@ HISTSIZE=2500 # in memory
 HISTFILESIZE=2500 # on disk
 
 # Find local executables.
-PATH=$PATH:~/bin:~/local/bin
+PATH=$PATH:~/bin:~/local/bin:~/.local/bin
 
 # Find locally installed packages.
 PATH=$PATH:~/local
