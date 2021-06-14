@@ -131,7 +131,7 @@ if grep -q microsoft /proc/version &>/dev/null; then
   # See: https://github.com/microsoft/WSL/issues/5324 
   # Requires adding a password exemption like the following using `visudo`:
   # <username> ALL=(ALL) NOPASSWD: /usr/bin/nohup watch -n 10 hwclock -s 
-  echo "Setup clock sync:" && sudo nohup watch -n 10 hwclock -s > /tmp/clocksync.out 2>&1 &
+  # echo "Setup clock sync:" && sudo nohup watch -n 10 hwclock -s > /tmp/clocksync.out 2>&1 &
 
 fi
 
