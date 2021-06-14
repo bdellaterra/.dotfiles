@@ -488,7 +488,7 @@ endfunction
 
 function rc#ScrollAdjustment()
   let adjustment = (winheight(0) / 2) - rc#CursorRatio()
-  if line('.') - adjustment <= adjustment || (line('$') - line('.')) <= (winheight(0) - adjustment)
+  if screenrow() - adjustment <= adjustment || (line('$') - line('.')) <= (winheight(0) - adjustment)
     return 0
   endif
   return adjustment
