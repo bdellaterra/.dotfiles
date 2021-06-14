@@ -352,12 +352,6 @@ inoremap <C-l>     <C-o>v
 
 " MOVEMENT
 
-" '}' will jump down to end of next paragraph, not blank line before
-noremap } }}{<Enter>$
-
-" '{' will jump up to start of paragraph, not blank line before
-noremap { {{<Enter>
-
 " '\' will jump down to next non-blank character in current column
 nnoremap \ :silent! call rc#GoToNextVerticalNonBlank()<CR>
 

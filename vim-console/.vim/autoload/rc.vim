@@ -487,11 +487,22 @@ endfunction
 " FOCUS-MODE
 
 function rc#ScrollAdjustment()
-  let adjustment = (winheight(0) / 2) - rc#CursorRatio()
-  if screenrow() - adjustment <= adjustment || (line('$') - line('.')) <= (winheight(0) - adjustment)
-    return 0
+  normal zz
+  let midpoint = winheight(0) / 2
+  let posFromCenter = winline() - midpoint
+  let currentLine = line('.')
+  let lastLine = line('$')
+  let targetFromTop = rc#CursorRatio()
+  let adjustment = midpoint - targetFromTop
+  if currentLine > targetFromTop && currentLine < lastLine - targetFromTop && posFromCenter <= adjustment
+    let correctedAdjustment = abs(adjustment + posFromCenter)
+    if adjustment > 0
+      exe 'normal! ' . correctedAdjustment . "\<C-e>"
+    endif
+    if adjustment < 0
+      exe 'normal! ' . correctedAdjustment . "\<C-y>"
+    endif
   endif
-  return adjustment
 endfunction
 
 " Apply focus-mode customizations
@@ -511,8 +522,8 @@ function! rc#Focus()
   augroup VerticallyCenterCursor
     autocmd!
     " Keep cursor/scroll position just north of center
-  set lazyredraw
-    autocmd VerticallyCenterCursor CursorMoved * exe 'normal zz' . repeat("\<C-e>", rc#ScrollAdjustment())
+    set lazyredraw
+    autocmd VerticallyCenterCursor CursorMoved * call rc#ScrollAdjustment()
   augroup END
   let s:save_enableConcealAtCursor = get(g:, 'enableConcealAtCursor', 0)
   let g:enableConcealAtCursor = 1
