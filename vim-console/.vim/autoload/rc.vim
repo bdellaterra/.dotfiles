@@ -487,20 +487,22 @@ endfunction
 " FOCUS-MODE
 
 function rc#ScrollAdjustment()
-  normal zz
-  let midpoint = winheight(0) / 2
-  let posFromCenter = winline() - midpoint
-  let currentLine = line('.')
-  let lastLine = line('$')
-  let targetFromTop = rc#CursorRatio()
-  let adjustment = midpoint - targetFromTop
-  if currentLine > targetFromTop && currentLine < lastLine - targetFromTop && posFromCenter <= adjustment
-    let correctedAdjustment = abs(adjustment + posFromCenter)
-    if adjustment > 0
-      exe 'normal! ' . correctedAdjustment . "\<C-e>"
-    endif
-    if adjustment < 0
-      exe 'normal! ' . correctedAdjustment . "\<C-y>"
+  if &conceallevel == 0
+    normal zz
+    let midpoint = winheight(0) / 2
+    let posFromCenter = winline() - midpoint
+    let currentLine = line('.')
+    let lastLine = line('$')
+    let targetFromTop = rc#CursorRatio()
+    let adjustment = midpoint - targetFromTop
+    if currentLine > targetFromTop && currentLine < lastLine - targetFromTop && posFromCenter <= adjustment
+      let correctedAdjustment = abs(adjustment + posFromCenter)
+      if adjustment > 0
+        exe 'normal! ' . correctedAdjustment . "\<C-e>"
+      endif
+      if adjustment < 0
+        exe 'normal! ' . correctedAdjustment . "\<C-y>"
+      endif
     endif
   endif
 endfunction
@@ -525,6 +527,11 @@ function! rc#Focus()
     set lazyredraw
     autocmd VerticallyCenterCursor CursorMoved * call rc#ScrollAdjustment()
   augroup END
+  " use simpler smooth-scroll if conceal syntax is on
+  let s:save_scrolloff = &scrolloff
+  if &conceallevel > 0
+    let &scrolloff = 100
+  endif
   let s:save_enableConcealAtCursor = get(g:, 'enableConcealAtCursor', 0)
   let g:enableConcealAtCursor = 1
   let s:save_concealcursor = &concealcursor
@@ -552,6 +559,7 @@ function! rc#Blur()
   au! VerticallyCenterCursor CursorMoved
   let g:enableConcealAtCursor = s:save_enableConcealAtCursor
   let &concealcursor = s:save_concealcursor
+  let &scrolloff = s:save_scrolloff
   let &showtabline = s:save_showtabline
   silent! unlet s:save_showtabline
   set showmode
