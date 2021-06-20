@@ -909,6 +909,9 @@ map <leader>c :call rc#ToggleConceal()<CR>
 " ',-' will toggle cursor line
 map <leader>- :set cursorline!<CR>
 
+" ',-' will toggle cursor column
+map <leader>\| :set cursorcolumn!<CR>
+
 " ',+' will toggle both
 map <leader>+ :set cursorline! cursorcolumn!<CR>:call rc#ToggleConceal(!&cursorcolumn)<CR>
 
