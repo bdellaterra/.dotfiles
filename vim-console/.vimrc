@@ -91,7 +91,8 @@ set diffopt+=vertical
 " Automatically read file changes
 set autoread
 " Autoread depends on file status being checked. This speeds that up
-autocmd InsertEnter,CursorMoved,CursorMovedI,CursorHold,CursorHoldI * checktime
+autocmd InsertEnter,CursorMoved,CursorMovedI,CursorHold,CursorHoldI *
+  \ if getcmdwintype() == '' | checktime | endif
 
 " Faster updates
 set updatetime=1000
