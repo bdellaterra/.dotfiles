@@ -371,7 +371,7 @@ nnoremap \| :silent! call rc#GoToNextVerticalNonBlank(1)<CR>
 
 " SCROLLING
 
-" lock cursor to optimal location while scrolling
+" Lock cursor to optimal location while scrolling
 map <expr> <ScrollWheelUp> winline() >= rc#CursorRatio() ? "\<C-e>gj" : 'gj'
 map <expr> <ScrollWheelDown> winline() <= rc#CursorRatio() ? "\<C-y>gk" : 'gk'
 
@@ -443,7 +443,7 @@ nmap 0<C-w><C-w> 0-=
 " Path will be same as the current buffer or that of # buffer from command-count
 nnoremap += :<C-u>edit <C-r>=rc#BufferFile(':h') . '/'<CR>
 
-" '=]' will switch to previous buffer, or command-count buffers back
+" '=]' will switch to next buffer, or command-count buffers forward
 nnoremap =] :<C-u>exe (v:count ? v:count : '') . 'bnext'<CR>
 " Alias 'Tab'
 nmap <Tab> =]
