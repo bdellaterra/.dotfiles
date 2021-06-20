@@ -237,11 +237,14 @@ map <silent> <leader>wf :call rc#CopyToClipboard(fnamemodify(bufname(''),':p'), 
 
 " ',wr' will copy working file (relative-path) to the clipboard
 map <silent> <leader>wr :echo '.' . rc#CopyToClipboard(substitute(
-  \ fnamemodify(bufname(), ':p'), fnamemodify(ProjectRootGuess(), ':p:h'), '', ''), '"')<CR>
+  \ fnamemodify(bufname(''), ':p'), fnamemodify(ProjectRootGuess(), ':p:h'), '', ''), '"')<CR>
 
 " ',ws' will copy working file (short-path) to the clipboard
-map <silent> <leader>ws :echo rc#CopyToClipboard(substitute(
-  \ fnamemodify(bufname(), ':p:r'), fnamemodify(ProjectRootGuess(), ':p:h') . '/', '', ''), '"')<CR>
+map <silent> <leader>ws :echo rc#CopyToClipboard(
+  \ substitute(
+  \   substitute(fnamemodify(bufname(''), ':p:r'), fnamemodify(ProjectRootGuess(), ':p:h') . '/', '', ''),
+  \ '^\(src/\)\?\(.\{-}\)\(/index\)\?$', '\2', ''),
+  \ '"')<CR>
 
 " ',wt' will copy "tail" of working path to the clipboard (just the filename)
 map <silent> <leader>wt :call rc#CopyToClipboard(fnamemodify(bufname(''),':p:t'), '"')<CR>
