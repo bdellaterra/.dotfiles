@@ -241,9 +241,9 @@ map <silent> <leader>wr :echo '.' . rc#CopyToClipboard(substitute(
 
 " ',ws' will copy working file (short-path) to the clipboard
 map <silent> <leader>ws :echo rc#CopyToClipboard(
-  \ substitute(
-  \   substitute(fnamemodify(bufname(''), ':p:r'), fnamemodify(ProjectRootGuess(), ':p:h') . '/', '', ''),
-  \ '^\(src/\)\?\(.\{-}\)\(/index\)\?$', '\2', ''),
+  \   substitute(
+  \     substitute(fnamemodify(bufname(''), ':p:r'), fnamemodify(ProjectRootGuess(), ':p:h') . '/', '', ''),
+  \   '^\(src/\)\?\(.\{-}\)\(/index\)\?$', '\2', ''),
   \ '"')<CR>
 
 " ',wt' will copy "tail" of working path to the clipboard (just the filename)
