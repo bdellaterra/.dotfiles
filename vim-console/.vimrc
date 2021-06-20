@@ -630,6 +630,17 @@ set belloff+=ctrlg
 cmap <c-Up> <Plug>CmdlineCompleteBackward
 cmap <c-Down> <Plug>CmdlineCompleteForward
 
+" COMMAND-LINE
+
+" '::' will launch command in command-line window
+map :: q:o
+
+" '//' will launch forward-search in command-line window
+map // q/o
+
+" '??' will launch backward-search in command-line window
+map ?? q?o
+
 
 " LINTING
 
