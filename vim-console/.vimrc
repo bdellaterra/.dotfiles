@@ -307,8 +307,7 @@ map <silent> <leader>VE :exe "call rc_vue#GoToUrl('" . g:onlineEtymology . input
 
 " Web Search
 " let g:onlineWebSearch = 'http://localhost/search?q='
-let g:onlineWebSearch =  'https://searx.be/search?q='
-let g:onlineWebSearch =  'https://anon.sx/search?q='
+let g:onlineWebSearch = 'https://search.brave.com/search?q='
 map <silent> <leader>vs :exe "call rc_vue#ReadUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "!')"<CR>
 map <silent> <leader>VS :exe "call rc_vue#GoToUrl('" . g:onlineWebSearch . input('Online Web Search: ') . "!')"<CR>
 
@@ -334,6 +333,15 @@ let g:postHtmlToMdCleanup += [
 let g:postHtmlToMdCleanup += [
   \ ['developer.mozilla.org', 'silent! %s#\[Permalink to \([^]]*\)\].*#\r\1#'],
   \ ['developer.mozilla.org', 'silent! 1s@^\_.*\_^\[# content\]@@'],
+  \ ]
+
+let g:postHtmlToMdCleanup += [
+  \ ['search.brave.com', 'silent! 1,$s#\_.*Already default.*'],
+  \ ['search.brave.com', 'silent! %s#\[\[\!\[.*\](\(.*\))#<\1>'],
+  \ ['search.brave.com', 'silent! %s#!.*\n\+#'],
+  \ ['search.brave.com', 'silent! %s#^\(\[.*\]\|\*navigate_next\*\|\*play_circle_filled\*\|\*search\*.*\|google\|bing\|mojeek\|\d\+:\d\+:\d\+\)\n\+##g'],
+  \ ['search.brave.com', 'silent! %s@^Feedback\_s*#\+\sResources\_.*Terms of Use.*\n\+@\r@'],
+  \ ['search.brave.com', 'normal gg'],
   \ ]
 
 " SELECTION
