@@ -45,6 +45,8 @@ let g:rgx.mdUrlLinkNoLabel =
 let g:rgx.mdRefLink = '\%(' . g:rgx.mdLabel . '\)\?' . g:rgx.mdLabel
 let g:rgx.mdAfterLinkStart = '\%(<[^>]*\|([^)]*\|\[[^]]*\)'
 let g:rgx.mdAnyLink = '\%('.g:rgx.mdLink.'\|'.g:rgx.mdLinkNoLabel.'\)'
+let g:rgx.classNames = '\(\s*\.[a-z-]\+\)\{-}'
+let g:rgx.styles = '\S\zs{'.g:rgx.classNames.'}'
 
 
 function rc_vue#MatchUnderCursor(regex, ...)
@@ -162,6 +164,9 @@ function s:CleanHtmlToMarkdown(...)
 
   " Excessively long dividers or wide tables
   silent! keepjumps %s~\_s*\_^\_s*\(\(-\|=\|+\)\{80}\)\2*\_s*\_$\_s*~\r\r\1\r\r~
+
+  " Remove styling
+  exe 'silent! keepjumps %s~'.g:rgx.styles.'~~gi'
   
   " Remove Advertisements
   silent! keepjumps %s~\[ad\%(vertisement\)\?\]\%(([^)]*)\)\?\s*\n~~gi
