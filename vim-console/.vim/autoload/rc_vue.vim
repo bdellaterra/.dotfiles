@@ -156,7 +156,7 @@ function s:CleanHtmlToMarkdown(...)
   
   " Unescape characters
   silent! keepjumps %s~\\\?$~~g " newlines
-  silent! keepjumps %s~\\\([-^@$'"._|\[\]]\)~\1~g " other characters
+  silent! keepjumps %s~\\\([-^#@$'"._|\[\]]\)~\1~g " other characters
 
   " Remove empty brackets
   silent! keepjumps %s~\[\_s*\%(\[\_s*\]\)\?\_s*\]~~g
