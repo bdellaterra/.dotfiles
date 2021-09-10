@@ -1014,4 +1014,4 @@ if filereadable($HOME . '/business/.vimrc')
 endif
 
 " Calling this at end of script so any added "notes" folders can be captured
-call rc#AutoAddMarkdownExtensionToNotes()
+call rc#AutoAddMarkdownToNotes()

@@ -406,7 +406,7 @@ function rc#AddDefaultTitle()
   call append(0, ['', title, repeat('=', len(title)), ''])
 endfunction
 
-function rc#AutoAddMarkdownExtensionToNotes()
+function rc#AutoAddMarkdownToNotes()
   let g:nv_glob_paths = join(map(copy(g:nv_search_paths), 'v:val . "/[^.]*/*"'), ',')
   augroup MarkdownNotes
     au!
