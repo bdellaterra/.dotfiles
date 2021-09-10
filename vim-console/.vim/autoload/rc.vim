@@ -401,11 +401,17 @@ endfunction
 
 " NOTES
 
+function rc#AddDefaultTitle()
+  let title = fnamemodify(expand('%'), ':t:r')
+  call append(0, ['', title, repeat('=', len(title)), ''])
+endfunction
+
 function rc#AutoAddMarkdownExtensionToNotes()
   let g:nv_glob_paths = join(map(copy(g:nv_search_paths), 'v:val . "/[^.]*/*"'), ',')
   augroup MarkdownNotes
     au!
     exe 'autocmd BufEnter ' . g:nv_glob_paths . ' if &ft=="" | edit | endif'
+    exe 'autocmd BufRead ' . g:nv_glob_paths . ' if readfile(expand("%")) == [] | call rc#AddDefaultTitle() | endif'
     exe 'autocmd BufWrite ' . g:nv_glob_paths . ' call rc#AddMissingFileExtension(".md")'
   augroup END
 endfunction
