@@ -399,9 +399,8 @@ endfunction
 
 " NOTES
 
-" Calling this at end of script so any added paths can be captured
 function rc#AutoAddMarkdownExtensionToNotes()
-  let g:nv_glob_paths = join(map(copy(g:nv_search_paths), 'v:val . "/*/*"'), ',')
+  let g:nv_glob_paths = join(map(copy(g:nv_search_paths), 'v:val . "/[^.]*/*"'), ',')
   augroup MarkdownNotes
     au!
     exe 'autocmd BufEnter ' . g:nv_glob_paths . ' if &ft=="" | edit | endif'
