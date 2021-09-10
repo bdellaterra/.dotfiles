@@ -606,7 +606,7 @@ augroup END
 let g:nv_search_paths = ['~/notes', '~/wiki']
 
 " ',n' will open bzb in notes directory
-noremap <silent> <leader>n :exe '!' . bzb#BZB() . ' -E -bd="' . fnamemodify(g:nv_search_paths[0], ':p')  . '"'<CR>
+map <leader>n :silent! call bzb#BZB('', fnamemodify(g:nv_search_paths[0], ':p'))<CR>
 
 
 " TABLES

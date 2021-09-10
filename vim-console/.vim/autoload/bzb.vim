@@ -7,7 +7,7 @@ set cpo&vim
 
 function bzb#BZBCommand(...)
   let g:target = get(a:000, 0, fnamemodify(expand('%'), ':p:h'))
-  let project_root = ProjectRootGuess()
+  let project_root = get(a:000, 1, ProjectRootGuess())
   let base_dir = fnameescape(isdirectory(project_root) ? project_root : getcwd())
   if !exists('g:BZB_Command')
     let g:BZB_Command = 'bzb -c -as -al -ah'
@@ -21,7 +21,8 @@ function bzb#BZB(...)
   let save_lazyredraw = &lazyredraw
   set lazyredraw
   let target = get(a:000, 0, fnamemodify(expand('%'), ':p:h'))
-  exe '!' . bzb#BZBCommand(target)
+  let project_root = get(a:000, 1, ProjectRootGuess())
+  exe '!' . bzb#BZBCommand(target, project_root)
   silent! let g:BZB_Targets=readfile(expand('$HOME') . '/.bzb/selection')
   exe 'argadd ' . join(map(g:BZB_Targets, 'fnameescape(v:val)'), ' ')
   if len(g:BZB_Targets) | exe 'edit ' . g:BZB_Targets[0] | endif
