@@ -404,6 +404,7 @@ endfunction
 function rc#AddDefaultTitle()
   let title = fnamemodify(expand('%'), ':t:r')
   call append(0, ['', title, repeat('=', len(title)), ''])
+  set filetype=pandoc
 endfunction
 
 function rc#AutoAddMarkdownToNotes()
