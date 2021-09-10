@@ -79,7 +79,9 @@ endfunction
 " If current file has no extension, add the one supplied as first argument
 function rc#AddMissingFileExtension(ext)
   let g:extension = a:ext
-  if a:ext != '' && fnamemodify(expand("%"), ":e") == ''
+  let isMissingExt = fnamemodify(expand("%"), ":e") == ''
+  let isHiddenFile = fnamemodify(expand("%"), ":t") =~ '^\.'
+  if a:ext != '' && isMissingExt && !isHiddenFile
     try
       exe 'Gmove ' . fnameescape(expand('%:p')) . a:ext
     catch
